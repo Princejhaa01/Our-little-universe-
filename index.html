@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>our little universe ✨️</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -12,13 +12,16 @@ html{scroll-behavior:smooth}
 body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
   background:linear-gradient(135deg,#ffe3ef,#e3f0ff 60%,#fff3d9);background-attachment:fixed}
 .hidden{display:none!important}
+
+/* Clay */
 .clay{background:var(--cream);border-radius:32px;
   box-shadow:12px 12px 24px var(--sh),-10px -10px 20px #fff,inset 6px 6px 12px rgba(255,255,255,.8),inset -6px -6px 12px rgba(160,120,180,.12)}
-.btn{font-family:inherit;font-weight:600;font-size:16px;border:none;border-radius:22px;padding:12px 22px;cursor:pointer;
-  background:var(--pink);color:var(--ink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff,inset 3px 3px 6px rgba(255,255,255,.7);transition:transform .15s}
+.btn{font-family:inherit;font-weight:600;font-size:16px;border:none;border-radius:22px;padding:12px 22px;cursor:pointer;color:var(--ink);
+  background:var(--pink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff,inset 3px 3px 6px rgba(255,255,255,.7);transition:transform .15s}
 .btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(2px) scale(.98)}
 .btn.blue{background:var(--blue)}
 .btn.small{padding:6px 12px;font-size:14px;border-radius:14px}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
 input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;border-radius:18px;background:#fff;color:var(--ink);font-size:16px;outline:none;margin-bottom:12px;
   box-shadow:inset 4px 4px 8px rgba(0,0,0,.06),inset -4px -4px 8px #fff}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -28,33 +31,21 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
-/* Scroll progress bar */
+/* Scroll progress + reveal */
 #progress{position:fixed;top:0;left:0;height:5px;width:0;z-index:200;
-  background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:0 4px 4px 0;box-shadow:0 2px 6px rgba(255,140,180,.5)}
-
-/* Scroll reveal animations (uses individual transform props so it doesn't clash with hover/rotate) */
-.reveal{opacity:0;translate:0 60px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.8,.2,1)}
+  background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:0 4px 4px 0}
+.reveal{opacity:0;translate:0 50px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;translate:0 0}
-.reveal.from-left{translate:-80px 0}
-.reveal.from-right{translate:80px 0}
-.reveal.from-left.in,.reveal.from-right.in{translate:0 0}
-.delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}
 
-/* Floating hearts */
-.float{position:fixed;bottom:-30px;font-size:22px;pointer-events:none;z-index:1;animation:floatUp linear forwards;opacity:.8}
-@keyframes floatUp{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
-
-/* App */
+/* App layout */
 #app{padding:90px 18px 40px;max-width:1000px;margin:auto}
 .fab{position:fixed;top:16px;right:16px;z-index:60}
 .logout{position:absolute;top:18px;left:18px}
 .hero{text-align:center;padding:40px 20px;margin-bottom:34px;position:relative}
 .hero .names{font-family:Caveat,cursive;font-size:30px;color:#c2578f}
 .hero p.count{margin-top:8px;font-size:18px}
-.scroll-hint{margin-top:18px;font-size:14px;opacity:.6;animation:bounce 1.8s infinite}
-@keyframes bounce{0%,100%{translate:0 0}50%{translate:0 8px}}
 h2{font-family:Caveat,cursive;font-size:38px;margin:10px 0 16px}
-section{margin-bottom:50px}
+section{margin-bottom:60px}
 
 /* Scrapbook */
 .board{margin-top:24px;padding:30px 20px;border-radius:32px;background-color:#f6ecd9;
@@ -69,38 +60,43 @@ section{margin-bottom:50px}
 .cap{font-family:Caveat,cursive;font-size:24px;text-align:center;margin-top:8px;line-height:1.1}
 .meta{font-size:13px;text-align:center;opacity:.65;margin-top:2px}
 .pbtns{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.empty{grid-column:1/-1;text-align:center;padding:20px}
 
-/* Diary */
-.diary{position:relative;max-width:820px;margin:auto;padding:30px 30px 30px 70px;border-radius:6px 26px 26px 6px;
-  background-color:#fff1a0;
-  background-image:repeating-linear-gradient(transparent 0 31px,#e8c35e 31px 32px);
-  box-shadow:12px 12px 24px var(--sh),-2px 0 0 #e0b84e inset;}
-.diary::before{content:"";position:absolute;left:52px;top:0;bottom:0;width:2px;background:#e88aa0;opacity:.7}
-.rings{position:absolute;left:14px;top:0;bottom:0;width:26px;
+/* Retro diary book */
+.diary-wrap{max-width:600px;margin:0 auto}
+.book{position:relative;height:min(72vh,620px);perspective:2000px;touch-action:manipulation;cursor:pointer}
+.page{position:absolute;inset:0;transform-origin:left center;transition:transform .8s cubic-bezier(.45,.05,.25,1);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background-color:#fff1a0;background-image:repeating-linear-gradient(transparent 0 31px,#e8c35e 31px 32px);background-position:0 70px;
+  border-radius:6px 24px 24px 6px;box-shadow:10px 10px 22px var(--sh);
+  padding:26px 24px 20px 62px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.page::before{content:"";position:absolute;left:46px;top:0;bottom:0;width:2px;background:#e88aa0;opacity:.7}
+.page::after{content:"";position:absolute;left:10px;top:0;bottom:0;width:26px;
   background:radial-gradient(circle,#fff8e0 0 4px,#7d6d45 5px 7px,transparent 8px) 0 6px/26px 34px repeat-y}
-.diary .entry{font-family:Caveat,cursive;font-size:24px;line-height:32px;margin-bottom:18px;padding-bottom:10px;word-break:break-word;white-space:pre-wrap;
-  border-bottom:2px dashed rgba(232,195,94,.6)}
-.diary .entry b{color:#b5487a;font-weight:700}
-.diary .eb{display:inline-flex;gap:6px;margin-left:8px;vertical-align:middle}
-.dphoto-wrap{display:flex;justify-content:center;margin:14px 0 6px}
-.dphoto{position:relative;background:#fff;padding:8px 8px 12px;border-radius:6px;box-shadow:0 8px 16px rgba(0,0,0,.15);
-  transform:rotate(-1.5deg);max-width:280px;width:100%}
-.dphoto img{width:100%;max-height:320px;object-fit:cover;border-radius:4px;display:block}
-.dphoto .tape{width:70px;height:20px;top:-10px}
-.diary form{margin-bottom:24px}
-.diary textarea{background:transparent;box-shadow:none;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:32px;min-height:96px}
-.diary input[type=date]{background:#fff;max-width:220px}
-.dform-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
-.dform-row .btn{margin-bottom:12px}
-#dPreviewWrap{position:relative;max-width:220px;margin:0 0 12px}
-#dPreview{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;display:block}
-#dRemovePhoto{position:absolute;top:6px;right:6px;padding:4px 10px}
-#dFile{background:#fff;font-size:14px;padding:10px}
+.page.flipped{transform:rotateY(-180deg)}
+.pdate{font-family:Caveat,cursive;font-size:28px;font-weight:700;color:#b5487a;line-height:34px}
+.pimg{display:flex;justify-content:center;flex:0 0 auto}
+.pimg img{max-width:85%;max-height:230px;object-fit:cover;border-radius:4px;background:#fff;padding:8px 8px 12px;
+  box-shadow:0 8px 16px rgba(0,0,0,.15);transform:rotate(-1.5deg)}
+.ptext{font-family:Caveat,cursive;font-size:23px;line-height:32px;white-space:pre-wrap;word-break:break-word;overflow-y:auto;flex:1;min-height:0}
+.emptybook{height:100%;display:flex;align-items:center;justify-content:center;font-family:Caveat,cursive;font-size:28px;text-align:center;padding:20px;
+  background:#fff1a0;border-radius:6px 24px 24px 6px;box-shadow:10px 10px 22px var(--sh)}
+.pnav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.pnav .info{font-family:Caveat,cursive;font-size:22px}
+.pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.tap-hint{text-align:center;font-size:13px;opacity:.6;margin-top:8px}
 
-/* Modal */
+/* Modals */
 .modal{position:fixed;inset:0;background:rgba(60,40,80,.35);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.modal .clay{width:100%;max-width:400px;padding:28px}
-#pPreview{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;margin-bottom:12px}
+.modal .clay{width:100%;max-width:400px;padding:28px;max-height:90vh;overflow-y:auto}
+.modal h2{margin-top:0}
+.pv{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;margin-bottom:12px;display:block}
+.dpv-wrap{position:relative;margin-bottom:12px}
+.dpv-wrap img{width:100%;max-height:240px;object-fit:cover;border-radius:14px;display:block}
+.dpv-wrap .btn{position:absolute;top:8px;right:8px;padding:4px 10px}
+.mbtns{display:flex;gap:10px;justify-content:flex-end}
+.dtext{background:#fff1a0;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:30px;min-height:140px}
+input[type=date]{max-width:100%}
 
 /* Chat */
 .chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;
@@ -115,10 +111,11 @@ section{margin-bottom:50px}
 #chatForm{display:flex;gap:8px;margin-top:12px}
 #chatForm input{margin:0}
 
-@media (prefers-reduced-motion:reduce){
-  .reveal{transition:none;opacity:1;translate:0 0}
-  .scroll-hint,.float{animation:none}
-}
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 18px;border-radius:18px;
+  box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center}
+
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.page{transition:none}}
 </style>
 </head>
 <body>
@@ -154,35 +151,29 @@ section{margin-bottom:50px}
     <h1>our little universe ✨️</h1>
     <p class="names">Antra 💖 Prince</p>
     <p class="count">Together for <b id="days">0</b> days 🎂 · since 4 March 2026</p>
-    <p class="scroll-hint">↓ scroll karo</p>
   </header>
 
   <section>
-    <h2 class="reveal from-left">📸 Our Scrapbook</h2>
+    <h2 class="reveal">📸 Our Scrapbook</h2>
     <button class="btn reveal" id="addPhoto">+ Add photo</button>
     <div class="board reveal" id="board"></div>
   </section>
 
   <section>
-    <h2 class="reveal from-right">📖 Our Diary</h2>
-    <div class="diary reveal">
-      <div class="rings"></div>
-      <form id="diaryForm">
-        <input type="date" id="dDate" required>
-        <textarea id="dText" placeholder="Aaj ki baat likho... 💭" required></textarea>
-
-        <div id="dPreviewWrap" class="hidden">
-          <img id="dPreview" alt="">
-          <button type="button" class="btn small" id="dRemovePhoto">✖</button>
-        </div>
-        <input type="file" id="dFile" accept="image/*" style="margin-bottom:12px">
-
-        <div class="dform-row">
-          <button class="btn small blue" type="submit" id="dSave">Save entry 💛</button>
-          <button class="btn small hidden" type="button" id="dCancel">Cancel</button>
-        </div>
-      </form>
-      <div id="entries"></div>
+    <h2 class="reveal">📖 Our Diary</h2>
+    <div class="diary-wrap reveal">
+      <div class="book" id="book"></div>
+      <div class="pnav">
+        <button class="btn small" id="prevBtn">‹ Prev</button>
+        <span class="info" id="pageInfo"></span>
+        <button class="btn small" id="nextBtn">Next ›</button>
+      </div>
+      <div class="pactions">
+        <button class="btn small blue" id="newPageBtn">+ Naya page</button>
+        <button class="btn small blue" id="editPageBtn">✏️ Edit</button>
+        <button class="btn small" id="delPageBtn">🗑️ Delete</button>
+      </div>
+      <p class="tap-hint">Screen ke left/right tap karke page palto 📖</p>
     </div>
   </section>
 
@@ -199,17 +190,35 @@ section{margin-bottom:50px}
   </aside>
 </div>
 
-<!-- PHOTO MODAL -->
+<!-- PHOTO MODAL (scrapbook) -->
 <div class="modal hidden" id="photoModal">
   <div class="clay">
     <h2 id="pTitle">Nayi yaad 📸</h2>
-    <img id="pPreview" class="hidden" alt="">
+    <img id="pPreview" class="pv hidden" alt="">
     <input type="file" id="pFile" accept="image/*">
     <input id="pCaption" placeholder="Caption (jaise: Our first trip 🌸)">
     <input type="date" id="pDate">
-    <div style="display:flex;gap:10px;justify-content:flex-end">
+    <div class="mbtns">
       <button class="btn small" id="pCancel">Cancel</button>
       <button class="btn small blue" id="pSave">Save 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIARY PAGE MODAL -->
+<div class="modal hidden" id="diaryModal">
+  <div class="clay">
+    <h2 id="dmTitle">Naya page 📖</h2>
+    <input type="date" id="dmDate">
+    <div id="dmPreviewWrap" class="dpv-wrap hidden">
+      <img id="dmPreview" alt="">
+      <button type="button" class="btn small" id="dmRemove">✖</button>
+    </div>
+    <input type="file" id="dmFile" accept="image/*">
+    <textarea id="dmText" class="dtext" placeholder="Aaj ki baat likho... 💭"></textarea>
+    <div class="mbtns">
+      <button class="btn small" id="dmCancel">Cancel</button>
+      <button class="btn small blue" id="dmSave">Save 💛</button>
     </div>
   </div>
 </div>
@@ -217,7 +226,7 @@ section{margin-bottom:50px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiKgwAqCptCiWh3xG2DgIRdnOy9dlt3Ww",
@@ -230,54 +239,43 @@ const firebaseConfig = {
 };
 
 const PASSWORD = "Antra@4545";
-// ⚠️ Yahan dono ke actual Google emails daalo
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
-const START = new Date(2026, 2, 4); // 4 March 2026
+const START = new Date(2026, 2, 4);
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today = () => new Date().toISOString().slice(0, 10);
 
-let gatePassed = false, listening = false;
-let photoEditId = null, photoSrc = null, diaryEditId = null, diaryPhoto = null;
-const photoMap = new Map(), diaryMap = new Map();
-
-/* ---------- Scroll animations ---------- */
-const revealIO = new IntersectionObserver(entries => {
-  entries.forEach(en => {
-    if (en.isIntersecting) { en.target.classList.add("in"); revealIO.unobserve(en.target); }
-  });
-}, { threshold: 0.12 });
-
-function observeReveals(root = document) {
-  root.querySelectorAll(".reveal:not(.in)").forEach((el, i) => {
-    el.style.transitionDelay = (i % 4) * 0.08 + "s";
-    revealIO.observe(el);
-  });
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
 }
 
-// Scroll progress bar
+let gatePassed = false, listening = false;
+let photoEditId = null, photoSrc = null;
+let diaryEditId = null, diaryPhoto = null, pendingGoLast = false;
+let cur = 0, entries = [];
+const photoMap = new Map();
+
+/* ---------- Scroll reveal + progress ---------- */
+const revealIO = new IntersectionObserver(list => {
+  list.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); revealIO.unobserve(en.target); } });
+}, { threshold: 0.1 });
+function observeReveals() {
+  document.querySelectorAll(".reveal:not(.in)").forEach(el => revealIO.observe(el));
+}
 addEventListener("scroll", () => {
   const h = document.documentElement;
-  const pct = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
-  $("progress").style.width = (pct * 100) + "%";
-}, { passive: true });
-
-// Floating hearts on scroll
-let lastHeart = 0;
-addEventListener("scroll", () => {
-  const now = Date.now();
-  if (now - lastHeart < 900 || $("app").classList.contains("hidden")) return;
-  lastHeart = now;
-  const h = document.createElement("div");
-  h.className = "float";
-  h.textContent = ["💖","✨","🌸","💛","🌙"][Math.floor(Math.random()*5)];
-  h.style.left = (Math.random() * 90) + "vw";
-  h.style.animationDuration = (5 + Math.random() * 3) + "s";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 8000);
+  $("progress").style.width = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight) * 100) + "%";
 }, { passive: true });
 
 /* ---------- Screens ---------- */
@@ -287,7 +285,7 @@ function showScreen() {
   $("gate").classList.toggle("hidden", gatePassed);
   $("login").classList.toggle("hidden", !gatePassed || ok);
   $("app").classList.toggle("hidden", !(gatePassed && ok));
-  if (gatePassed && ok) { startListeners(); requestAnimationFrame(() => observeReveals()); }
+  if (gatePassed && ok) { startListeners(); requestAnimationFrame(observeReveals); }
 }
 
 $("gateBtn").onclick = () => {
@@ -310,26 +308,23 @@ $("googleBtn").onclick = async () => {
 };
 
 $("logoutBtn").onclick = async () => { await signOut(auth); gatePassed = false; listening = false; showScreen(); };
-
 onAuthStateChanged(auth, () => showScreen());
 
-/* ---------- Counter & date ---------- */
-const days = Math.max(0, Math.floor((Date.now() - START) / 86400000));
-$("days").textContent = days;
-$("dDate").value = new Date().toISOString().slice(0, 10);
+$("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
 
-/* ---------- Listeners ---------- */
+/* ---------- Live listeners ---------- */
 function startListeners() {
   if (listening) return;
   listening = true;
+  const onErr = where => e => { console.error(where, e); toast(`${where} error: ${e.code || e.message}`); };
 
-  // Photos
+  // Scrapbook (live, unlimited)
   onSnapshot(query(collection(db, "photos"), orderBy("createdAt", "desc")), snap => {
     photoMap.clear();
     snap.docs.forEach(d => photoMap.set(d.id, d.data()));
     $("board").innerHTML = snap.docs.length ? snap.docs.map((d, i) => {
       const m = d.data(), r = ((i % 5) - 2) * 1.3;
-      return `<div class="polaroid reveal" style="--r:${r}deg">
+      return `<div class="polaroid" style="--r:${r}deg">
         <span class="tape"></span>
         <img src="${m.src}" alt="">
         <div class="cap">${esc(m.caption)}</div>
@@ -338,24 +333,17 @@ function startListeners() {
           <button class="btn small blue" data-edit="${d.id}">✏️ Edit</button>
           <button class="btn small" data-del="${d.id}">🗑️</button>
         </div></div>`;
-    }).join("") : `<p style="grid-column:1/-1;text-align:center">Abhi koi photo nahi… pehli yaad add karo 📸</p>`;
-    observeReveals($("board"));
-  });
+    }).join("") : `<p class="empty">Abhi koi photo nahi… pehli yaad add karo 📸</p>`;
+  }, onErr("Photos"));
 
-  // Diary
-  onSnapshot(query(collection(db, "diary"), orderBy("createdAt", "desc")), snap => {
-    diaryMap.clear();
-    $("entries").innerHTML = snap.docs.map(d => {
-      const m = d.data(); diaryMap.set(d.id, m);
-      const photo = m.src ? `<div class="dphoto-wrap"><div class="dphoto"><span class="tape"></span><img src="${m.src}" alt=""></div></div>` : "";
-      return `<div class="entry reveal">${photo}<b>${esc(m.date)}</b><br>${esc(m.text)}
-        <span class="eb"><button class="btn small blue" data-dedit="${d.id}">✏️</button>
-        <button class="btn small" data-ddel="${d.id}">🗑️</button></span></div>`;
-    }).join("") || `<p style="font-family:Caveat;font-size:24px;line-height:32px">Pehli entry likho… 🌙</p>`;
-    observeReveals($("entries"));
-  });
+  // Diary (live, oldest page first)
+  onSnapshot(query(collection(db, "diary"), orderBy("createdAt", "asc")), snap => {
+    entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (pendingGoLast) { cur = Math.max(0, entries.length - 1); pendingGoLast = false; }
+    renderBook();
+  }, onErr("Diary"));
 
-  // Chat
+  // Chat (live)
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
     $("msgs").innerHTML = snap.docs.map(d => {
@@ -363,11 +351,11 @@ function startListeners() {
       return `<div class="msg ${m.uid === uid ? "me" : ""}"><small>${esc(m.name)}</small><div>${esc(m.text)}</div></div>`;
     }).join("");
     $("msgs").scrollTop = $("msgs").scrollHeight;
-  });
+  }, onErr("Chat"));
 }
 
 /* ---------- Image compress ---------- */
-function compress(file, max = 900, quality = 0.75) {
+function compress(file, max = 800, quality = 0.7) {
   return new Promise((res, rej) => {
     const img = new Image();
     img.onload = () => {
@@ -382,12 +370,12 @@ function compress(file, max = 900, quality = 0.75) {
   });
 }
 
-/* ---------- Photos (scrapbook) ---------- */
+/* ---------- Scrapbook ---------- */
 function openPhotoModal(id = null, d = {}) {
   photoEditId = id; photoSrc = null;
   $("pTitle").textContent = id ? "Photo edit karo ✏️" : "Nayi yaad 📸";
   $("pCaption").value = d.caption || "";
-  $("pDate").value = d.date || new Date().toISOString().slice(0, 10);
+  $("pDate").value = d.date || today();
   $("pFile").value = "";
   $("pPreview").src = d.src || "";
   $("pPreview").classList.toggle("hidden", !d.src);
@@ -399,75 +387,134 @@ $("addPhoto").onclick = () => openPhotoModal();
 $("pCancel").onclick = closePhoto;
 $("pFile").onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
-  photoSrc = await compress(f);
+  photoSrc = await compress(f, 900, 0.75);
   $("pPreview").src = photoSrc; $("pPreview").classList.remove("hidden");
 };
-
 $("pSave").onclick = async () => {
   const data = { caption: $("pCaption").value.trim(), date: $("pDate").value };
   if (photoSrc) data.src = photoSrc;
   try {
-    if (photoEditId) {
-      await updateDoc(doc(db, "photos", photoEditId), data);
-    } else {
-      if (!photoSrc) return alert("Pehle photo select karo 📸");
+    if (photoEditId) await updateDoc(doc(db, "photos", photoEditId), data);
+    else {
+      if (!photoSrc) return toast("Pehle photo select karo 📸");
       data.createdAt = serverTimestamp();
       await addDoc(collection(db, "photos"), data);
     }
     closePhoto();
-  } catch (e) { alert("Error: " + e.message); }
+    toast("Photo save ho gayi 📸");
+  } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
-
 $("board").onclick = async e => {
   const ed = e.target.closest("[data-edit]"), dl = e.target.closest("[data-del]");
-  if (ed) openPhotoModal(ed.dataset.edit, photoMap.get(ed.dataset.edit));
-  if (dl && confirm("Ye photo delete karein? 🥺")) await deleteDoc(doc(db, "photos", dl.dataset.del));
+  if (ed) {
+    const m = photoMap.get(ed.dataset.edit);
+    openPhotoModal(ed.dataset.edit, m);
+  }
+  if (dl && confirm("Ye photo delete karein? 🥺")) {
+    try { await deleteDoc(doc(db, "photos", dl.dataset.del)); toast("Photo delete ho gayi"); }
+    catch (err) { toast("Error: " + (err.code || err.message)); }
+  }
 };
 
-/* ---------- Diary (with photo) ---------- */
-function setDiaryPhoto(src) {
-  diaryPhoto = src || null;
-  $("dPreview").src = diaryPhoto || "";
-  $("dPreviewWrap").classList.toggle("hidden", !diaryPhoto);
+/* ---------- Retro diary book ---------- */
+function renderBook() {
+  const book = $("book");
+  if (!entries.length) {
+    book.innerHTML = `<div class="emptybook">Abhi koi page nahi… pehla page likho 📖</div>`;
+    $("pageInfo").textContent = "Page 0 / 0";
+    $("prevBtn").disabled = $("nextBtn").disabled = true;
+    $("editPageBtn").disabled = $("delPageBtn").disabled = true;
+    return;
+  }
+  cur = Math.min(cur, entries.length - 1);
+  book.innerHTML = entries.map(m => `
+    <div class="page">
+      <div class="pdate">${esc(m.date)}</div>
+      ${m.src ? `<div class="pimg"><img src="${m.src}" alt=""></div>` : ""}
+      <div class="ptext">${esc(m.text)}</div>
+    </div>`).join("");
+  updateFlips(-1);
+  updateNav();
 }
 
-const resetDiary = () => {
-  diaryEditId = null; $("dText").value = "";
-  $("dDate").value = new Date().toISOString().slice(0, 10);
-  $("dFile").value = "";
-  setDiaryPhoto(null);
-  $("dSave").textContent = "Save entry 💛"; $("dCancel").classList.add("hidden");
-};
-$("dCancel").onclick = resetDiary;
+function updateFlips(keep) {
+  const pages = [...$("book").children], n = pages.length;
+  pages.forEach((p, i) => {
+    p.classList.toggle("flipped", i < cur);
+    p.style.zIndex = i === keep ? 999 : (i < cur ? i + 1 : n - i);
+  });
+}
 
-$("dFile").onchange = async e => {
+function updateNav() {
+  $("pageInfo").textContent = `Page ${cur + 1} / ${entries.length}`;
+  $("prevBtn").disabled = cur === 0;
+  $("nextBtn").disabled = cur >= entries.length - 1;
+  $("editPageBtn").disabled = $("delPageBtn").disabled = false;
+}
+
+function go(delta) {
+  const n = cur + delta;
+  if (n < 0 || n >= entries.length) return;
+  const moving = delta > 0 ? cur : n;   // jo page palat raha hai, usse upar rakho
+  cur = n;
+  updateFlips(moving);
+  updateNav();
+  setTimeout(() => updateFlips(-1), 850);
+}
+
+$("prevBtn").onclick = () => go(-1);
+$("nextBtn").onclick = () => go(1);
+$("book").onclick = e => {
+  if (e.target.closest("button")) return;
+  const r = $("book").getBoundingClientRect();
+  go(e.clientX > r.left + r.width / 2 ? 1 : -1);
+};
+
+/* diary modal */
+function setDiaryPhoto(src) {
+  diaryPhoto = src || null;
+  $("dmPreview").src = diaryPhoto || "";
+  $("dmPreviewWrap").classList.toggle("hidden", !diaryPhoto);
+}
+function openDiaryModal(id = null) {
+  const m = id ? entries.find(x => x.id === id) : null;
+  diaryEditId = id;
+  $("dmTitle").textContent = id ? "Page edit karo ✏️" : "Naya page 📖";
+  $("dmDate").value = m?.date || today();
+  $("dmText").value = m?.text || "";
+  $("dmFile").value = "";
+  setDiaryPhoto(m?.src || null);
+  $("diaryModal").classList.remove("hidden");
+}
+const closeDiary = () => $("diaryModal").classList.add("hidden");
+
+$("newPageBtn").onclick = () => openDiaryModal();
+$("editPageBtn").onclick = () => { if (entries[cur]) openDiaryModal(entries[cur].id); };
+$("dmCancel").onclick = closeDiary;
+$("dmRemove").onclick = () => { setDiaryPhoto(null); $("dmFile").value = ""; };
+$("dmFile").onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
-  setDiaryPhoto(await compress(f, 700, 0.7));
+  setDiaryPhoto(await compress(f, 800, 0.7));
 };
-$("dRemovePhoto").onclick = () => { setDiaryPhoto(null); $("dFile").value = ""; };
-
-$("diaryForm").onsubmit = async e => {
-  e.preventDefault();
-  const data = { date: $("dDate").value, text: $("dText").value.trim(), src: diaryPhoto || null };
+$("dmSave").onclick = async () => {
+  const data = { date: $("dmDate").value, text: $("dmText").value.trim(), src: diaryPhoto || null };
+  if (!data.text && !data.src) return toast("Kuch likho ya photo daalo 💛");
   try {
     if (diaryEditId) await updateDoc(doc(db, "diary", diaryEditId), data);
-    else { data.createdAt = serverTimestamp(); await addDoc(collection(db, "diary"), data); }
-    resetDiary();
-  } catch (err) { alert("Error: " + err.message); }
+    else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, "diary"), data);
+      pendingGoLast = true;   // naya page khulega
+    }
+    closeDiary();
+    toast("Page save ho gaya 💛");
+  } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
-
-$("entries").onclick = async e => {
-  const ed = e.target.closest("[data-dedit]"), dl = e.target.closest("[data-ddel]");
-  if (ed) {
-    const m = diaryMap.get(ed.dataset.dedit);
-    diaryEditId = ed.dataset.dedit;
-    $("dDate").value = m.date; $("dText").value = m.text;
-    $("dFile").value = "";
-    setDiaryPhoto(m.src || null);
-    $("dSave").textContent = "Update entry ✨"; $("dCancel").classList.remove("hidden");
-    $("diaryForm").scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-  if (dl && confirm("Entry delete karein?")) await deleteDoc(doc(db, "diary", dl.dataset.ddel));
+$("delPageBtn").onclick = async () => {
+  const m = entries[cur];
+  if (!m || !confirm("Ye page delete karein? 🥺")) return;
+  try { await deleteDoc(doc(db, "diary", m.id)); toast("Page delete ho gaya"); }
+  catch (err) { toast("Error: " + (err.code || err.message)); }
 };
 
 /* ---------- Chat ---------- */
@@ -478,10 +525,12 @@ $("chatForm").onsubmit = async e => {
   const text = $("chatIn").value.trim(); if (!text) return;
   const u = auth.currentUser;
   $("chatIn").value = "";
-  await addDoc(collection(db, "messages"), {
-    text, uid: u.uid, name: (u.displayName || "Me").split(" ")[0], createdAt: serverTimestamp()
-  });
+  try {
+    await addDoc(collection(db, "messages"), {
+      text, uid: u.uid, name: (u.displayName || "Me").split(" ")[0], createdAt: serverTimestamp()
+    });
+  } catch (err) { toast("Chat error: " + (err.code || err.message)); }
 };
 </script>
 </body>
-</html>
+  </html>
