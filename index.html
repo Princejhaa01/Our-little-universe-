@@ -50,7 +50,7 @@ section{margin-bottom:60px}
 .swipe-hint{font-size:13px;opacity:.6;margin:6px 0 10px}
 .empty{grid-column:1/-1;text-align:center;padding:20px}
 
-/* Horizontal strip (scrapbook + videos) */
+/* Horizontal strip (videos) */
 .strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 12px 24px;border-radius:28px;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .strip>*{flex:0 0 calc((100% - (var(--n) - 1) * 14px - 24px) / var(--n));min-width:0;scroll-snap-align:start}
@@ -59,13 +59,16 @@ section{margin-bottom:60px}
   box-shadow:inset 6px 6px 14px rgba(120,90,40,.15),8px 8px 18px var(--sh)}
 .vault{background:linear-gradient(135deg,#f3e6ff,#e6f2ff);box-shadow:inset 6px 6px 14px rgba(120,90,160,.12),8px 8px 18px var(--sh)}
 
+/* Scrapbook grid: 3 photos per row, wraps downwards */
+.board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px 12px 24px;border-radius:28px}
+
 /* Scrapbook polaroids */
-.polaroid{background:#fff;padding:7px 7px 10px;border-radius:6px;position:relative;cursor:pointer;
+.polaroid{background:#fff;padding:7px 7px 10px;border-radius:6px;position:relative;cursor:pointer;min-width:0;
   box-shadow:0 8px 16px rgba(0,0,0,.15);transform:rotate(var(--r));transition:transform .2s}
 .polaroid:active{transform:rotate(0) scale(.96)}
 .polaroid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;display:block}
-.tape{position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);width:56px;height:18px;background:rgba(255,226,140,.75);box-shadow:0 2px 4px rgba(0,0,0,.08)}
-.cap{font-family:Caveat,cursive;font-size:19px;text-align:center;margin-top:6px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.tape{position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);width:50px;height:16px;background:rgba(255,226,140,.75);box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.cap{font-family:Caveat,cursive;font-size:18px;text-align:center;margin-top:6px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .meta{font-size:12px;text-align:center;opacity:.65;margin-top:2px}
 
 /* Retro diary BOOK (flip) */
@@ -132,6 +135,10 @@ section{margin-bottom:60px}
 .dlabel{font-size:14px;opacity:.7;margin:4px 0 6px;text-align:left}
 input[type=date]{max-width:100%}
 
+/* Upload progress */
+.pbar{height:18px;border-radius:12px;background:#fff;box-shadow:inset 3px 3px 6px rgba(0,0,0,.08);overflow:hidden}
+#vBar{height:100%;width:0;background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:12px;transition:width .2s}
+
 /* Chat */
 .chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;
   display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
@@ -155,6 +162,7 @@ input[type=date]{max-width:100%}
   .hero h1{font-size:38px}
   h2{font-size:32px}
   .book{height:580px}
+  .board-grid{gap:12px;padding:14px 8px 18px}
 }
 @media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout{animation:none}.page{transition:none}}
 </style>
@@ -199,8 +207,8 @@ input[type=date]{max-width:100%}
       <h2 class="reveal">📸 Our Scrapbook</h2>
       <button class="btn small reveal" id="addPhoto">+ Add photo</button>
     </div>
-    <p class="swipe-hint">← swipe karo · photo tap karke bada dekho →</p>
-    <div class="strip paper reveal" id="board" style="--n:5"></div>
+    <p class="swipe-hint">Ek row me 3 photos · photo tap karke bada dekho</p>
+    <div class="board-grid paper reveal" id="board"></div>
   </section>
 
   <section>
@@ -295,6 +303,10 @@ input[type=date]{max-width:100%}
     <div id="vInfo" class="meta" style="margin-bottom:10px"></div>
     <input id="vCaption" placeholder="Caption (jaise: Our trip 🎥)">
     <input type="date" id="vDate">
+    <div id="vProgWrap" class="hidden" style="margin-bottom:12px">
+      <div class="pbar"><div id="vBar"></div></div>
+      <div id="vPct" class="meta" style="margin-top:6px"></div>
+    </div>
     <div id="vStatus" class="err"></div>
     <div class="mbtns">
       <button class="btn small" id="vCancel">Cancel</button>
@@ -307,7 +319,7 @@ input[type=date]{max-width:100%}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiKgwAqCptCiWh3xG2DgIRdnOy9dlt3Ww",
@@ -408,7 +420,7 @@ function startListeners() {
     photoMap.clear();
     snap.docs.forEach(d => photoMap.set(d.id, d.data()));
     $("board").innerHTML = snap.docs.length ? snap.docs.map((d, i) => {
-      const m = d.data(), r = ((i % 5) - 2) * 1.2;
+      const m = d.data(), r = ((i % 3) - 1) * 1.2;
       return `<div class="polaroid" data-id="${d.id}" style="--r:${r}deg">
         <span class="tape"></span>
         <img src="${m.src}" alt="" loading="lazy">
@@ -496,7 +508,6 @@ function go(delta) {
 $("prevBtn").onclick = () => go(-1);
 $("nextBtn").onclick = () => go(1);
 $("book").onclick = e => {
-  // Photo tap = bada dekho
   if (e.target.tagName === "IMG") {
     openZoom(e.target, `<img class="zimg" src="${e.target.src}" alt="">`, null, null);
     return;
@@ -680,6 +691,12 @@ $("dmSave").onclick = async () => {
 };
 
 /* ---------- Video modal ---------- */
+function setProg(p) {
+  const v = Math.round(p);
+  $("vBar").style.width = v + "%";
+  $("vPct").textContent = v + "% upload ho gaya";
+}
+
 function openVideoModal(id = null) {
   const m = id ? videoMap.get(id) : null;
   videoEditId = id; videoFile = null;
@@ -690,9 +707,12 @@ function openVideoModal(id = null) {
   $("vCaption").value = m?.caption || "";
   $("vDate").value = m?.date || today();
   $("vStatus").textContent = "";
+  $("vProgWrap").classList.add("hidden");
+  setProg(0);
   $("videoModal").classList.remove("hidden");
 }
 const closeVideo = () => { $("videoModal").classList.add("hidden"); $("vStatus").textContent = ""; };
+
 $("addVideo").onclick = () => openVideoModal();
 $("vCancel").onclick = closeVideo;
 $("vFile").onchange = e => {
@@ -705,6 +725,7 @@ $("vFile").onchange = e => {
   videoFile = f;
   $("vInfo").textContent = `${f.name} · ${(f.size / 1048576).toFixed(1)} MB`;
 };
+
 $("vSave").onclick = async () => {
   if (uploading) return;
   const caption = $("vCaption").value.trim(), date = $("vDate").value;
@@ -715,12 +736,26 @@ $("vSave").onclick = async () => {
       return;
     }
     if (!videoFile) return toast("Pehle video select karo 🎬");
-    uploading = true; $("vSave").disabled = true;
-    $("vStatus").textContent = "Upload ho rahi hai… ⏳ thoda time lagega";
+
+    uploading = true;
+    $("vSave").disabled = true;
+    $("vStatus").textContent = "";
+    $("vProgWrap").classList.remove("hidden");
+    setProg(0);
+
     const safe = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `videos/${Date.now()}_${safe}`;
     const r = ref(storage, path);
-    await uploadBytes(r, videoFile, { contentType: videoFile.type || "video/mp4" });
+    const task = uploadBytesResumable(r, videoFile, { contentType: videoFile.type || "video/mp4" });
+
+    await new Promise((resolve, reject) => {
+      task.on("state_changed",
+        s => setProg(s.bytesTransferred / s.totalBytes * 100),
+        reject,
+        resolve
+      );
+    });
+
     const url = await getDownloadURL(r);
     await addDoc(collection(db, "videos"), { url, path, caption, date, createdAt: serverTimestamp() });
     closeVideo();
@@ -728,7 +763,9 @@ $("vSave").onclick = async () => {
   } catch (err) {
     $("vStatus").textContent = "Error: " + (err.code || err.message);
   } finally {
-    uploading = false; $("vSave").disabled = false;
+    uploading = false;
+    $("vSave").disabled = false;
+    $("vProgWrap").classList.add("hidden");
   }
 };
 
@@ -748,4 +785,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-                                                                </html>
+          </html>
