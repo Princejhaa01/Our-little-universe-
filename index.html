@@ -167,12 +167,24 @@ input[type=date]{max-width:100%}
 .dot{width:9px;height:9px;border-radius:50%;background:#bbb;flex:0 0 auto}
 .dot.on{background:#38c172;box-shadow:0 0 0 3px rgba(56,193,114,.25)}
 #msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
-.msg{max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh)}
+.msg{position:relative;max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh);
+  touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .msg small{font-size:11px;opacity:.6}
 .msg.me{align-self:flex-end;background:var(--pink);border-radius:18px 18px 4px 18px}
 .mt{font-size:11px;text-align:right;opacity:.7;margin-top:4px}
 .mt.seen{color:#2f9e63;opacity:1;font-weight:600}
-#chatForm{display:flex;gap:8px;margin-top:12px}
+.quote{background:rgba(255,255,255,.75);border-left:3px solid #b5487a;border-radius:8px;padding:4px 8px;margin:4px 0;font-size:12px;word-break:break-word}
+.quote b{display:block;color:#b5487a}
+.typing-row{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;padding:4px 6px}
+.typing{display:inline-flex;gap:4px;background:#fff;padding:7px 10px;border-radius:14px;box-shadow:3px 3px 8px var(--sh)}
+.typing i{width:7px;height:7px;border-radius:50%;background:#b58ac9;animation:tdot 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.2s}
+.typing i:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.replybar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border-left:4px solid #ff8fb8;border-radius:12px;padding:8px 10px;margin-top:10px;font-size:13px}
+.replybar b{display:block;color:#b5487a}
+.replybar span{display:block;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+#chatForm{display:flex;gap:8px;margin-top:10px}
 #chatForm input{margin:0}
 
 /* Toast */
@@ -377,6 +389,14 @@ input[type=date]{max-width:100%}
       <button class="btn small" id="chatClose">✖</button>
     </div>
     <div id="msgs"></div>
+    <div id="typingRow" class="typing-row hidden">
+      <div class="typing"><i></i><i></i><i></i></div>
+      <small id="typingName"></small>
+    </div>
+    <div id="replyBar" class="replybar hidden">
+      <div style="min-width:0"><b id="rbName"></b><span id="rbText"></span></div>
+      <button class="btn small" id="rbClose">✖</button>
+    </div>
     <form id="chatForm">
       <input id="chatIn" placeholder="Message likho..." autocomplete="off">
       <button class="btn small blue" type="submit">➤</button>
@@ -475,7 +495,7 @@ const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const MAX_VIDEO = 40 * 1024 * 1024;
-const ONLINE_WINDOW = 75000; // is time se purana heartbeat = offline
+const ONLINE_WINDOW = 75000;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -506,8 +526,31 @@ let diaryEditId = null, diaryPhotos = [null, null], pendingGoLast = false;
 let videoEditId = null, videoFile = null, uploading = false;
 let zoomRect = null, zoomState = {};
 let entries = [], cur = 0;
-let lastChatDocs = [], lastPartner = null, presenceTimer = null;
+let lastChatDocs = [], msgMap = new Map(), lastPartner = null, presenceTimer = null;
+let typingOn = false, typingTimer = null, replyTarget = null;
 const photoMap = new Map(), videoMap = new Map();
+
+/* ---------- Back button = ek layer back ---------- */
+// Har overlay/modal/chat khulne par history me entry banti hai.
+// Back dabane par sirf sabse upar wali layer band hoti hai.
+const layers = [];
+const hasLayer = n => layers.some(l => l.name === n);
+function openLayer(name, close, replace = false) {
+  if (replace && layers.length) { layers[layers.length - 1] = { name, close }; return; }
+  if (hasLayer(name)) return;
+  layers.push({ name, close });
+  history.pushState({ layer: name }, "");
+}
+function dismissLayer(name) {
+  const i = layers.findIndex(l => l.name === name);
+  if (i < 0) return;
+  if (i === layers.length - 1) history.back();          // popstate handler band karega
+  else { layers[i].close(); layers.splice(i, 1); }
+}
+addEventListener("popstate", () => {
+  const top = layers.pop();
+  if (top) top.close();
+});
 
 /* ---------- Scroll reveal + progress ---------- */
 const revealIO = new IntersectionObserver(list => {
@@ -551,6 +594,7 @@ $("googleBtn").onclick = async () => {
 };
 $("logoutBtn").onclick = async e => {
   e.stopPropagation();
+  await setTyping(false);
   await setPresence(false);
   await signOut(auth); gatePassed = false; listening = false; showScreen();
 };
@@ -558,7 +602,7 @@ onAuthStateChanged(auth, () => showScreen());
 
 $("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
 
-/* ---------- Presence (active / last seen) ---------- */
+/* ---------- Presence (active / last seen) + typing ---------- */
 async function setPresence(online) {
   const u = auth.currentUser;
   if (!u) return;
@@ -568,12 +612,21 @@ async function setPresence(online) {
   } catch (e) { console.error("presence", e); }
 }
 
+async function setTyping(on) {
+  const u = auth.currentUser;
+  if (!u) return;
+  try {
+    await setDoc(doc(db, "presence", emailKey(u.email)),
+      { typing: on, typingAt: Date.now() }, { merge: true });
+  } catch (e) { console.error("typing", e); }
+}
+
 function startPresence() {
   if (presenceTimer) return;
   setPresence(!document.hidden);
   presenceTimer = setInterval(() => { if (!document.hidden) setPresence(true); }, 30000);
   document.addEventListener("visibilitychange", () => setPresence(!document.hidden));
-  addEventListener("pagehide", () => setPresence(false));
+  addEventListener("pagehide", () => { setTyping(false); setPresence(false); });
 
   const me = auth.currentUser.email;
   const partnerEmail = ALLOWED_EMAILS.find(e => e !== me);
@@ -581,7 +634,7 @@ function startPresence() {
     lastPartner = snap.data() || null;
     renderPresence();
   }, e => console.error("partner presence", e));
-  setInterval(renderPresence, 20000);
+  setInterval(renderPresence, 2000);
 }
 
 function renderPresence() {
@@ -592,6 +645,10 @@ function renderPresence() {
   $("pStat").textContent = !p ? `${name} · abhi tak online nahi hue`
     : active ? `${name} · Active now 🟢`
     : `${name} · Last seen ${fmtTime(p.updatedAt)}`;
+
+  const typingNow = !!p?.typing && Date.now() - (p.typingAt || 0) < 5000;
+  $("typingRow").classList.toggle("hidden", !typingNow);
+  $("typingName").textContent = `${name} type kar rahe/rahi hain…`;
 }
 
 /* ---------- Dates + countdowns ---------- */
@@ -658,6 +715,15 @@ $("hbItems").onclick = e => {
   tickCd();
 };
 
+const closeHeroVis = () => {
+  const box = $("hbox");
+  box.classList.remove("zin");
+  box.classList.add("zout");
+  setTimeout(() => {
+    $("hbig").classList.add("hidden");
+    box.classList.remove("zout");
+  }, 400);
+};
 function openHero() {
   const r = $("heroCard").getBoundingClientRect();
   const box = $("hbox");
@@ -668,22 +734,14 @@ function openHero() {
   box.classList.remove("zout", "zin");
   void box.offsetWidth;
   box.classList.add("zin");
-}
-function closeHero() {
-  const box = $("hbox");
-  box.classList.remove("zin");
-  box.classList.add("zout");
-  setTimeout(() => {
-    $("hbig").classList.add("hidden");
-    box.classList.remove("zout");
-  }, 400);
+  openLayer("hero", closeHeroVis);
 }
 $("heroCard").onclick = e => {
   if (e.target.closest("button")) return;
   openHero();
 };
-$("hbClose").onclick = closeHero;
-$("hbig").onclick = e => { if (e.target.id === "hbig") closeHero(); };
+$("hbClose").onclick = () => dismissLayer("hero");
+$("hbig").onclick = e => { if (e.target.id === "hbig") dismissLayer("hero"); };
 
 /* ---------- Live listeners ---------- */
 function startListeners() {
@@ -725,15 +783,19 @@ function startListeners() {
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
     lastChatDocs = snap.docs;
+    msgMap = new Map();
     $("msgs").innerHTML = snap.docs.map(d => {
       const m = d.data(), mine = m.uid === uid;
+      msgMap.set(d.id, m);
       let tick = "";
       if (mine) {
         tick = m.seen
           ? `<div class="mt seen">✓✓ Seen${m.seenAt ? " " + fmtTime(m.seenAt) : ""}</div>`
           : `<div class="mt">✓ Sent</div>`;
       }
-      return `<div class="msg ${mine ? "me" : ""}"><small>${esc(m.name)}</small><div>${esc(m.text)}</div>${tick}</div>`;
+      const quote = m.replyTo
+        ? `<div class="quote"><b>${esc(m.replyTo.name)}</b>${esc(m.replyTo.text)}</div>` : "";
+      return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(m.name)}</small>${quote}<div>${esc(m.text)}</div>${tick}</div>`;
     }).join("");
     $("msgs").scrollTop = $("msgs").scrollHeight;
     markSeen();
@@ -752,6 +814,52 @@ function markSeen() {
     }
   });
 }
+
+/* ---------- Swipe right = reply ---------- */
+function setReply(id) {
+  const m = msgMap.get(id);
+  if (!m) return;
+  replyTarget = { name: m.name, text: (m.text || "").slice(0, 80) };
+  $("rbName").textContent = `↩ ${m.name}`;
+  $("rbText").textContent = replyTarget.text;
+  $("replyBar").classList.remove("hidden");
+  $("chatIn").focus();
+}
+function clearReply() {
+  replyTarget = null;
+  $("replyBar").classList.add("hidden");
+}
+$("rbClose").onclick = clearReply;
+
+let sw = null;
+const msgsEl = $("msgs");
+msgsEl.addEventListener("pointerdown", e => {
+  const el = e.target.closest(".msg");
+  if (!el) return;
+  sw = { el, id: el.dataset.id, x: e.clientX, y: e.clientY, dx: 0, locked: false };
+  try { el.setPointerCapture(e.pointerId); } catch {}
+});
+msgsEl.addEventListener("pointermove", e => {
+  if (!sw) return;
+  const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+  if (!sw.locked && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; } // scroll
+  if (Math.abs(dx) > 8) sw.locked = true;
+  if (sw.locked && dx > 0) {
+    sw.dx = Math.min(dx, 90);
+    sw.el.style.transform = `translateX(${sw.dx}px)`;
+  }
+});
+const endSwipe = () => {
+  if (!sw) return;
+  const { el, id, dx } = sw;
+  sw = null;
+  el.style.transition = "transform .2s";
+  el.style.transform = "";
+  setTimeout(() => { el.style.transition = ""; }, 200);
+  if (dx > 60) setReply(id);
+};
+msgsEl.addEventListener("pointerup", endSwipe);
+msgsEl.addEventListener("pointercancel", endSwipe);
 
 /* ---------- Retro diary book ---------- */
 function renderBook() {
@@ -809,6 +917,18 @@ $("book").onclick = e => {
 };
 
 /* ---------- Zoom (photo/video) ---------- */
+function closeZoomVis(anim = true) {
+  const box = $("zoomBox");
+  const finish = () => {
+    $("zoom").classList.add("hidden");
+    $("zoomBody").innerHTML = "";
+    box.classList.remove("zin", "zout");
+  };
+  if (!anim || !zoomRect) return finish();
+  box.classList.remove("zin");
+  box.classList.add("zout");
+  setTimeout(finish, 400);
+}
 function openZoom(el, html, type, id) {
   zoomRect = el.getBoundingClientRect();
   const box = $("zoomBox");
@@ -823,28 +943,25 @@ function openZoom(el, html, type, id) {
   void box.offsetWidth;
   box.classList.add("zin");
   box.querySelector("video")?.play().catch(() => {});
+  openLayer("zoom", () => closeZoomVis(true));
 }
-function closeZoom(instant = false) {
-  const box = $("zoomBox");
-  const finish = () => {
-    $("zoom").classList.add("hidden");
-    $("zoomBody").innerHTML = "";
-    box.classList.remove("zin", "zout");
-  };
-  if (instant || !zoomRect) return finish();
-  box.classList.remove("zin");
-  box.classList.add("zout");
-  setTimeout(finish, 400);
-}
-$("zClose").onclick = () => closeZoom();
-$("zoom").onclick = e => { if (e.target.id === "zoom") closeZoom(); };
+$("zClose").onclick = () => dismissLayer("zoom");
+$("zoom").onclick = e => { if (e.target.id === "zoom") dismissLayer("zoom"); };
 $("zoomBody").onclick = async e => {
   const b = e.target.closest("[data-act]");
   if (!b) return;
   const { type, id } = zoomState;
-  if (b.dataset.act === "edit") { closeZoom(true); editItem(type, id); }
+  if (b.dataset.act === "edit") {
+    const replace = layers[layers.length - 1]?.name === "zoom";
+    if (replace) {
+      $("zoom").classList.add("hidden");
+      $("zoomBody").innerHTML = "";
+      $("zoomBox").classList.remove("zin", "zout");
+    }
+    editItem(type, id, replace);
+  }
   if (b.dataset.act === "del" && confirm("Ye delete karein? 🥺")) {
-    closeZoom(true);
+    dismissLayer("zoom");
     await removeItem(type, id);
   }
 };
@@ -860,9 +977,9 @@ $("videos").onclick = e => {
   openZoom(c, `<video class="zvid" src="${esc(m.url)}" controls playsinline autoplay></video>
     <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "video", c.dataset.id);
 };
-function editItem(type, id) {
-  if (type === "photo") openPhotoModal(id, photoMap.get(id));
-  else if (type === "video") openVideoModal(id);
+function editItem(type, id, replace = false) {
+  if (type === "photo") openPhotoModal(id, photoMap.get(id), replace);
+  else if (type === "video") openVideoModal(id, replace);
 }
 async function removeItem(type, id) {
   try {
@@ -893,7 +1010,8 @@ function compress(file, max = 800, quality = 0.7) {
 }
 
 /* ---------- Scrapbook modal ---------- */
-function openPhotoModal(id = null, d = {}) {
+const closePhotoVis = () => $("photoModal").classList.add("hidden");
+function openPhotoModal(id = null, d = {}, replace = false) {
   photoEditId = id; photoSrc = null;
   $("pTitle").textContent = id ? "Photo edit karo ✏️" : "Nayi yaad 📸";
   $("pCaption").value = d.caption || "";
@@ -902,10 +1020,10 @@ function openPhotoModal(id = null, d = {}) {
   $("pPreview").src = d.src || "";
   $("pPreview").classList.toggle("hidden", !d.src);
   $("photoModal").classList.remove("hidden");
+  openLayer("photo", closePhotoVis, replace);
 }
-const closePhoto = () => $("photoModal").classList.add("hidden");
 $("addPhoto").onclick = () => openPhotoModal();
-$("pCancel").onclick = closePhoto;
+$("pCancel").onclick = () => dismissLayer("photo");
 $("pFile").onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   photoSrc = await compress(f, 900, 0.75);
@@ -921,12 +1039,13 @@ $("pSave").onclick = async () => {
       data.createdAt = serverTimestamp();
       await addDoc(collection(db, "photos"), data);
     }
-    closePhoto();
+    dismissLayer("photo");
     toast("Photo save ho gayi 📸");
   } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
 
 /* ---------- Diary modal ---------- */
+const closeDiaryVis = () => $("diaryModal").classList.add("hidden");
 function setDiaryPhoto(i, src) {
   diaryPhotos[i] = src || null;
   $("dmP" + i).src = diaryPhotos[i] || "";
@@ -943,8 +1062,8 @@ function openDiaryModal(id = null) {
   setDiaryPhoto(0, ps[0] || null);
   setDiaryPhoto(1, ps[1] || null);
   $("diaryModal").classList.remove("hidden");
+  openLayer("diary", closeDiaryVis);
 }
-const closeDiary = () => $("diaryModal").classList.add("hidden");
 $("newPageBtn").onclick = () => openDiaryModal();
 $("editPageBtn").onclick = () => { if (entries[cur]) openDiaryModal(entries[cur].id); };
 $("delPageBtn").onclick = async () => {
@@ -953,7 +1072,7 @@ $("delPageBtn").onclick = async () => {
   try { await deleteDoc(doc(db, "diary", m.id)); toast("Page delete ho gaya"); }
   catch (err) { toast("Error: " + (err.code || err.message)); }
 };
-$("dmCancel").onclick = closeDiary;
+$("dmCancel").onclick = () => dismissLayer("diary");
 [0, 1].forEach(i => {
   $("dmF" + i).onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
@@ -974,7 +1093,7 @@ $("dmSave").onclick = async () => {
       await addDoc(collection(db, "diary"), data);
       pendingGoLast = true;
     }
-    closeDiary();
+    dismissLayer("diary");
     toast("Page save ho gaya 💛");
   } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
@@ -985,7 +1104,8 @@ function setProg(p) {
   $("vBar").style.width = v + "%";
   $("vPct").textContent = v + "% upload ho gaya";
 }
-function openVideoModal(id = null) {
+const closeVideoVis = () => { $("videoModal").classList.add("hidden"); $("vStatus").textContent = ""; };
+function openVideoModal(id = null, replace = false) {
   const m = id ? videoMap.get(id) : null;
   videoEditId = id; videoFile = null;
   $("vTitle").textContent = id ? "Video edit karo ✏️" : "Nayi video 🎬";
@@ -998,10 +1118,10 @@ function openVideoModal(id = null) {
   $("vProgWrap").classList.add("hidden");
   setProg(0);
   $("videoModal").classList.remove("hidden");
+  openLayer("video", closeVideoVis, replace);
 }
-const closeVideo = () => { $("videoModal").classList.add("hidden"); $("vStatus").textContent = ""; };
 $("addVideo").onclick = () => openVideoModal();
-$("vCancel").onclick = closeVideo;
+$("vCancel").onclick = () => dismissLayer("video");
 $("vFile").onchange = e => {
   const f = e.target.files[0];
   if (!f) return;
@@ -1018,7 +1138,7 @@ $("vSave").onclick = async () => {
   try {
     if (videoEditId) {
       await updateDoc(doc(db, "videos", videoEditId), { caption, date });
-      closeVideo(); toast("Video update ho gayi 🎬");
+      dismissLayer("video"); toast("Video update ho gayi 🎬");
       return;
     }
     if (!videoFile) return toast("Pehle video select karo 🎬");
@@ -1055,7 +1175,7 @@ $("vSave").onclick = async () => {
 
     const url = await getDownloadURL(r);
     await addDoc(collection(db, "videos"), { url, path, caption, date, createdAt: serverTimestamp() });
-    closeVideo();
+    dismissLayer("video");
     toast("Video save ho gayi 🎬");
   } catch (err) {
     console.error("Video upload", err);
@@ -1070,22 +1190,43 @@ $("vSave").onclick = async () => {
 };
 
 /* ---------- Chat ---------- */
+const closeChatVis = () => $("chat").classList.remove("open");
+function openChat() {
+  $("chat").classList.add("open");
+  openLayer("chat", closeChatVis);
+  markSeen();
+}
 $("chatBtn").onclick = () => {
-  const open = $("chat").classList.toggle("open");
-  if (open) markSeen();
+  if ($("chat").classList.contains("open")) dismissLayer("chat");
+  else openChat();
 };
-$("chatClose").onclick = () => $("chat").classList.remove("open");
+$("chatClose").onclick = () => dismissLayer("chat");
+
+function stopTyping() {
+  clearTimeout(typingTimer);
+  if (typingOn) { typingOn = false; setTyping(false); }
+}
+$("chatIn").addEventListener("input", () => {
+  if (!typingOn) { typingOn = true; setTyping(true); }
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(stopTyping, 2500);
+});
+
 $("chatForm").onsubmit = async e => {
   e.preventDefault();
   const text = $("chatIn").value.trim(); if (!text) return;
   const u = auth.currentUser;
+  const rt = replyTarget;
   $("chatIn").value = "";
+  stopTyping();
+  clearReply();
   try {
     await addDoc(collection(db, "messages"), {
-      text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false
+      text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false,
+      replyTo: rt ? { name: rt.name, text: rt.text } : null
     });
   } catch (err) { toast("Chat error: " + (err.code || err.message)); }
 };
 </script>
 </body>
-      </html>
+    </html>
