@@ -136,14 +136,11 @@ section{margin-bottom:60px}
 .pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .tap-hint{text-align:center;font-size:13px;opacity:.6;margin-top:8px}
 
-/* Clothesline: infinite right-to-left wire */
-.wire-scroll{overflow:hidden;padding:6px 0 26px}
-.wire{position:relative;display:flex;width:max-content;animation:wireMove var(--dur,40s) linear infinite}
-.wire.noanim{animation:none}
-.wire.paused{animation-play-state:paused}
+/* Clothesline: JS-driven wire (auto + haath se drag) */
+.wire-scroll{overflow:hidden;padding:6px 0 26px;touch-action:pan-y}
+.wire{position:relative;display:flex;width:max-content;will-change:transform;cursor:grab;user-select:none;-webkit-user-select:none}
 .wire::before{content:"";position:absolute;left:0;right:0;top:12px;height:3px;background:#7d6d5a;border-radius:3px;box-shadow:0 2px 3px rgba(0,0,0,.15)}
 .wire-group{display:flex;gap:22px;padding:0 11px;flex:0 0 auto;position:relative}
-@keyframes wireMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .hang{position:relative;width:150px;flex:0 0 auto;transform-origin:50% 0;animation:sway 3.6s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
 .hang .clip{width:16px;height:26px;margin:0 auto;border-radius:5px;background:linear-gradient(#ffd6e8,#ff8fb8);position:relative;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.2)}
 .hang .string{width:2px;height:12px;background:#8a7a6a;margin:0 auto}
@@ -196,12 +193,13 @@ section{margin-bottom:60px}
 .moods{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .moods button{border:none;border-radius:14px;padding:4px 9px;font-size:12px;font-family:inherit;cursor:pointer;background:#fff;color:var(--ink);box-shadow:2px 2px 6px var(--sh)}
 .moods button.on{background:var(--pink);font-weight:600}
+.tiny-note{font-size:11px;opacity:.6;margin:0 0 6px}
 #msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
 .msg{position:relative;max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh);
   touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:pointer}
 .msg small{font-size:11px;opacity:.6}
 .msg.me{align-self:flex-end;background:var(--pink);border-radius:18px 18px 4px 18px}
-.mt{font-size:11px;text-align:right;opacity:.7;margin-top:4px}
+.mt{font-size:10px;text-align:right;opacity:.6;margin-top:4px}
 .mt.seen{color:#2f9e63;opacity:1;font-weight:600}
 .ed{font-size:10px;opacity:.6;margin-left:6px}
 .quote{background:rgba(255,255,255,.75);border-left:3px solid #b5487a;border-radius:8px;padding:4px 8px;margin:4px 0;font-size:12px;word-break:break-word}
@@ -269,7 +267,7 @@ input[type=date]{max-width:100%}
   .cbox b{font-size:20px}
   .hang{width:130px}
 }
-@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char,.hang,.ss-hang,.wire{animation:none}.page{transition:none}}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char,.hang,.ss-hang{animation:none}.page{transition:none}}
 </style>
 </head>
 <body>
@@ -421,7 +419,7 @@ input[type=date]{max-width:100%}
       <h2 class="reveal">🎞️ Our Slideshow</h2>
       <button class="btn small reveal" id="ssOpen">▶ Slideshow chalao</button>
     </div>
-    <p class="swipe-hint">Scrapbook ki photos wire par latki hain · tap karke bada dekho</p>
+    <p class="swipe-hint">Scrapbook ki photos wire par latki hain · haath se khiskao ya tap karke bada dekho</p>
     <div class="wire-scroll reveal">
       <div class="wire" id="wire"></div>
     </div>
@@ -451,6 +449,7 @@ input[type=date]{max-width:100%}
       </div>
       <button class="btn small" id="chatClose">✖</button>
     </div>
+    <p class="tiny-note">Messages 14 ghante me apne-aap gayab ho jaate hain</p>
     <div id="msgs"></div>
     <div id="typingRow" class="typing-row hidden">
       <div class="typing"><i></i><i></i><i></i></div>
@@ -586,7 +585,7 @@ input[type=date]{max-width:100%}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiKgwAqCptCiWh3xG2DgIRdnOy9dlt3Ww",
@@ -603,8 +602,9 @@ const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
 const SLIDE_MS = 5000;          // fullscreen slideshow: auto-advance (ms)
-const WIRE_SEC_PER_PHOTO = 6;   // wire kitni tezi se chale
+const WIRE_SEC_PER_PHOTO = 6;   // wire ek photo ko kitne second me paar kare (auto speed)
 const NOTIF_MS = 1000;
+const CHAT_MS = 14 * 3600e3;    // chat 14 ghante baad gayab
 const LAST_KEY = "ou_lastRead";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
@@ -620,8 +620,10 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const today = () => new Date().toISOString().slice(0, 10);
 const emailKey = e => String(e).replace(/[^a-z0-9]/gi, "_");
 const fmtTime = t => new Date(t).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+const fmtClock = t => new Date(t).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
 const fmtDay = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 const firstName = u => (u?.displayName || "Me").split(" ")[0];
+const msgTime = m => m?.createdAt?.toMillis?.() ?? Date.now();
 
 function toast(msg) {
   const t = document.createElement("div");
@@ -907,12 +909,53 @@ $("heroCard").onclick = e => {
 $("hbClose").onclick = () => dismissLayer("hero");
 $("hbig").onclick = e => { if (e.target.id === "hbig") dismissLayer("hero"); };
 
+/* ---------- Clothesline wire (auto + haath se drag) ---------- */
+const wire = $("wire");
+let wx = 0, wLast = performance.now(), wDrag = null, wMoved = false;
+
+function wireHalf() { return wire.scrollWidth / 2 || 0; }
+function wireApply() {
+  const h = wireHalf();
+  if (!h) { wire.style.transform = ""; return; }
+  const o = ((wx % h) + h) % h;          // seamless loop
+  wire.style.transform = `translateX(${-o}px)`;
+}
+function wireLoop(t) {
+  const dt = Math.min(0.1, (t - wLast) / 1000);
+  wLast = t;
+  const h = wireHalf();
+  if (h && !wDrag && photoList.length) {
+    // auto: right se left
+    wx -= (h / Math.max(20, photoList.length * WIRE_SEC_PER_PHOTO)) * dt;
+  }
+  wireApply();
+  requestAnimationFrame(wireLoop);
+}
+requestAnimationFrame(wireLoop);
+
+wire.addEventListener("pointerdown", e => {
+  wDrag = { x: e.clientX, start: wx, id: e.pointerId };
+  wMoved = false;
+});
+wire.addEventListener("pointermove", e => {
+  if (!wDrag) return;
+  const dx = e.clientX - wDrag.x;
+  if (!wMoved && Math.abs(dx) > 6) {
+    wMoved = true;
+    try { wire.setPointerCapture(wDrag.id); } catch {}
+    wire.style.cursor = "grabbing";
+  }
+  if (wMoved) { wx = wDrag.start - dx; wireApply(); }
+});
+const wireEnd = () => { wDrag = null; wire.style.cursor = ""; };
+wire.addEventListener("pointerup", wireEnd);
+wire.addEventListener("pointercancel", wireEnd);
+
 /* ---------- Live listeners ---------- */
 function renderWire() {
-  const wire = $("wire");
   if (!photoList.length) {
-    wire.classList.add("noanim");
     wire.innerHTML = `<div class="wire-empty">Abhi koi photo nahi… scrapbook me photo add karo, yahan latkegi 🧺</div>`;
+    wireApply();
     return;
   }
   const items = photoList.map((m, i) => `
@@ -925,9 +968,9 @@ function renderWire() {
         <div class="meta">${esc(m.date)}</div>
       </div>
     </div>`).join("");
-  wire.classList.remove("noanim");
-  wire.style.setProperty("--dur", Math.max(20, photoList.length * WIRE_SEC_PER_PHOTO) + "s");
+  // Do identical groups = seamless infinite loop
   wire.innerHTML = `<div class="wire-group">${items}</div><div class="wire-group" aria-hidden="true">${items}</div>`;
+  wireApply();
 }
 
 function startListeners() {
@@ -971,22 +1014,7 @@ function startListeners() {
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
     lastChatDocs = snap.docs;
-    msgMap = new Map();
-    $("msgs").innerHTML = snap.docs.map(d => {
-      const m = d.data(), mine = m.uid === uid;
-      msgMap.set(d.id, m);
-      let tick = "";
-      if (mine) {
-        tick = m.seen
-          ? `<div class="mt seen">✓✓ Seen${m.seenAt ? " " + fmtTime(m.seenAt) : ""}</div>`
-          : `<div class="mt">✓ Sent</div>`;
-      }
-      const quote = m.replyTo
-        ? `<div class="quote"><b>${esc(m.replyTo.name)}</b>${esc(m.replyTo.text)}</div>` : "";
-      const ed = m.edited ? `<span class="ed">edited</span>` : "";
-      return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(m.name)}</small>${quote}<div>${esc(m.text)}${ed}</div>${rxHTML(m.reactions, uid)}${tick}</div>`;
-    }).join("");
-    $("msgs").scrollTop = $("msgs").scrollHeight;
+    renderMessages();
 
     if (!initialMsgLoad) {
       snap.docChanges().forEach(ch => {
@@ -1001,6 +1029,43 @@ function startListeners() {
     markSeen();
   }, onErr("Chat"));
 }
+
+/* ---------- Chat render (14h filter + time) ---------- */
+function renderMessages() {
+  const uid = auth.currentUser?.uid;
+  const cutoff = Date.now() - CHAT_MS;
+  const live = lastChatDocs.filter(d => msgTime(d.data()) > cutoff);
+  msgMap = new Map();
+  $("msgs").innerHTML = live.map(d => {
+    const m = d.data(), mine = m.uid === uid, t = fmtClock(msgTime(m));
+    msgMap.set(d.id, m);
+    let tick;
+    if (mine) {
+      tick = m.seen
+        ? `<div class="mt seen">${t} · ✓✓ Seen${m.seenAt ? " " + fmtClock(m.seenAt) : ""}</div>`
+        : `<div class="mt">${t} · ✓ Sent</div>`;
+    } else {
+      tick = `<div class="mt">${t}</div>`;
+    }
+    const quote = m.replyTo
+      ? `<div class="quote"><b>${esc(m.replyTo.name)}</b>${esc(m.replyTo.text)}</div>` : "";
+    const ed = m.edited ? `<span class="ed">edited</span>` : "";
+    return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(m.name)}</small>${quote}<div>${esc(m.text)}${ed}</div>${rxHTML(m.reactions, uid)}${tick}</div>`;
+  }).join("");
+  $("msgs").scrollTop = $("msgs").scrollHeight;
+}
+
+// 14 ghante purane messages Firestore se delete karo (koi bhi phone khula ho to)
+function purgeOldMessages() {
+  if (!auth.currentUser) return;
+  const cutoff = Date.now() - CHAT_MS;
+  lastChatDocs.forEach(d => {
+    if (msgTime(d.data()) <= cutoff) {
+      deleteDoc(doc(db, "messages", d.id)).catch(e => console.error("purge", e));
+    }
+  });
+}
+setInterval(() => { purgeOldMessages(); renderMessages(); }, 60000);
 
 /* ---------- Reactions ---------- */
 function rxHTML(r = {}, uid) {
@@ -1041,8 +1106,7 @@ function updateUnread(docs) {
   const n = docs.filter(d => {
     const m = d.data();
     if (m.uid === uid) return false;
-    const t = m.createdAt?.toMillis?.() ?? Date.now();
-    return t > lastRead;
+    return msgTime(m) > lastRead;
   }).length;
   b.textContent = n > 99 ? "99+" : String(n);
   b.classList.toggle("hidden", n === 0);
@@ -1222,7 +1286,7 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Slideshow (auto + swipe + tap) ---------- */
+/* ---------- Fullscreen slideshow (auto + swipe + tap) ---------- */
 function ssRender(anim = true) {
   const p = photoList[ss.i];
   if (!p) return;
@@ -1240,10 +1304,9 @@ function ssRender(anim = true) {
 function ssStep(d) {
   const n = photoList.length;
   if (!n) return;
-  ss.i = (ss.i + d + n) % n;   // unlimited loop
+  ss.i = (ss.i + d + n) % n;
   ssRender();
 }
-// Swipe ke saath photo ek taraf nikal kar doosri taraf se aati hai
 function ssSwipeTo(d) {
   const st = $("ssStage");
   const w = innerWidth * 0.7;
@@ -1301,14 +1364,12 @@ function ssEnd() {
   ssDrag = null;
   const st = $("ssStage");
   if (moved && Math.abs(dx) > 60) {
-    // swipe: next ya prev, aur autoplay phir se chalu
     const d = dx < 0 ? 1 : -1;
     st.style.transform = `translateX(${dx}px)`;
     ssSwipeTo(d);
     ssPlay(true);
     return;
   }
-  // chhota drag ya tap
   st.style.transition = "transform .25s ease-out";
   st.style.transform = "translateX(0)";
   if (!moved) ssPlay(!ss.timer);   // tap = play/pause
@@ -1316,10 +1377,6 @@ function ssEnd() {
 }
 $("ss").addEventListener("pointerup", ssEnd);
 $("ss").addEventListener("pointercancel", ssEnd);
-
-/* Wire: touch/pointer pe ruk jaye, chhodne par chal jaye */
-$("wire").addEventListener("pointerdown", () => $("wire").classList.add("paused"));
-["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("wire").addEventListener(ev, () => $("wire").classList.remove("paused")));
 
 /* ---------- Shorts (horizontal, tap to play inside page) ---------- */
 $("shorts").innerHTML = SHORT_IDS.map((id, i) => `
@@ -1392,7 +1449,11 @@ function openPhotoZoom(e) {
     <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "photo", c.dataset.id);
 }
 $("board").onclick = openPhotoZoom;
-$("wire").onclick = openPhotoZoom;
+// wire par drag ke baad click ko ignore karo, sirf tap pe photo khule
+wire.addEventListener("click", e => {
+  if (wMoved) { wMoved = false; return; }
+  openPhotoZoom(e);
+});
 
 /* ---------- Image helpers ---------- */
 function compress(file, max = 800, quality = 0.7) {
@@ -1639,7 +1700,8 @@ $("chatForm").onsubmit = async e => {
   try {
     await addDoc(collection(db, "messages"), {
       text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false,
-      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {}
+      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {},
+      expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
     });
   } catch (err) { toast("Chat error: " + (err.code || err.message)); }
 };
