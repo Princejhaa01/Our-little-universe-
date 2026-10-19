@@ -19,7 +19,7 @@ body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow
 .clay{background:var(--cream);border-radius:32px;
   box-shadow:12px 12px 24px var(--sh),-10px -10px 20px #fff,inset 6px 6px 12px rgba(255,255,255,.8),inset -6px -6px 12px rgba(160,120,180,.12)}
 .btn{font-family:inherit;font-weight:600;font-size:16px;border:none;border-radius:22px;padding:12px 22px;cursor:pointer;color:var(--ink);
-  background:var(--pink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff,inset 3px 3px 6px rgba(255,255,255,.7);transition:transform .15s}
+  background:var(--pink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff,inset 3px 3px 6px rgba(255,255,255,.7);transition:transform .15s;text-decoration:none;display:inline-block}
 .btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(2px) scale(.98)}
 .btn.blue{background:var(--blue)}
 .btn.small{padding:6px 12px;font-size:14px;border-radius:14px}
@@ -41,6 +41,8 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
 /* Layout */
 #app{padding:90px 18px 40px;max-width:1100px;margin:auto}
 .fab{position:fixed;top:16px;right:16px;z-index:60}
+.badge{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#e5443a;color:#fff;
+  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 h2{font-family:Caveat,cursive;font-size:38px;margin:10px 0 12px}
 section{margin-bottom:60px}
 .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -70,7 +72,7 @@ section{margin-bottom:60px}
 @keyframes zin{from{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}to{transform:none;opacity:1}}
 @keyframes zout{from{transform:none;opacity:1}to{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}}
 .zx{position:absolute;top:10px;right:10px;z-index:2}
-.zimg,.zvid{width:100%;max-height:66vh;object-fit:contain;border-radius:18px;background:#000;display:block}
+.zimg{width:100%;max-height:66vh;object-fit:contain;border-radius:18px;background:#000;display:block}
 .zcap{font-family:Caveat,cursive;font-size:30px;text-align:center;margin-top:10px;line-height:1.1}
 .zmeta{font-size:14px;text-align:center;opacity:.65;margin-top:2px}
 .zacts{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
@@ -85,13 +87,15 @@ section{margin-bottom:60px}
 .dit-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:Caveat,cursive;font-size:26px;font-weight:700}
 .dit-head small{font-family:Fredoka,sans-serif;font-size:13px;font-weight:400;opacity:.7}
 .cdwrap{position:relative;margin-top:12px;padding-top:10px;border-top:2px dashed rgba(91,74,107,.2)}
-.xbtn{position:absolute;top:8px;right:0;width:30px;height:30px;border:none;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink);
+.xbtn{position:absolute;top:8px;right:0;width:30px;height:30px;border:none;border-radius:50%;cursor:pointer;font-size:16px;color:var(--ink);
   background:var(--pink);box-shadow:3px 3px 8px var(--sh),-2px -2px 6px #fff}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
 .cbox{background:#fff;border-radius:16px;padding:8px 2px;text-align:center;box-shadow:inset 3px 3px 6px rgba(0,0,0,.05),2px 2px 6px rgba(120,90,140,.15)}
 .cbox b{display:block;font-size:24px;font-family:Fredoka,sans-serif;color:#b5487a}
 .cbox small{font-size:11px;opacity:.7}
-.cdmsg{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;padding:6px 0}
+.cdmsg{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;padding:6px 0;grid-column:1/-1}
+.addev{margin-top:10px;padding-top:12px;border-top:2px dashed rgba(91,74,107,.2)}
+.addev h3{font-family:Caveat,cursive;font-size:24px;margin-bottom:8px}
 
 /* Scrapbook grid */
 .paper{background-color:#f6ecd9;background-image:radial-gradient(#d9c7a5 1.2px,transparent 1.3px);background-size:22px 22px;
@@ -132,16 +136,90 @@ section{margin-bottom:60px}
 .pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .tap-hint{text-align:center;font-size:13px;opacity:.6;margin-top:8px}
 
-/* Videos */
-.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 12px 24px;border-radius:28px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.strip>*{flex:0 0 calc((100% - (var(--n) - 1) * 14px - 24px) / var(--n));min-width:0;scroll-snap-align:start}
-.strip>.empty{flex:0 0 100%;text-align:center;padding:20px 0}
-.vault{background:linear-gradient(135deg,#f3e6ff,#e6f2ff);box-shadow:inset 6px 6px 14px rgba(120,90,160,.12),8px 8px 18px var(--sh)}
-.vcard{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#2b2236;cursor:pointer;box-shadow:0 8px 18px rgba(80,60,110,.25);transition:transform .2s}
-.vcard:active{transform:scale(.96)}
-.vcard video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.play{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:16px;color:#5b4a6b;padding-left:3px}
-.vcap{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-family:Caveat,cursive;font-size:19px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+/* Clothesline slideshow */
+.wire-scroll{overflow-x:auto;padding:6px 4px 26px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.wire{position:relative;display:flex;gap:22px;width:max-content;min-width:100%;padding:0 22px}
+.wire::before{content:"";position:absolute;left:0;right:0;top:12px;height:3px;background:#7d6d5a;border-radius:3px;box-shadow:0 2px 3px rgba(0,0,0,.15)}
+.hang{position:relative;width:150px;flex:0 0 auto;transform-origin:50% 0;animation:sway 3.6s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.hang .clip{width:16px;height:26px;margin:0 auto;border-radius:5px;background:linear-gradient(#ffd6e8,#ff8fb8);position:relative;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.hang .string{width:2px;height:12px;background:#8a7a6a;margin:0 auto}
+.hang .polaroid{--r:0deg}
+@keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+.wire-empty{padding:26px 0;text-align:center;width:100%}
+
+/* Slideshow fullscreen */
+.ss{position:fixed;inset:0;z-index:160;background:rgba(45,30,60,.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+.ss-wire{position:absolute;top:64px;left:0;right:0;height:3px;background:#d9c9ad;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.ss-hang{position:absolute;top:64px;left:50%;width:min(300px,80vw);margin-left:calc(min(300px,80vw) / -2);transform-origin:50% 0;
+  animation:sway 2.8s ease-in-out infinite alternate;animation-delay:.9s}
+.ss-hang.drop{animation:drop .7s cubic-bezier(.2,.8,.2,1) both,sway 2.8s ease-in-out .7s infinite alternate}
+@keyframes drop{from{translate:0 -110vh}to{translate:0 0}}
+.ss-clip{width:18px;height:28px;margin:0 auto;border-radius:6px;background:linear-gradient(#ffd6e8,#ff8fb8);position:relative;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.ss-str{width:2px;height:12px;background:#d9c9ad;margin:0 auto}
+.ss-card{background:#fff;padding:9px 9px 14px;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.ss-card img{width:100%;max-height:52vh;object-fit:contain;background:#f6f0e6;border-radius:4px;display:block}
+.ss-cap{font-family:Caveat,cursive;font-size:26px;text-align:center;margin-top:8px;line-height:1.1;color:#5b4a6b}
+.ss-meta{font-size:12px;text-align:center;opacity:.6;margin-top:2px;color:#5b4a6b}
+.ss-ctrl{position:absolute;bottom:34px;left:0;right:0;display:flex;justify-content:center;gap:14px}
+.ss-ctrl .btn{padding:12px 20px}
+.ss-x{position:absolute;top:14px;right:14px}
+.ss-count{position:absolute;top:18px;left:18px;color:#fff;font-family:Caveat,cursive;font-size:24px}
+
+/* Chat */
+.chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
+.chat.open{transform:translateX(0)}
+.chat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+.chat-head h3{font-family:Caveat,cursive;font-size:30px;line-height:1}
+.pstat{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.85;margin-top:4px}
+.dot{width:9px;height:9px;border-radius:50%;background:#bbb;flex:0 0 auto}
+.dot.on{background:#38c172;box-shadow:0 0 0 3px rgba(56,193,114,.25)}
+.moods{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.moods button{border:none;border-radius:14px;padding:4px 9px;font-size:12px;font-family:inherit;cursor:pointer;background:#fff;color:var(--ink);box-shadow:2px 2px 6px var(--sh)}
+.moods button.on{background:var(--pink);font-weight:600}
+#msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
+.msg{position:relative;max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh);
+  touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:pointer}
+.msg small{font-size:11px;opacity:.6}
+.msg.me{align-self:flex-end;background:var(--pink);border-radius:18px 18px 4px 18px}
+.mt{font-size:11px;text-align:right;opacity:.7;margin-top:4px}
+.mt.seen{color:#2f9e63;opacity:1;font-weight:600}
+.ed{font-size:10px;opacity:.6;margin-left:6px}
+.quote{background:rgba(255,255,255,.75);border-left:3px solid #b5487a;border-radius:8px;padding:4px 8px;margin:4px 0;font-size:12px;word-break:break-word}
+.quote b{display:block;color:#b5487a}
+.rx-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.rx{font-size:13px;background:#fff;border-radius:12px;padding:1px 7px;box-shadow:1px 2px 5px var(--sh);cursor:pointer}
+.rx.mine{outline:2px solid #ff8fb8}
+.typing-row{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;padding:4px 6px}
+.typing{display:inline-flex;gap:4px;background:#fff;padding:7px 10px;border-radius:14px;box-shadow:3px 3px 8px var(--sh)}
+.typing i{width:7px;height:7px;border-radius:50%;background:#b58ac9;animation:tdot 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.2s}
+.typing i:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.replybar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border-left:4px solid #ff8fb8;border-radius:12px;padding:8px 10px;margin-top:10px;font-size:13px}
+.replybar b{display:block;color:#b5487a}
+.replybar span{display:block;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+#chatForm{display:flex;gap:8px;margin-top:10px}
+#chatForm input{margin:0}
+
+/* In-app notification banner */
+.notif{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:250;background:#fff;border-radius:18px;padding:10px 16px;
+  box-shadow:0 10px 24px var(--sh);max-width:90vw;font-size:15px;animation:ndrop .3s ease both;cursor:pointer}
+@keyframes ndrop{from{transform:translate(-50%,-30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.notif b{color:#b5487a;margin-right:6px}
+.notif span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:70vw;vertical-align:bottom}
+
+/* Message menu */
+.menu-box{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;padding:20px;align-items:stretch}
+.menu-box .btn{width:100%}
+.rxpick{display:flex;justify-content:space-around;gap:4px;margin-bottom:6px}
+.rxpick button{font-size:24px;background:none;border:none;cursor:pointer;padding:4px;border-radius:50%}
+.rxpick button:active{transform:scale(1.2)}
+
+/* Collage */
+.colpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;max-height:50vh;overflow-y:auto}
+.colpick div{aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;opacity:.55;border:3px solid transparent}
+.colpick div.sel{opacity:1;border-color:#ff8fb8}
+.colpick img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* Modals */
 .modal{position:fixed;inset:0;background:rgba(60,40,80,.35);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
@@ -155,37 +233,6 @@ section{margin-bottom:60px}
 .dtext{background:#fff1a0;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:30px;min-height:120px}
 .dlabel{font-size:14px;opacity:.7;margin:4px 0 6px;text-align:left}
 input[type=date]{max-width:100%}
-.pbar{height:18px;border-radius:12px;background:#fff;box-shadow:inset 3px 3px 6px rgba(0,0,0,.08);overflow:hidden}
-#vBar{height:100%;width:0;background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:12px;transition:width .2s}
-
-/* Chat */
-.chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
-.chat.open{transform:translateX(0)}
-.chat-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
-.chat-head h3{font-family:Caveat,cursive;font-size:30px;line-height:1}
-.pstat{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.85;margin-top:4px}
-.dot{width:9px;height:9px;border-radius:50%;background:#bbb;flex:0 0 auto}
-.dot.on{background:#38c172;box-shadow:0 0 0 3px rgba(56,193,114,.25)}
-#msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
-.msg{position:relative;max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh);
-  touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.msg small{font-size:11px;opacity:.6}
-.msg.me{align-self:flex-end;background:var(--pink);border-radius:18px 18px 4px 18px}
-.mt{font-size:11px;text-align:right;opacity:.7;margin-top:4px}
-.mt.seen{color:#2f9e63;opacity:1;font-weight:600}
-.quote{background:rgba(255,255,255,.75);border-left:3px solid #b5487a;border-radius:8px;padding:4px 8px;margin:4px 0;font-size:12px;word-break:break-word}
-.quote b{display:block;color:#b5487a}
-.typing-row{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;padding:4px 6px}
-.typing{display:inline-flex;gap:4px;background:#fff;padding:7px 10px;border-radius:14px;box-shadow:3px 3px 8px var(--sh)}
-.typing i{width:7px;height:7px;border-radius:50%;background:#b58ac9;animation:tdot 1.2s infinite ease-in-out}
-.typing i:nth-child(2){animation-delay:.2s}
-.typing i:nth-child(3){animation-delay:.4s}
-@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.replybar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border-left:4px solid #ff8fb8;border-radius:12px;padding:8px 10px;margin-top:10px;font-size:13px}
-.replybar b{display:block;color:#b5487a}
-.replybar span{display:block;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
-#chatForm{display:flex;gap:8px;margin-top:10px}
-#chatForm input{margin:0}
 
 /* Toast */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 18px;border-radius:18px;box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center}
@@ -200,8 +247,9 @@ input[type=date]{max-width:100%}
   .htext h1{font-size:34px}
   .cd{gap:5px}
   .cbox b{font-size:20px}
+  .hang{width:130px}
 }
-@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char{animation:none}.page{transition:none}}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char,.hang,.ss-hang{animation:none}.page{transition:none}}
 </style>
 </head>
 <body>
@@ -230,7 +278,7 @@ input[type=date]{max-width:100%}
 
 <!-- MAIN APP -->
 <div id="app" class="hidden">
-  <button class="btn blue fab" id="chatBtn">💬 Chat</button>
+  <button class="btn blue fab" id="chatBtn">💬 Chat<span class="badge hidden" id="badge"></span></button>
 
   <header class="clay hero reveal" id="heroCard">
     <button class="btn small logout" id="logoutBtn">Logout</button>
@@ -243,39 +291,25 @@ input[type=date]{max-width:100%}
     <linearGradient id="cshirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdc55"/><stop offset=".6" stop-color="#f7b82a"/><stop offset="1" stop-color="#d98f12"/></linearGradient>
     <radialGradient id="cheart" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff8a7c"/><stop offset=".6" stop-color="#e5443a"/><stop offset="1" stop-color="#b52218"/></radialGradient>
   </defs>
-
-  <!-- resting arm (left) -->
   <path d="M20 180 Q14 130 44 116 Q56 122 62 140 L58 180 Z" fill="url(#cshirt)"/>
   <ellipse cx="72" cy="166" rx="18" ry="11" fill="url(#cskin)"/>
   <path d="M62 162 Q70 158 80 162" stroke="#c97a4a" stroke-width="1.5" fill="none" opacity=".5"/>
-
-  <!-- body / t-shirt -->
   <path d="M18 180 Q14 120 50 106 Q80 96 110 106 Q146 120 142 180 Z" fill="url(#cshirt)"/>
   <path d="M40 128 Q56 118 66 124" stroke="#fff3a0" stroke-width="5" fill="none" stroke-linecap="round" opacity=".5"/>
   <path d="M62 104 Q80 120 98 104 Q80 112 62 104Z" fill="#d98f12" opacity=".7"/>
-
-  <!-- neck -->
   <rect x="68" y="86" width="24" height="24" rx="10" fill="#e3a06c"/>
-
-  <!-- raised arm with thumbs-up (right) -->
   <path d="M108 110 Q130 112 134 140 L124 158 Q108 140 104 124Z" fill="url(#cshirt)"/>
   <path d="M126 150 Q134 130 132 104" stroke="url(#cskin)" stroke-width="17" fill="none" stroke-linecap="round"/>
   <ellipse cx="134" cy="92" rx="15" ry="15" fill="url(#cskin)"/>
   <rect x="128" y="58" width="13" height="30" rx="6.5" fill="url(#cskin)"/>
   <path d="M124 102 Q134 106 144 102" stroke="#c97a4a" stroke-width="1.5" fill="none" opacity=".5"/>
   <path d="M126 96 Q134 99 142 96" stroke="#c97a4a" stroke-width="1.2" fill="none" opacity=".4"/>
-
-  <!-- ears -->
   <circle cx="38" cy="62" r="10" fill="url(#cskin)"/>
   <circle cx="122" cy="62" r="10" fill="url(#cskin)"/>
   <circle cx="38" cy="62" r="4" fill="#d88f5c" opacity=".5"/>
   <circle cx="122" cy="62" r="4" fill="#d88f5c" opacity=".5"/>
-
-  <!-- head -->
   <ellipse cx="80" cy="60" rx="44" ry="42" fill="url(#cskin)"/>
   <ellipse cx="62" cy="36" rx="16" ry="8" fill="#fff3d6" opacity=".15"/>
-
-  <!-- hair (clay volume) -->
   <path d="M34 58 Q28 18 62 16 Q82 8 100 16 Q132 20 126 58 Q120 42 106 38 Q92 46 78 36 Q60 42 50 38 Q38 44 34 58Z" fill="url(#chair)"/>
   <circle cx="50" cy="28" r="9" fill="url(#chair)"/>
   <circle cx="72" cy="20" r="8" fill="url(#chair)"/>
@@ -284,29 +318,17 @@ input[type=date]{max-width:100%}
   <ellipse cx="104" cy="20" rx="6" ry="3" fill="#f09a70" opacity=".5"/>
   <path d="M36 50 Q32 66 40 74 Q40 60 46 52Z" fill="url(#chair)"/>
   <path d="M124 50 Q128 66 120 74 Q120 60 114 52Z" fill="url(#chair)"/>
-
-  <!-- eyebrows -->
   <path d="M56 46 Q64 40 72 46" stroke="#7a2e18" stroke-width="4" fill="none" stroke-linecap="round"/>
   <path d="M88 46 Q96 40 104 46" stroke="#7a2e18" stroke-width="4" fill="none" stroke-linecap="round"/>
-
-  <!-- eyes -->
   <circle cx="64" cy="60" r="5.5" fill="#2a1d14"/>
   <circle cx="96" cy="60" r="5.5" fill="#2a1d14"/>
   <circle cx="66" cy="58" r="1.8" fill="#fff"/>
   <circle cx="98" cy="58" r="1.8" fill="#fff"/>
-
-  <!-- nose -->
   <ellipse cx="80" cy="72" rx="5" ry="4" fill="#e09464"/>
   <ellipse cx="78.5" cy="70.5" rx="1.5" ry="1" fill="#fff2dc" opacity=".7"/>
-
-  <!-- smile -->
   <path d="M68 84 Q80 94 92 84" stroke="#8a3c20" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-
-  <!-- cheeks -->
   <circle cx="54" cy="78" r="6" fill="#ff9a9a" opacity=".45"/>
   <circle cx="106" cy="78" r="6" fill="#ff9a9a" opacity=".45"/>
-
-  <!-- red clay heart -->
   <g transform="translate(134 26) scale(1.3)">
     <path d="M0 6 C-8 0 -14 -4 -14 -9 C-14 -15 -6 -16 0 -9 C6 -16 14 -15 14 -9 C14 -4 8 0 0 6Z" fill="url(#cheart)"/>
     <ellipse cx="-7" cy="-10" rx="2.5" ry="1.5" fill="#fff" opacity=".6"/>
@@ -345,7 +367,10 @@ input[type=date]{max-width:100%}
   <section>
     <div class="sec-head">
       <h2 class="reveal">📸 Our Scrapbook</h2>
-      <button class="btn small reveal" id="addPhoto">+ Add photo</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn small reveal" id="collageBtn">🧩 Collage</button>
+        <button class="btn small reveal" id="addPhoto">+ Add photo</button>
+      </div>
     </div>
     <p class="swipe-hint">Ek row me 3 photos · photo tap karke bada dekho</p>
     <div class="board-grid paper reveal" id="board"></div>
@@ -373,11 +398,13 @@ input[type=date]{max-width:100%}
 
   <section>
     <div class="sec-head">
-      <h2 class="reveal">🎬 Our Videos</h2>
-      <button class="btn small reveal" id="addVideo">+ Add video</button>
+      <h2 class="reveal">🎞️ Our Slideshow</h2>
+      <button class="btn small reveal" id="ssOpen">▶ Slideshow chalao</button>
     </div>
-    <p class="swipe-hint">← swipe karo · video tap karke play karo →</p>
-    <div class="strip vault reveal" id="videos" style="--n:4"></div>
+    <p class="swipe-hint">Scrapbook ki photos wire par latki hain · photo tap karke bada dekho</p>
+    <div class="wire-scroll reveal">
+      <div class="wire" id="wire"></div>
+    </div>
   </section>
 
   <aside class="clay chat" id="chat">
@@ -385,6 +412,12 @@ input[type=date]{max-width:100%}
       <div>
         <h3>our chat 💌</h3>
         <div class="pstat"><span class="dot" id="pDot"></span><span id="pStat">Partner ka status…</span></div>
+        <div class="moods" id="moods">
+          <button data-mood="happy">😊 Happy</button>
+          <button data-mood="tired">🥱 Tired</button>
+          <button data-mood="missing">🥺 Missing you</button>
+          <button data-mood="busy">💪 Busy</button>
+        </div>
       </div>
       <button class="btn small" id="chatClose">✖</button>
     </div>
@@ -404,16 +437,63 @@ input[type=date]{max-width:100%}
   </aside>
 </div>
 
-<!-- DATES OVERLAY (hero expanded) -->
+<!-- IN-APP NOTIFICATION -->
+<div class="notif hidden" id="notif"><b id="ntName"></b><span id="ntText"></span></div>
+
+<!-- MESSAGE MENU -->
+<div class="modal hidden" id="menu">
+  <div class="clay menu-box">
+    <div class="rxpick">
+      <button data-e="❤️">❤️</button>
+      <button data-e="😂">😂</button>
+      <button data-e="👍">👍</button>
+      <button data-e="😮">😮</button>
+      <button data-e="😢">😢</button>
+    </div>
+    <button class="btn" data-act="reply">↩ Reply</button>
+    <button class="btn blue" data-act="edit" id="menuEdit">✏️ Edit</button>
+    <button class="btn" data-act="del" id="menuDel">🗑️ Delete</button>
+    <button class="btn small" data-act="close">Band karo</button>
+  </div>
+</div>
+
+<!-- SLIDESHOW (fullscreen) -->
+<div class="ss hidden" id="ss">
+  <div class="ss-count" id="ssCount"></div>
+  <button class="btn small ss-x" id="ssClose">✖</button>
+  <div class="ss-wire"></div>
+  <div class="ss-hang" id="ssHang">
+    <div class="ss-clip"></div>
+    <div class="ss-str"></div>
+    <div class="ss-card">
+      <img id="ssImg" alt="">
+      <div class="ss-cap" id="ssCap"></div>
+      <div class="ss-meta" id="ssMeta"></div>
+    </div>
+  </div>
+  <div class="ss-ctrl">
+    <button class="btn" id="ssPrev">‹</button>
+    <button class="btn blue" id="ssPlay">⏸</button>
+    <button class="btn" id="ssNext">›</button>
+  </div>
+</div>
+
+<!-- DATES OVERLAY (hero expanded + custom events) -->
 <div class="zoom hidden" id="hbig">
   <div class="zbox dbox clay" id="hbox">
     <button class="btn small zx" id="hbClose">✖</button>
     <h2>Our Dates 💖</h2>
     <div id="hbItems"></div>
+    <div class="addev">
+      <h3>⭐ Naya custom event</h3>
+      <input id="evName" placeholder="Event ka naam (jaise: Our first trip ✈️)">
+      <input type="date" id="evDate">
+      <div class="mbtns"><button class="btn small blue" id="evSave">Save ⭐</button></div>
+    </div>
   </div>
 </div>
 
-<!-- ZOOM OVERLAY (photo/video) -->
+<!-- ZOOM OVERLAY (photo) -->
 <div class="zoom hidden" id="zoom">
   <div class="zbox" id="zoomBox">
     <button class="btn small zx" id="zClose">✖</button>
@@ -455,22 +535,17 @@ input[type=date]{max-width:100%}
   </div>
 </div>
 
-<!-- VIDEO MODAL -->
-<div class="modal hidden" id="videoModal">
+<!-- COLLAGE MODAL -->
+<div class="modal hidden" id="collageModal">
   <div class="clay">
-    <h2 id="vTitle">Nayi video 🎬</h2>
-    <input type="file" id="vFile" accept="video/*">
-    <div id="vInfo" class="meta" style="margin-bottom:10px"></div>
-    <input id="vCaption" placeholder="Caption (jaise: Our trip 🎥)">
-    <input type="date" id="vDate">
-    <div id="vProgWrap" class="hidden" style="margin-bottom:12px">
-      <div class="pbar"><div id="vBar"></div></div>
-      <div id="vPct" class="meta" style="margin-top:6px"></div>
-    </div>
-    <div id="vStatus" class="err"></div>
+    <h2>Photo Collage 🧩</h2>
+    <p class="meta" style="margin-bottom:10px">1 se 4 photos chuno (tap karke)</p>
+    <div class="colpick" id="colPick"></div>
+    <div id="colOut" class="hidden"><img id="colImg" alt="" style="width:100%;border-radius:16px;display:block;margin-bottom:12px"></div>
     <div class="mbtns">
-      <button class="btn small" id="vCancel">Cancel</button>
-      <button class="btn small blue" id="vSave">Save 🎬</button>
+      <button class="btn small" id="colCancel">Band karo</button>
+      <button class="btn small blue" id="colMake">Collage banao 🧩</button>
+      <a class="btn small hidden" id="colDl" download="our-collage.jpg">Download ⬇️</a>
     </div>
   </div>
 </div>
@@ -479,7 +554,6 @@ input[type=date]{max-width:100%}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiKgwAqCptCiWh3xG2DgIRdnOy9dlt3Ww",
@@ -494,22 +568,24 @@ const firebaseConfig = {
 const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
-const MAX_VIDEO = 40 * 1024 * 1024;
 const ONLINE_WINDOW = 75000;
+const SLIDE_MS = 3500;
+const NOTIF_MS = 1000;          // banner kitni der dikhe (ms)
+const LAST_KEY = "ou_lastRead";
+const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
-const storage = getStorage(app);
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today = () => new Date().toISOString().slice(0, 10);
-const photosOf = m => Array.isArray(m?.srcs) ? m.srcs : (m?.src ? [m.src] : []);
 const emailKey = e => String(e).replace(/[^a-z0-9]/gi, "_");
 const fmtTime = t => new Date(t).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+const fmtDay = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 const firstName = u => (u?.displayName || "Me").split(" ")[0];
 
 function toast(msg) {
@@ -523,16 +599,19 @@ function toast(msg) {
 let gatePassed = false, listening = false;
 let photoEditId = null, photoSrc = null;
 let diaryEditId = null, diaryPhotos = [null, null], pendingGoLast = false;
-let videoEditId = null, videoFile = null, uploading = false;
 let zoomRect = null, zoomState = {};
 let entries = [], cur = 0;
-let lastChatDocs = [], msgMap = new Map(), lastPartner = null, presenceTimer = null;
-let typingOn = false, typingTimer = null, replyTarget = null;
-const photoMap = new Map(), videoMap = new Map();
+let lastChatDocs = [], msgMap = new Map(), initialMsgLoad = true, chatOpen = false;
+let lastPartner = null, myPresence = null, presenceTimer = null;
+let typingOn = false, typingTimer = null, replyTarget = null, editingId = null, menuId = null;
+let customEvents = [], cdItems = new Map(), openSet = new Set();
+let photoList = [];
+const ss = { i: 0, timer: null };
+const photoMap = new Map();
+let lastRead = Number(localStorage.getItem(LAST_KEY));
+if (!lastRead) { lastRead = Date.now(); localStorage.setItem(LAST_KEY, String(lastRead)); }
 
 /* ---------- Back button = ek layer back ---------- */
-// Har overlay/modal/chat khulne par history me entry banti hai.
-// Back dabane par sirf sabse upar wali layer band hoti hai.
 const layers = [];
 const hasLayer = n => layers.some(l => l.name === n);
 function openLayer(name, close, replace = false) {
@@ -544,7 +623,7 @@ function openLayer(name, close, replace = false) {
 function dismissLayer(name) {
   const i = layers.findIndex(l => l.name === name);
   if (i < 0) return;
-  if (i === layers.length - 1) history.back();          // popstate handler band karega
+  if (i === layers.length - 1) history.back();
   else { layers[i].close(); layers.splice(i, 1); }
 }
 addEventListener("popstate", () => {
@@ -602,7 +681,7 @@ onAuthStateChanged(auth, () => showScreen());
 
 $("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
 
-/* ---------- Presence (active / last seen) + typing ---------- */
+/* ---------- Presence, typing, mood ---------- */
 async function setPresence(online) {
   const u = auth.currentUser;
   if (!u) return;
@@ -611,15 +690,26 @@ async function setPresence(online) {
       { email: u.email, name: firstName(u), online, updatedAt: Date.now() }, { merge: true });
   } catch (e) { console.error("presence", e); }
 }
-
 async function setTyping(on) {
   const u = auth.currentUser;
   if (!u) return;
   try {
-    await setDoc(doc(db, "presence", emailKey(u.email)),
-      { typing: on, typingAt: Date.now() }, { merge: true });
+    await setDoc(doc(db, "presence", emailKey(u.email)), { typing: on, typingAt: Date.now() }, { merge: true });
   } catch (e) { console.error("typing", e); }
 }
+async function setMood(k) {
+  const u = auth.currentUser;
+  if (!u) return;
+  try {
+    await setDoc(doc(db, "presence", emailKey(u.email)), { mood: k, moodAt: Date.now() }, { merge: true });
+  } catch (e) { toast("Mood error: " + (e.code || e.message)); }
+}
+$("moods").onclick = e => {
+  const b = e.target.closest("[data-mood]");
+  if (!b) return;
+  const k = b.dataset.mood;
+  setMood(myPresence?.mood === k ? null : k);
+};
 
 function startPresence() {
   if (presenceTimer) return;
@@ -634,28 +724,38 @@ function startPresence() {
     lastPartner = snap.data() || null;
     renderPresence();
   }, e => console.error("partner presence", e));
+  onSnapshot(doc(db, "presence", emailKey(me)), snap => {
+    myPresence = snap.data() || null;
+    renderMoods();
+  }, e => console.error("my presence", e));
   setInterval(renderPresence, 2000);
+}
+
+function renderMoods() {
+  const cur = myPresence?.mood;
+  document.querySelectorAll("#moods button").forEach(b => b.classList.toggle("on", b.dataset.mood === cur));
 }
 
 function renderPresence() {
   const p = lastPartner;
   const name = p?.name || "Partner";
   const active = !!p?.online && Date.now() - (p.updatedAt || 0) < ONLINE_WINDOW;
+  const mood = p?.mood && MOODS[p.mood] ? ` · ${MOODS[p.mood]}` : "";
   $("pDot").classList.toggle("on", active);
   $("pStat").textContent = !p ? `${name} · abhi tak online nahi hue`
-    : active ? `${name} · Active now 🟢`
-    : `${name} · Last seen ${fmtTime(p.updatedAt)}`;
+    : active ? `${name}${mood} · Active now 🟢`
+    : `${name}${mood} · Last seen ${fmtTime(p.updatedAt)}`;
 
   const typingNow = !!p?.typing && Date.now() - (p.typingAt || 0) < 5000;
   $("typingRow").classList.toggle("hidden", !typingNow);
   $("typingName").textContent = `${name} type kar rahe/rahi hain…`;
 }
 
-/* ---------- Dates + countdowns ---------- */
+/* ---------- Dates + countdowns + custom events ---------- */
 const EVENTS = [
-  { k: "ann",    title: "💞 Anniversary",       sub: "04-03-26", m: 3,  d: 4,  cls: "c1" },
-  { k: "antra",  title: "🎂 Antra ka Birthday", sub: "17 Oct",   m: 10, d: 17, cls: "c2" },
-  { k: "prince", title: "🎁 Prince ka Birthday", sub: "30 Jan",  m: 1,  d: 30, cls: "c3" }
+  { k: "ann",    title: "💞 Anniversary",        sub: "04-03-26", m: 3,  d: 4,  cls: "c1", label: "Anniversary" },
+  { k: "antra",  title: "🎂 Antra ka Birthday",  sub: "17 Oct",   m: 10, d: 17, cls: "c2", label: "Birthday" },
+  { k: "prince", title: "🎁 Prince ka Birthday", sub: "30 Jan",   m: 1,  d: 30, cls: "c3", label: "Birthday" }
 ];
 function nextOccur(m, d) {
   const now = new Date();
@@ -667,55 +767,84 @@ function isToday(m, d) {
   const n = new Date();
   return n.getMonth() + 1 === m && n.getDate() === d;
 }
-const openSet = new Set();
+
+function buildItems() {
+  const list = EVENTS.map(ev => ({
+    key: ev.k, title: ev.title, sub: ev.sub, cls: ev.cls, label: ev.label, custom: null,
+    t: () => nextOccur(ev.m, ev.d), today: () => isToday(ev.m, ev.d)
+  }));
+  customEvents.forEach((ev, i) => list.push({
+    key: "c_" + ev.id, title: "⭐ " + ev.title, sub: fmtDay(ev.date), cls: ["c1", "c2", "c3"][i % 3], label: "Event", custom: ev.id,
+    t: () => new Date(ev.date + "T00:00:00"), today: () => ev.date === today()
+  }));
+  return list;
+}
 
 function renderDates() {
-  $("hbItems").innerHTML = EVENTS.map(ev => `
-    <div class="ditem ${ev.cls}" data-k="${ev.k}">
-      <div class="dit-head"><span>${ev.title}</span><small>${ev.sub}</small></div>
-      <div class="cdwrap ${openSet.has(ev.k) ? "" : "hidden"}">
-        <button class="xbtn" data-x="${ev.k}" title="Band karo">×</button>
-        <div class="cd" data-cd="${ev.k}"></div>
+  const items = buildItems();
+  cdItems = new Map(items.map(it => [it.key, it]));
+  $("hbItems").innerHTML = items.map(it => `
+    <div class="ditem ${it.cls}" data-k="${it.key}">
+      <div class="dit-head"><span>${esc(it.title)}</span><small>${esc(it.sub)}</small></div>
+      <div class="cdwrap ${openSet.has(it.key) ? "" : "hidden"}">
+        ${it.custom
+          ? `<button class="xbtn evdel" data-evdel="${it.custom}" title="Event delete">🗑</button>`
+          : `<button class="xbtn" title="Band karo">×</button>`}
+        <div class="cd" data-cd="${it.key}"></div>
       </div>
     </div>`).join("");
   tickCd();
 }
 
+function cdHTML(it) {
+  if (it.today()) return `<div class="cdmsg">Aaj hai! 🎉 ${esc(it.label)} 💖</div>`;
+  const diff = it.t() - Date.now();
+  if (diff < 0) return `<div class="cdmsg">Ho gaya 💫</div>`;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff % 86400000 / 3600000);
+  const mi = Math.floor(diff % 3600000 / 60000);
+  const s = Math.floor(diff % 60000 / 1000);
+  return [[d, "din"], [h, "ghante"], [mi, "min"], [s, "sec"]]
+    .map(([v, l]) => `<div class="cbox"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></div>`).join("");
+}
+
 function tickCd() {
-  EVENTS.forEach(ev => {
-    const el = document.querySelector(`[data-cd="${ev.k}"]`);
-    if (!el) return;
-    if (isToday(ev.m, ev.d)) {
-      el.outerHTML = `<div class="cdmsg" data-cd="${ev.k}">Aaj hai! 🎉 Happy ${ev.k === "ann" ? "Anniversary" : "Birthday"} 💖</div>`;
-      return;
-    }
-    const diff = nextOccur(ev.m, ev.d) - Date.now();
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor(diff % 86400000 / 3600000);
-    const mi = Math.floor(diff % 3600000 / 60000);
-    const s = Math.floor(diff % 60000 / 1000);
-    const parts = [[d, "din"], [h, "ghante"], [mi, "min"], [s, "sec"]];
-    if (el.classList.contains("cdmsg")) {
-      el.outerHTML = `<div class="cd" data-cd="${ev.k}"></div>`;
-    }
-    const cur = document.querySelector(`[data-cd="${ev.k}"]`);
-    cur.innerHTML = parts.map(([v, l]) => `<div class="cbox"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></div>`).join("");
+  document.querySelectorAll("[data-cd]").forEach(el => {
+    const it = cdItems.get(el.dataset.cd);
+    if (it) el.innerHTML = cdHTML(it);
   });
 }
 setInterval(() => { if (!$("hbig").classList.contains("hidden")) tickCd(); }, 1000);
 
-$("hbItems").onclick = e => {
-  const x = e.target.closest(".xbtn");
+$("hbItems").onclick = async e => {
+  const del = e.target.closest(".evdel");
+  if (del) {
+    e.stopPropagation();
+    if (!confirm("Ye event delete karein?")) return;
+    try { await deleteDoc(doc(db, "events", del.dataset.evdel)); toast("Event delete ho gaya"); }
+    catch (err) { toast("Error: " + (err.code || err.message)); }
+    return;
+  }
   const it = e.target.closest(".ditem");
   if (!it) return;
   const k = it.dataset.k;
-  if (x) openSet.delete(k);
+  if (e.target.closest(".xbtn")) openSet.delete(k);
   else openSet.has(k) ? openSet.delete(k) : openSet.add(k);
   it.querySelector(".cdwrap").classList.toggle("hidden", !openSet.has(k));
   tickCd();
 };
 
-const closeHeroVis = () => {
+$("evSave").onclick = async () => {
+  const title = $("evName").value.trim(), date = $("evDate").value;
+  if (!title || !date) return toast("Naam aur date dono daalo ⭐");
+  try {
+    await addDoc(collection(db, "events"), { title, date, createdAt: serverTimestamp() });
+    $("evName").value = "";
+    toast("Event save ho gaya ⭐");
+  } catch (err) { toast("Error: " + (err.code || err.message)); }
+};
+
+function closeHeroVis() {
   const box = $("hbox");
   box.classList.remove("zin");
   box.classList.add("zout");
@@ -723,7 +852,7 @@ const closeHeroVis = () => {
     $("hbig").classList.add("hidden");
     box.classList.remove("zout");
   }, 400);
-};
+}
 function openHero() {
   const r = $("heroCard").getBoundingClientRect();
   const box = $("hbox");
@@ -751,15 +880,33 @@ function startListeners() {
 
   onSnapshot(query(collection(db, "photos"), orderBy("createdAt", "desc")), snap => {
     photoMap.clear();
-    snap.docs.forEach(d => photoMap.set(d.id, d.data()));
-    $("board").innerHTML = snap.docs.length ? snap.docs.map((d, i) => {
-      const m = d.data(), r = ((i % 3) - 1) * 1.2;
-      return `<div class="polaroid" data-id="${d.id}" style="--r:${r}deg">
+    photoList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    photoList.forEach(p => photoMap.set(p.id, p));
+
+    $("board").innerHTML = photoList.length ? photoList.map((m, i) => {
+      const r = ((i % 3) - 1) * 1.2;
+      return `<div class="polaroid" data-id="${m.id}" style="--r:${r}deg">
         <span class="tape"></span>
         <img src="${m.src}" alt="" loading="lazy">
         <div class="cap">${esc(m.caption)}</div>
         <div class="meta">${esc(m.date)}</div></div>`;
     }).join("") : `<p class="empty">Abhi koi photo nahi… pehli yaad add karo 📸</p>`;
+
+    $("wire").innerHTML = photoList.length ? photoList.map((m, i) => `
+      <div class="hang" style="--d:${-((i % 4) * 0.7)}s">
+        <div class="clip"></div>
+        <div class="string"></div>
+        <div class="polaroid" data-id="${m.id}">
+          <img src="${m.src}" alt="" loading="lazy">
+          <div class="cap">${esc(m.caption)}</div>
+          <div class="meta">${esc(m.date)}</div>
+        </div>
+      </div>`).join("") : `<div class="wire-empty">Abhi koi photo nahi… scrapbook me photo add karo, yahan latkegi 🧺</div>`;
+
+    if (!$("ss").classList.contains("hidden")) {
+      if (ss.i >= photoList.length) ss.i = 0;
+      ssRender(false);
+    }
   }, onErr("Photos"));
 
   onSnapshot(query(collection(db, "diary"), orderBy("createdAt", "asc")), snap => {
@@ -768,17 +915,10 @@ function startListeners() {
     renderBook();
   }, onErr("Diary"));
 
-  onSnapshot(query(collection(db, "videos"), orderBy("createdAt", "desc")), snap => {
-    videoMap.clear();
-    snap.docs.forEach(d => videoMap.set(d.id, d.data()));
-    $("videos").innerHTML = snap.docs.length ? snap.docs.map(d => {
-      const m = d.data();
-      return `<div class="vcard" data-id="${d.id}">
-        <video src="${esc(m.url)}#t=0.5" muted playsinline preload="metadata"></video>
-        <span class="play">▶</span>
-        <div class="vcap">${esc(m.caption || m.date)}</div></div>`;
-    }).join("") : `<p class="empty">Abhi koi video nahi… pehli video add karo 🎬</p>`;
-  }, onErr("Videos"));
+  onSnapshot(query(collection(db, "events"), orderBy("date", "asc")), snap => {
+    customEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!$("hbig").classList.contains("hidden")) renderDates();
+  }, onErr("Events"));
 
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
@@ -795,16 +935,46 @@ function startListeners() {
       }
       const quote = m.replyTo
         ? `<div class="quote"><b>${esc(m.replyTo.name)}</b>${esc(m.replyTo.text)}</div>` : "";
-      return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(m.name)}</small>${quote}<div>${esc(m.text)}</div>${tick}</div>`;
+      const ed = m.edited ? `<span class="ed">edited</span>` : "";
+      return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(m.name)}</small>${quote}<div>${esc(m.text)}${ed}</div>${rxHTML(m.reactions, uid)}${tick}</div>`;
     }).join("");
     $("msgs").scrollTop = $("msgs").scrollHeight;
+
+    if (!initialMsgLoad) {
+      snap.docChanges().forEach(ch => {
+        if (ch.type !== "added") return;
+        const m = ch.doc.data();
+        if (m.uid !== uid && !chatOpen) showBanner(m);
+      });
+    }
+    initialMsgLoad = false;
+    if (chatOpen) markRead();
+    updateUnread(snap.docs);
     markSeen();
   }, onErr("Chat"));
 }
 
-/* ---------- Seen (read receipts) ---------- */
+/* ---------- Reactions ---------- */
+function rxHTML(r = {}, uid) {
+  const counts = {};
+  Object.values(r).forEach(e => counts[e] = (counts[e] || 0) + 1);
+  const chips = Object.entries(counts).map(([e, c]) =>
+    `<span class="rx ${r[uid] === e ? "mine" : ""}" data-rx="${e}">${e}${c > 1 ? " " + c : ""}</span>`).join("");
+  return chips ? `<div class="rx-row">${chips}</div>` : "";
+}
+async function react(id, emoji) {
+  const u = auth.currentUser, m = msgMap.get(id);
+  if (!m || !u) return;
+  const r = { ...(m.reactions || {}) };
+  if (r[u.uid] === emoji) delete r[u.uid];
+  else r[u.uid] = emoji;
+  try { await updateDoc(doc(db, "messages", id), { reactions: r }); }
+  catch (err) { toast("Reaction error: " + (err.code || err.message)); }
+}
+
+/* ---------- Seen ---------- */
 function markSeen() {
-  if (!$("chat").classList.contains("open")) return;
+  if (!chatOpen) return;
   const uid = auth.currentUser?.uid;
   lastChatDocs.forEach(d => {
     const m = d.data();
@@ -815,25 +985,105 @@ function markSeen() {
   });
 }
 
-/* ---------- Swipe right = reply ---------- */
+/* ---------- Unread badge + in-app banner ---------- */
+function updateUnread(docs) {
+  const b = $("badge");
+  if (chatOpen) { b.classList.add("hidden"); return; }
+  const uid = auth.currentUser?.uid;
+  const n = docs.filter(d => {
+    const m = d.data();
+    if (m.uid === uid) return false;
+    const t = m.createdAt?.toMillis?.() ?? Date.now();
+    return t > lastRead;
+  }).length;
+  b.textContent = n > 99 ? "99+" : String(n);
+  b.classList.toggle("hidden", n === 0);
+}
+function markRead() {
+  lastRead = Date.now();
+  localStorage.setItem(LAST_KEY, String(lastRead));
+  $("badge").classList.add("hidden");
+}
+let notifT = null;
+function showBanner(m) {
+  $("ntName").textContent = m.name + ":";
+  $("ntText").textContent = m.text;
+  const n = $("notif");
+  n.classList.remove("hidden");
+  clearTimeout(notifT);
+  notifT = setTimeout(() => n.classList.add("hidden"), NOTIF_MS);
+}
+$("notif").onclick = () => { $("notif").classList.add("hidden"); openChat(); };
+
+/* ---------- Swipe right = reply, tap = menu ---------- */
 function setReply(id) {
   const m = msgMap.get(id);
   if (!m) return;
+  editingId = null;
   replyTarget = { name: m.name, text: (m.text || "").slice(0, 80) };
   $("rbName").textContent = `↩ ${m.name}`;
   $("rbText").textContent = replyTarget.text;
   $("replyBar").classList.remove("hidden");
   $("chatIn").focus();
 }
+function startEdit(id) {
+  const m = msgMap.get(id);
+  if (!m) return;
+  editingId = id;
+  replyTarget = null;
+  $("rbName").textContent = "✏️ Message edit karo";
+  $("rbText").textContent = (m.text || "").slice(0, 80);
+  $("replyBar").classList.remove("hidden");
+  $("chatIn").value = m.text || "";
+  $("chatIn").focus();
+}
 function clearReply() {
   replyTarget = null;
+  editingId = null;
   $("replyBar").classList.add("hidden");
 }
-$("rbClose").onclick = clearReply;
+$("rbClose").onclick = () => {
+  if (editingId) $("chatIn").value = "";
+  clearReply();
+};
+
+function openMenu(id) {
+  const m = msgMap.get(id);
+  if (!m) return;
+  const mine = m.uid === auth.currentUser?.uid;
+  menuId = id;
+  $("menuEdit").classList.toggle("hidden", !mine);
+  $("menuDel").classList.toggle("hidden", !mine);
+  $("menu").classList.remove("hidden");
+  openLayer("menu", closeMenuVis);
+}
+function closeMenuVis() { $("menu").classList.add("hidden"); }
+
+$("menu").onclick = async e => {
+  if (e.target.id === "menu") return dismissLayer("menu");
+  const rx = e.target.closest("[data-e]");
+  if (rx) {
+    const id = menuId;
+    dismissLayer("menu");
+    react(id, rx.dataset.e);
+    return;
+  }
+  const act = e.target.closest("[data-act]");
+  if (!act) return;
+  const id = menuId, a = act.dataset.act;
+  dismissLayer("menu");
+  if (a === "reply") setReply(id);
+  if (a === "edit") { openChat(); startEdit(id); }
+  if (a === "del" && confirm("Ye message delete karein?")) {
+    try { await deleteDoc(doc(db, "messages", id)); }
+    catch (err) { toast("Error: " + (err.code || err.message)); }
+  }
+};
 
 let sw = null;
 const msgsEl = $("msgs");
 msgsEl.addEventListener("pointerdown", e => {
+  if (e.target.closest(".rx")) { sw = null; return; }
   const el = e.target.closest(".msg");
   if (!el) return;
   sw = { el, id: el.dataset.id, x: e.clientX, y: e.clientY, dx: 0, locked: false };
@@ -842,24 +1092,32 @@ msgsEl.addEventListener("pointerdown", e => {
 msgsEl.addEventListener("pointermove", e => {
   if (!sw) return;
   const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
-  if (!sw.locked && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; } // scroll
+  if (!sw.locked && Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; }
   if (Math.abs(dx) > 8) sw.locked = true;
   if (sw.locked && dx > 0) {
     sw.dx = Math.min(dx, 90);
     sw.el.style.transform = `translateX(${sw.dx}px)`;
   }
 });
-const endSwipe = () => {
+function endSwipe(e) {
   if (!sw) return;
-  const { el, id, dx } = sw;
+  const { el, id, dx, x, y } = sw;
   sw = null;
   el.style.transition = "transform .2s";
   el.style.transform = "";
   setTimeout(() => { el.style.transition = ""; }, 200);
+  const moved = Math.abs(e.clientX - x) > 8 || Math.abs(e.clientY - y) > 8;
   if (dx > 60) setReply(id);
-};
+  else if (!moved) openMenu(id);
+}
 msgsEl.addEventListener("pointerup", endSwipe);
 msgsEl.addEventListener("pointercancel", endSwipe);
+msgsEl.addEventListener("click", e => {
+  const rx = e.target.closest(".rx");
+  if (!rx) return;
+  const msg = rx.closest(".msg");
+  if (msg) react(msg.dataset.id, rx.dataset.rx);
+});
 
 /* ---------- Retro diary book ---------- */
 function renderBook() {
@@ -873,7 +1131,7 @@ function renderBook() {
   }
   cur = Math.min(cur, entries.length - 1);
   book.innerHTML = entries.map(m => {
-    const ps = photosOf(m);
+    const ps = Array.isArray(m?.srcs) ? m.srcs : (m?.src ? [m.src] : []);
     return `<div class="page">
       <div class="pdate">${esc(m.date)}</div>
       ${ps.length ? `<div class="pphotos">${ps.map(s => `<img src="${s}" alt="">`).join("")}</div>` : ""}
@@ -916,7 +1174,51 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Zoom (photo/video) ---------- */
+/* ---------- Slideshow ---------- */
+function ssRender(anim = true) {
+  const p = photoList[ss.i];
+  if (!p) return;
+  $("ssImg").src = p.src;
+  $("ssCap").textContent = p.caption || "";
+  $("ssMeta").textContent = p.date || "";
+  $("ssCount").textContent = `${ss.i + 1} / ${photoList.length}`;
+  if (anim) {
+    const h = $("ssHang");
+    h.classList.remove("drop");
+    void h.offsetWidth;
+    h.classList.add("drop");
+  }
+}
+function ssStep(d) {
+  const n = photoList.length;
+  if (!n) return;
+  ss.i = (ss.i + d + n) % n;
+  ssRender();
+}
+function ssPlay(on) {
+  clearInterval(ss.timer);
+  ss.timer = on ? setInterval(() => ssStep(1), SLIDE_MS) : null;
+  $("ssPlay").textContent = on ? "⏸" : "▶";
+}
+function closeSlideshowVis() {
+  clearInterval(ss.timer); ss.timer = null;
+  $("ss").classList.add("hidden");
+}
+function openSlideshow() {
+  if (!photoList.length) return toast("Pehle scrapbook me photo add karo 📸");
+  ss.i = 0;
+  $("ss").classList.remove("hidden");
+  ssRender();
+  ssPlay(true);
+  openLayer("ss", closeSlideshowVis);
+}
+$("ssOpen").onclick = openSlideshow;
+$("ssClose").onclick = () => dismissLayer("ss");
+$("ssPrev").onclick = () => { ssStep(-1); if (ss.timer) ssPlay(true); };
+$("ssNext").onclick = () => { ssStep(1); if (ss.timer) ssPlay(true); };
+$("ssPlay").onclick = () => ssPlay(!ss.timer);
+
+/* ---------- Zoom (photo) ---------- */
 function closeZoomVis(anim = true) {
   const box = $("zoomBox");
   const finish = () => {
@@ -942,7 +1244,6 @@ function openZoom(el, html, type, id) {
   box.classList.remove("zout", "zin");
   void box.offsetWidth;
   box.classList.add("zin");
-  box.querySelector("video")?.play().catch(() => {});
   openLayer("zoom", () => closeZoomVis(true));
 }
 $("zClose").onclick = () => dismissLayer("zoom");
@@ -950,7 +1251,7 @@ $("zoom").onclick = e => { if (e.target.id === "zoom") dismissLayer("zoom"); };
 $("zoomBody").onclick = async e => {
   const b = e.target.closest("[data-act]");
   if (!b) return;
-  const { type, id } = zoomState;
+  const { id } = zoomState;
   if (b.dataset.act === "edit") {
     const replace = layers[layers.length - 1]?.name === "zoom";
     if (replace) {
@@ -958,42 +1259,24 @@ $("zoomBody").onclick = async e => {
       $("zoomBody").innerHTML = "";
       $("zoomBox").classList.remove("zin", "zout");
     }
-    editItem(type, id, replace);
+    openPhotoModal(id, photoMap.get(id), replace);
   }
-  if (b.dataset.act === "del" && confirm("Ye delete karein? 🥺")) {
+  if (b.dataset.act === "del" && confirm("Ye photo delete karein? 🥺")) {
     dismissLayer("zoom");
-    await removeItem(type, id);
+    try { await deleteDoc(doc(db, "photos", id)); toast("Photo delete ho gayi"); }
+    catch (err) { toast("Error: " + (err.code || err.message)); }
   }
 };
-$("board").onclick = e => {
+function openPhotoZoom(e) {
   const c = e.target.closest(".polaroid"); if (!c) return;
   const m = photoMap.get(c.dataset.id); if (!m) return;
   openZoom(c, `<img class="zimg" src="${m.src}" alt="">
     <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "photo", c.dataset.id);
-};
-$("videos").onclick = e => {
-  const c = e.target.closest(".vcard"); if (!c) return;
-  const m = videoMap.get(c.dataset.id); if (!m) return;
-  openZoom(c, `<video class="zvid" src="${esc(m.url)}" controls playsinline autoplay></video>
-    <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "video", c.dataset.id);
-};
-function editItem(type, id, replace = false) {
-  if (type === "photo") openPhotoModal(id, photoMap.get(id), replace);
-  else if (type === "video") openVideoModal(id, replace);
 }
-async function removeItem(type, id) {
-  try {
-    if (type === "photo") await deleteDoc(doc(db, "photos", id));
-    else if (type === "video") {
-      const m = videoMap.get(id);
-      if (m?.path) await deleteObject(ref(storage, m.path)).catch(() => {});
-      await deleteDoc(doc(db, "videos", id));
-    }
-    toast("Delete ho gaya");
-  } catch (err) { toast("Error: " + (err.code || err.message)); }
-}
+$("board").onclick = openPhotoZoom;
+$("wire").onclick = openPhotoZoom;
 
-/* ---------- Image compress ---------- */
+/* ---------- Image helpers ---------- */
 function compress(file, max = 800, quality = 0.7) {
   return new Promise((res, rej) => {
     const img = new Image();
@@ -1009,8 +1292,97 @@ function compress(file, max = 800, quality = 0.7) {
   });
 }
 
+/* ---------- Collage ---------- */
+const colSel = [];
+function openCollage() {
+  if (photoList.length < 2) return toast("Collage ke liye kam se kam 2 photos chahiye 🧩");
+  colSel.length = 0;
+  $("colPick").innerHTML = photoList.map(p => `<div data-pick="${p.id}"><img src="${p.src}" alt=""></div>`).join("");
+  $("colOut").classList.add("hidden");
+  $("colDl").classList.add("hidden");
+  $("colMake").classList.remove("hidden");
+  $("collageModal").classList.remove("hidden");
+  openLayer("collage", closeCollageVis);
+}
+function closeCollageVis() { $("collageModal").classList.add("hidden"); }
+$("collageBtn").onclick = openCollage;
+$("colCancel").onclick = () => dismissLayer("collage");
+$("colPick").onclick = e => {
+  const d = e.target.closest("[data-pick]");
+  if (!d) return;
+  const id = d.dataset.pick;
+  const i = colSel.indexOf(id);
+  if (i >= 0) { colSel.splice(i, 1); d.classList.remove("sel"); }
+  else {
+    if (colSel.length >= 4) return toast("Max 4 photos 🧩");
+    colSel.push(id); d.classList.add("sel");
+  }
+};
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = src;
+  });
+}
+function drawCover(ctx, img, x, y, w, h) {
+  const s = Math.max(w / img.width, h / img.height);
+  const sw = w / s, sh = h / s;
+  const sx = (img.width - sw) / 2, sy = (img.height - sh) / 2;
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+function layoutCells(n, W, H, P) {
+  const w2 = (W - 3 * P) / 2, h2 = (H - 3 * P) / 2;
+  if (n === 1) return [{ x: P, y: P, w: W - 2 * P, h: H - 2 * P }];
+  if (n === 2) return [{ x: P, y: P, w: w2, h: H - 2 * P }, { x: 2 * P + w2, y: P, w: w2, h: H - 2 * P }];
+  if (n === 3) return [
+    { x: P, y: P, w: w2, h: H - 2 * P },
+    { x: 2 * P + w2, y: P, w: w2, h: h2 },
+    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
+  ];
+  return [
+    { x: P, y: P, w: w2, h: h2 },
+    { x: 2 * P + w2, y: P, w: w2, h: h2 },
+    { x: P, y: 2 * P + h2, w: w2, h: h2 },
+    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
+  ];
+}
+async function makeCollage() {
+  if (!colSel.length) return toast("Pehle 1 se 4 photos chuno 🧩");
+  try {
+    const imgs = await Promise.all(colSel.map(id => loadImg(photoMap.get(id).src)));
+    const W = 900, H = 900, P = 24;
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#fff8ec";
+    ctx.fillRect(0, 0, W, H);
+    const cells = layoutCells(imgs.length, W, H, P);
+    imgs.forEach((img, i) => {
+      const b = cells[i];
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,.2)";
+      ctx.shadowBlur = 16;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(b.x - 8, b.y - 8, b.w + 16, b.h + 16);
+      ctx.restore();
+      drawCover(ctx, img, b.x, b.y, b.w, b.h);
+    });
+    const url = c.toDataURL("image/jpeg", 0.92);
+    $("colImg").src = url;
+    $("colDl").href = url;
+    $("colOut").classList.remove("hidden");
+    $("colDl").classList.remove("hidden");
+    $("colMake").classList.add("hidden");
+  } catch (err) {
+    toast("Collage error: " + (err.message || err));
+  }
+}
+$("colMake").onclick = makeCollage;
+
 /* ---------- Scrapbook modal ---------- */
-const closePhotoVis = () => $("photoModal").classList.add("hidden");
+function closePhotoVis() { $("photoModal").classList.add("hidden"); }
 function openPhotoModal(id = null, d = {}, replace = false) {
   photoEditId = id; photoSrc = null;
   $("pTitle").textContent = id ? "Photo edit karo ✏️" : "Nayi yaad 📸";
@@ -1045,7 +1417,7 @@ $("pSave").onclick = async () => {
 };
 
 /* ---------- Diary modal ---------- */
-const closeDiaryVis = () => $("diaryModal").classList.add("hidden");
+function closeDiaryVis() { $("diaryModal").classList.add("hidden"); }
 function setDiaryPhoto(i, src) {
   diaryPhotos[i] = src || null;
   $("dmP" + i).src = diaryPhotos[i] || "";
@@ -1053,7 +1425,7 @@ function setDiaryPhoto(i, src) {
 }
 function openDiaryModal(id = null) {
   const m = id ? entries.find(x => x.id === id) : null;
-  const ps = photosOf(m);
+  const ps = Array.isArray(m?.srcs) ? m.srcs : (m?.src ? [m.src] : []);
   diaryEditId = id;
   $("dmTitle").textContent = id ? "Page edit karo ✏️" : "Naya page 📖";
   $("dmDate").value = m?.date || today();
@@ -1098,106 +1470,21 @@ $("dmSave").onclick = async () => {
   } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
 
-/* ---------- Video modal ---------- */
-function setProg(p) {
-  const v = Math.round(p);
-  $("vBar").style.width = v + "%";
-  $("vPct").textContent = v + "% upload ho gaya";
-}
-const closeVideoVis = () => { $("videoModal").classList.add("hidden"); $("vStatus").textContent = ""; };
-function openVideoModal(id = null, replace = false) {
-  const m = id ? videoMap.get(id) : null;
-  videoEditId = id; videoFile = null;
-  $("vTitle").textContent = id ? "Video edit karo ✏️" : "Nayi video 🎬";
-  $("vFile").value = "";
-  $("vFile").classList.toggle("hidden", !!id);
-  $("vInfo").textContent = id ? "Video file change nahi hoti, sirf caption/date badal sakte ho" : "Max 40 MB, chhoti video best rahegi";
-  $("vCaption").value = m?.caption || "";
-  $("vDate").value = m?.date || today();
-  $("vStatus").textContent = "";
-  $("vProgWrap").classList.add("hidden");
-  setProg(0);
-  $("videoModal").classList.remove("hidden");
-  openLayer("video", closeVideoVis, replace);
-}
-$("addVideo").onclick = () => openVideoModal();
-$("vCancel").onclick = () => dismissLayer("video");
-$("vFile").onchange = e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  if (f.size > MAX_VIDEO) {
-    toast("Video 40 MB se chhoti honi chahiye");
-    e.target.value = ""; videoFile = null; $("vInfo").textContent = ""; return;
-  }
-  videoFile = f;
-  $("vInfo").textContent = `${f.name} · ${(f.size / 1048576).toFixed(1)} MB`;
-};
-$("vSave").onclick = async () => {
-  if (uploading) return;
-  const caption = $("vCaption").value.trim(), date = $("vDate").value;
-  try {
-    if (videoEditId) {
-      await updateDoc(doc(db, "videos", videoEditId), { caption, date });
-      dismissLayer("video"); toast("Video update ho gayi 🎬");
-      return;
-    }
-    if (!videoFile) return toast("Pehle video select karo 🎬");
-
-    uploading = true;
-    $("vSave").disabled = true;
-    $("vStatus").textContent = "Connect ho raha hai… ⏳";
-    $("vProgWrap").classList.remove("hidden");
-    setProg(0);
-
-    const safe = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const path = `videos/${Date.now()}_${safe}`;
-    const r = ref(storage, path);
-    const task = uploadBytesResumable(r, videoFile, { contentType: videoFile.type || "video/mp4" });
-
-    let stuck = null;
-    const watch = () => {
-      clearTimeout(stuck);
-      stuck = setTimeout(() => task.cancel(), 20000);
-    };
-    watch();
-
-    await new Promise((resolve, reject) => {
-      task.on("state_changed",
-        s => {
-          watch();
-          $("vStatus").textContent = "";
-          setProg(s.bytesTransferred / s.totalBytes * 100);
-        },
-        err => { clearTimeout(stuck); reject(err); },
-        () => { clearTimeout(stuck); resolve(); }
-      );
-    });
-
-    const url = await getDownloadURL(r);
-    await addDoc(collection(db, "videos"), { url, path, caption, date, createdAt: serverTimestamp() });
-    dismissLayer("video");
-    toast("Video save ho gayi 🎬");
-  } catch (err) {
-    console.error("Video upload", err);
-    $("vStatus").textContent = err?.code === "storage/canceled"
-      ? "Upload 20 sec se atka tha. Storage enable/billing/rules check karo."
-      : "Error: " + (err?.code || err?.message || "unknown");
-  } finally {
-    uploading = false;
-    $("vSave").disabled = false;
-    $("vProgWrap").classList.add("hidden");
-  }
-};
-
 /* ---------- Chat ---------- */
-const closeChatVis = () => $("chat").classList.remove("open");
+function closeChatVis() {
+  chatOpen = false;
+  $("chat").classList.remove("open");
+}
 function openChat() {
+  if (chatOpen) return;
+  chatOpen = true;
   $("chat").classList.add("open");
   openLayer("chat", closeChatVis);
+  markRead();
   markSeen();
 }
 $("chatBtn").onclick = () => {
-  if ($("chat").classList.contains("open")) dismissLayer("chat");
+  if (chatOpen) dismissLayer("chat");
   else openChat();
 };
 $("chatClose").onclick = () => dismissLayer("chat");
@@ -1216,6 +1503,17 @@ $("chatForm").onsubmit = async e => {
   e.preventDefault();
   const text = $("chatIn").value.trim(); if (!text) return;
   const u = auth.currentUser;
+
+  if (editingId) {
+    const id = editingId;
+    $("chatIn").value = "";
+    stopTyping();
+    clearReply();
+    try { await updateDoc(doc(db, "messages", id), { text, edited: true }); }
+    catch (err) { toast("Edit error: " + (err.code || err.message)); }
+    return;
+  }
+
   const rt = replyTarget;
   $("chatIn").value = "";
   stopTyping();
@@ -1223,10 +1521,10 @@ $("chatForm").onsubmit = async e => {
   try {
     await addDoc(collection(db, "messages"), {
       text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false,
-      replyTo: rt ? { name: rt.name, text: rt.text } : null
+      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {}
     });
   } catch (err) { toast("Chat error: " + (err.code || err.message)); }
 };
 </script>
 </body>
-    </html>
+                                                                                                                                             </html>
