@@ -151,16 +151,23 @@ section{margin-bottom:60px}
 @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
 .wire-empty{padding:26px 0;text-align:center;width:100%}
 
-/* YouTube shorts */
-.shorts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
-.short{position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#2b2236;box-shadow:0 8px 18px rgba(80,60,110,.25)}
+/* YouTube shorts (horizontal, tap to play inside page) */
+.shorts{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 20px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.short{position:relative;flex:0 0 min(78vw,300px);aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#2b2236;
+  box-shadow:0 8px 18px rgba(80,60,110,.25);scroll-snap-align:start;cursor:pointer}
+.short img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
+.short .play{top:50%}
+.short .stitle{position:absolute;left:0;right:0;bottom:0;padding:20px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));
+  color:#fff;font-family:Caveat,cursive;font-size:19px;line-height:1.05;pointer-events:none}
 .short iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.play{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:16px;color:#5b4a6b;padding-left:3px}
 
 /* Footer */
 .foot{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;margin-top:10px;padding:10px 0 4px}
 
-/* Slideshow fullscreen */
-.ss{position:fixed;inset:0;z-index:160;background:rgba(45,30,60,.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+/* Slideshow fullscreen (auto + swipe + tap) */
+.ss{position:fixed;inset:0;z-index:160;background:rgba(45,30,60,.92);backdrop-filter:blur(4px);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.ss-stage{position:absolute;inset:0;will-change:transform}
 .ss-wire{position:absolute;top:64px;left:0;right:0;height:3px;background:#d9c9ad;box-shadow:0 2px 4px rgba(0,0,0,.3)}
 .ss-hang{position:absolute;top:64px;left:50%;width:min(300px,80vw);margin-left:calc(min(300px,80vw) / -2);transform-origin:50% 0;
   animation:sway 2.8s ease-in-out infinite alternate;animation-delay:.9s}
@@ -169,13 +176,14 @@ section{margin-bottom:60px}
 .ss-clip{width:18px;height:28px;margin:0 auto;border-radius:6px;background:linear-gradient(#ffd6e8,#ff8fb8);position:relative;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 .ss-str{width:2px;height:12px;background:#d9c9ad;margin:0 auto}
 .ss-card{background:#fff;padding:9px 9px 14px;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.4)}
-.ss-card img{width:100%;max-height:52vh;object-fit:contain;background:#f6f0e6;border-radius:4px;display:block}
+.ss-card img{width:100%;max-height:52vh;object-fit:contain;background:#f6f0e6;border-radius:4px;display:block;pointer-events:none}
 .ss-cap{font-family:Caveat,cursive;font-size:26px;text-align:center;margin-top:8px;line-height:1.1;color:#5b4a6b}
 .ss-meta{font-size:12px;text-align:center;opacity:.6;margin-top:2px;color:#5b4a6b}
 .ss-ctrl{position:absolute;bottom:34px;left:0;right:0;display:flex;justify-content:center;gap:14px}
 .ss-ctrl .btn{padding:12px 20px}
 .ss-x{position:absolute;top:14px;right:14px}
 .ss-count{position:absolute;top:18px;left:18px;color:#fff;font-family:Caveat,cursive;font-size:24px}
+.ss-hint{position:absolute;bottom:100px;left:0;right:0;text-align:center;color:#ffffffaa;font-size:13px}
 
 /* Chat */
 .chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
@@ -423,11 +431,8 @@ input[type=date]{max-width:100%}
     <div class="sec-head">
       <h2 class="reveal">🎬 Our Shorts</h2>
     </div>
-    <div class="shorts reveal">
-      <div class="short"><iframe src="https://www.youtube.com/embed/GQGnCbEodfY" title="Short 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-      <div class="short"><iframe src="https://www.youtube.com/embed/PpJPByJEwk8" title="Short 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-      <div class="short"><iframe src="https://www.youtube.com/embed/8vhKlHlLQc4" title="Short 3" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-    </div>
+    <p class="swipe-hint">← swipe karo · video tap karke yahin play karo →</p>
+    <div class="shorts reveal" id="shorts"></div>
   </section>
 
   <div class="foot reveal">Made by Prince for Antra 😊</div>
@@ -482,20 +487,23 @@ input[type=date]{max-width:100%}
   </div>
 </div>
 
-<!-- SLIDESHOW (fullscreen) -->
+<!-- SLIDESHOW (fullscreen: auto, swipe, tap) -->
 <div class="ss hidden" id="ss">
-  <div class="ss-count" id="ssCount"></div>
-  <button class="btn small ss-x" id="ssClose">✖</button>
-  <div class="ss-wire"></div>
-  <div class="ss-hang" id="ssHang">
-    <div class="ss-clip"></div>
-    <div class="ss-str"></div>
-    <div class="ss-card">
-      <img id="ssImg" alt="">
-      <div class="ss-cap" id="ssCap"></div>
-      <div class="ss-meta" id="ssMeta"></div>
+  <div class="ss-stage" id="ssStage">
+    <div class="ss-wire"></div>
+    <div class="ss-hang" id="ssHang">
+      <div class="ss-clip"></div>
+      <div class="ss-str"></div>
+      <div class="ss-card">
+        <img id="ssImg" alt="">
+        <div class="ss-cap" id="ssCap"></div>
+        <div class="ss-meta" id="ssMeta"></div>
+      </div>
     </div>
   </div>
+  <div class="ss-count" id="ssCount"></div>
+  <button class="btn small ss-x" id="ssClose">✖</button>
+  <div class="ss-hint">← swipe karke badlo · tap karke ruko/chalao →</div>
   <div class="ss-ctrl">
     <button class="btn" id="ssPrev">‹</button>
     <button class="btn blue" id="ssPlay">⏸</button>
@@ -594,10 +602,11 @@ const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
-const SLIDE_MS = 5000;          // fullscreen slideshow: har photo kitni der dikhe (ms)
-const WIRE_SEC_PER_PHOTO = 6;   // wire kitni tezi se chale (photo count ke hisaab se)
+const SLIDE_MS = 5000;          // fullscreen slideshow: auto-advance (ms)
+const WIRE_SEC_PER_PHOTO = 6;   // wire kitni tezi se chale
 const NOTIF_MS = 1000;
 const LAST_KEY = "ou_lastRead";
+const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 
 const app = initializeApp(firebaseConfig);
@@ -916,7 +925,6 @@ function renderWire() {
         <div class="meta">${esc(m.date)}</div>
       </div>
     </div>`).join("");
-  // Do identical groups = seamless infinite loop (right to left)
   wire.classList.remove("noanim");
   wire.style.setProperty("--dur", Math.max(20, photoList.length * WIRE_SEC_PER_PHOTO) + "s");
   wire.innerHTML = `<div class="wire-group">${items}</div><div class="wire-group" aria-hidden="true">${items}</div>`;
@@ -1214,7 +1222,7 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Slideshow (unlimited, auto) ---------- */
+/* ---------- Slideshow (auto + swipe + tap) ---------- */
 function ssRender(anim = true) {
   const p = photoList[ss.i];
   if (!p) return;
@@ -1235,6 +1243,21 @@ function ssStep(d) {
   ss.i = (ss.i + d + n) % n;   // unlimited loop
   ssRender();
 }
+// Swipe ke saath photo ek taraf nikal kar doosri taraf se aati hai
+function ssSwipeTo(d) {
+  const st = $("ssStage");
+  const w = innerWidth * 0.7;
+  st.style.transition = "transform .22s ease-in";
+  st.style.transform = `translateX(${-d * w}px)`;
+  setTimeout(() => {
+    ssStep(d);
+    st.style.transition = "none";
+    st.style.transform = `translateX(${d * w}px)`;
+    void st.offsetWidth;
+    st.style.transition = "transform .3s ease-out";
+    st.style.transform = "translateX(0)";
+  }, 220);
+}
 function ssPlay(on) {
   clearInterval(ss.timer);
   ss.timer = on ? setInterval(() => ssStep(1), SLIDE_MS) : null;
@@ -1254,13 +1277,64 @@ function openSlideshow() {
 }
 $("ssOpen").onclick = openSlideshow;
 $("ssClose").onclick = () => dismissLayer("ss");
-$("ssPrev").onclick = () => { ssStep(-1); if (ss.timer) ssPlay(true); };
-$("ssNext").onclick = () => { ssStep(1); if (ss.timer) ssPlay(true); };
+$("ssPrev").onclick = () => { ssSwipeTo(-1); if (ss.timer) ssPlay(true); };
+$("ssNext").onclick = () => { ssSwipeTo(1); if (ss.timer) ssPlay(true); };
 $("ssPlay").onclick = () => ssPlay(!ss.timer);
 
+let ssDrag = null;
+$("ss").addEventListener("pointerdown", e => {
+  if (e.target.closest("button")) return;
+  ssDrag = { x: e.clientX, y: e.clientY, dx: 0, moved: false };
+  clearInterval(ss.timer);
+  $("ssStage").style.transition = "none";
+});
+$("ss").addEventListener("pointermove", e => {
+  if (!ssDrag) return;
+  const dx = e.clientX - ssDrag.x;
+  ssDrag.dx = dx;
+  if (Math.abs(dx) > 8) ssDrag.moved = true;
+  $("ssStage").style.transform = `translateX(${dx}px)`;
+});
+function ssEnd() {
+  if (!ssDrag) return;
+  const { dx, moved } = ssDrag;
+  ssDrag = null;
+  const st = $("ssStage");
+  if (moved && Math.abs(dx) > 60) {
+    // swipe: next ya prev, aur autoplay phir se chalu
+    const d = dx < 0 ? 1 : -1;
+    st.style.transform = `translateX(${dx}px)`;
+    ssSwipeTo(d);
+    ssPlay(true);
+    return;
+  }
+  // chhota drag ya tap
+  st.style.transition = "transform .25s ease-out";
+  st.style.transform = "translateX(0)";
+  if (!moved) ssPlay(!ss.timer);   // tap = play/pause
+  else ssPlay(true);
+}
+$("ss").addEventListener("pointerup", ssEnd);
+$("ss").addEventListener("pointercancel", ssEnd);
+
 /* Wire: touch/pointer pe ruk jaye, chhodne par chal jaye */
-["pointerdown"].forEach(ev => $("wire").addEventListener(ev, () => $("wire").classList.add("paused")));
+$("wire").addEventListener("pointerdown", () => $("wire").classList.add("paused"));
 ["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("wire").addEventListener(ev, () => $("wire").classList.remove("paused")));
+
+/* ---------- Shorts (horizontal, tap to play inside page) ---------- */
+$("shorts").innerHTML = SHORT_IDS.map((id, i) => `
+  <div class="short" data-yt="${id}">
+    <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy">
+    <span class="play">▶</span>
+    <div class="stitle">🎬 Video ${i + 1}</div>
+  </div>`).join("");
+$("shorts").onclick = e => {
+  const box = e.target.closest(".short");
+  if (!box || box.querySelector("iframe")) return;
+  const id = box.dataset.yt;
+  box.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&rel=0"
+    allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+};
 
 /* ---------- Zoom (photo) ---------- */
 function closeZoomVis(anim = true) {
