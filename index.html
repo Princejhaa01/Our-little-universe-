@@ -55,6 +55,7 @@ section{margin-bottom:60px}
 .char{width:86px;height:116px;animation:float 3.2s ease-in-out infinite}
 .char.girl{animation-delay:-1.6s}
 .char svg{width:100%;height:100%;filter:drop-shadow(4px 6px 6px rgba(120,90,140,.25))}
+.char img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(4px 6px 6px rgba(120,90,140,.25))}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
 .htext{text-align:center}
 .htext h1{font-family:Caveat,cursive;font-size:40px;line-height:1.05}
@@ -221,16 +222,41 @@ input[type=date]{max-width:100%}
       <div class="char boy">
         <svg viewBox="0 0 120 150">
           <defs>
-            <radialGradient id="sk" cx=".4" cy=".35"><stop offset="0" stop-color="#ffe3c8"/><stop offset="1" stop-color="#f3b28a"/></radialGradient>
-            <linearGradient id="bsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b5e0ff"/><stop offset="1" stop-color="#6fb4f0"/></linearGradient>
+            <radialGradient id="bsk" cx=".4" cy=".35"><stop offset="0" stop-color="#ffd9a8"/><stop offset="1" stop-color="#e9a86a"/></radialGradient>
+            <linearGradient id="bshirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset="1" stop-color="#f0b21a"/></linearGradient>
+            <radialGradient id="bhair" cx=".4" cy=".3"><stop offset="0" stop-color="#c8643a"/><stop offset="1" stop-color="#8c3a1c"/></radialGradient>
           </defs>
-          <rect x="26" y="98" width="68" height="50" rx="28" fill="url(#bsh)"/>
-          <rect x="46" y="86" width="28" height="18" rx="9" fill="#f3b28a"/>
-          <circle cx="60" cy="58" r="38" fill="url(#sk)"/>
-          <path d="M20 54 Q20 14 60 14 Q100 14 100 54 Q90 34 60 34 Q34 36 20 54Z" fill="#3b2f4a"/>
-          <circle cx="46" cy="62" r="5" fill="#3b2f4a"/><circle cx="74" cy="62" r="5" fill="#3b2f4a"/>
-          <circle cx="40" cy="74" r="6" fill="#ff9fc0" opacity=".7"/><circle cx="80" cy="74" r="6" fill="#ff9fc0" opacity=".7"/>
-          <path d="M50 76 Q60 86 70 76" stroke="#3b2f4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- body + yellow t-shirt -->
+          <path d="M14 150 Q14 100 60 96 Q106 100 106 150 Z" fill="url(#bshirt)"/>
+          <!-- neck -->
+          <rect x="50" y="84" width="20" height="16" rx="8" fill="#e9a86a"/>
+          <!-- ears -->
+          <circle cx="22" cy="58" r="8" fill="#e9a86a"/>
+          <circle cx="98" cy="58" r="8" fill="#e9a86a"/>
+          <!-- head -->
+          <circle cx="60" cy="56" r="36" fill="url(#bsk)"/>
+          <!-- hair (clay tufts) -->
+          <path d="M24 56 Q18 18 60 16 Q102 18 96 56 Q92 34 74 30 Q60 36 46 30 Q28 34 24 56Z" fill="url(#bhair)"/>
+          <path d="M38 34 Q50 22 66 26 Q56 30 46 40Z" fill="#a14a26"/>
+          <!-- eyebrows -->
+          <path d="M40 44 Q46 40 52 44" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M68 44 Q74 40 80 44" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- eyes -->
+          <circle cx="46" cy="54" r="4.5" fill="#3b2a1e"/>
+          <circle cx="74" cy="54" r="4.5" fill="#3b2a1e"/>
+          <!-- nose -->
+          <circle cx="60" cy="64" r="3.5" fill="#d98a55"/>
+          <!-- smile -->
+          <path d="M50 74 Q60 82 70 74" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- cheeks -->
+          <circle cx="40" cy="68" r="5" fill="#ff9fc0" opacity=".5"/>
+          <circle cx="80" cy="68" r="5" fill="#ff9fc0" opacity=".5"/>
+          <!-- thumbs-up arm -->
+          <rect x="88" y="104" width="16" height="34" rx="8" fill="#e9a86a" transform="rotate(-18 96 104)"/>
+          <circle cx="98" cy="96" r="9" fill="#e9a86a"/>
+          <rect x="94" y="84" width="8" height="14" rx="4" fill="#e9a86a"/>
+          <!-- red heart -->
+          <path d="M96 22 C96 16 104 14 106 20 C108 14 116 16 116 22 C116 30 106 36 106 36 C106 36 96 30 96 22Z" fill="#e8483f"/>
         </svg>
       </div>
       <div class="htext">
@@ -951,4 +977,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-                                                                                                          </html>
+            </html>
