@@ -136,16 +136,28 @@ section{margin-bottom:60px}
 .pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .tap-hint{text-align:center;font-size:13px;opacity:.6;margin-top:8px}
 
-/* Clothesline slideshow */
-.wire-scroll{overflow-x:auto;padding:6px 4px 26px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.wire{position:relative;display:flex;gap:22px;width:max-content;min-width:100%;padding:0 22px}
+/* Clothesline: infinite right-to-left wire */
+.wire-scroll{overflow:hidden;padding:6px 0 26px}
+.wire{position:relative;display:flex;width:max-content;animation:wireMove var(--dur,40s) linear infinite}
+.wire.noanim{animation:none}
+.wire.paused{animation-play-state:paused}
 .wire::before{content:"";position:absolute;left:0;right:0;top:12px;height:3px;background:#7d6d5a;border-radius:3px;box-shadow:0 2px 3px rgba(0,0,0,.15)}
+.wire-group{display:flex;gap:22px;padding:0 11px;flex:0 0 auto;position:relative}
+@keyframes wireMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .hang{position:relative;width:150px;flex:0 0 auto;transform-origin:50% 0;animation:sway 3.6s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
 .hang .clip{width:16px;height:26px;margin:0 auto;border-radius:5px;background:linear-gradient(#ffd6e8,#ff8fb8);position:relative;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.2)}
 .hang .string{width:2px;height:12px;background:#8a7a6a;margin:0 auto}
 .hang .polaroid{--r:0deg}
 @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
 .wire-empty{padding:26px 0;text-align:center;width:100%}
+
+/* YouTube shorts */
+.shorts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.short{position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#2b2236;box-shadow:0 8px 18px rgba(80,60,110,.25)}
+.short iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* Footer */
+.foot{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;margin-top:10px;padding:10px 0 4px}
 
 /* Slideshow fullscreen */
 .ss{position:fixed;inset:0;z-index:160;background:rgba(45,30,60,.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
@@ -249,7 +261,7 @@ input[type=date]{max-width:100%}
   .cbox b{font-size:20px}
   .hang{width:130px}
 }
-@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char,.hang,.ss-hang{animation:none}.page{transition:none}}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char,.hang,.ss-hang,.wire{animation:none}.page{transition:none}}
 </style>
 </head>
 <body>
@@ -401,11 +413,24 @@ input[type=date]{max-width:100%}
       <h2 class="reveal">🎞️ Our Slideshow</h2>
       <button class="btn small reveal" id="ssOpen">▶ Slideshow chalao</button>
     </div>
-    <p class="swipe-hint">Scrapbook ki photos wire par latki hain · photo tap karke bada dekho</p>
+    <p class="swipe-hint">Scrapbook ki photos wire par latki hain · tap karke bada dekho</p>
     <div class="wire-scroll reveal">
       <div class="wire" id="wire"></div>
     </div>
   </section>
+
+  <section>
+    <div class="sec-head">
+      <h2 class="reveal">🎬 Our Shorts</h2>
+    </div>
+    <div class="shorts reveal">
+      <div class="short"><iframe src="https://www.youtube.com/embed/GQGnCbEodfY" title="Short 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+      <div class="short"><iframe src="https://www.youtube.com/embed/PpJPByJEwk8" title="Short 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+      <div class="short"><iframe src="https://www.youtube.com/embed/8vhKlHlLQc4" title="Short 3" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    </div>
+  </section>
+
+  <div class="foot reveal">Made by Prince for Antra 😊</div>
 
   <aside class="clay chat" id="chat">
     <div class="chat-head">
@@ -569,8 +594,9 @@ const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
-const SLIDE_MS = 3500;
-const NOTIF_MS = 1000;          // banner kitni der dikhe (ms)
+const SLIDE_MS = 5000;          // fullscreen slideshow: har photo kitni der dikhe (ms)
+const WIRE_SEC_PER_PHOTO = 6;   // wire kitni tezi se chale (photo count ke hisaab se)
+const NOTIF_MS = 1000;
 const LAST_KEY = "ou_lastRead";
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 
@@ -873,6 +899,29 @@ $("hbClose").onclick = () => dismissLayer("hero");
 $("hbig").onclick = e => { if (e.target.id === "hbig") dismissLayer("hero"); };
 
 /* ---------- Live listeners ---------- */
+function renderWire() {
+  const wire = $("wire");
+  if (!photoList.length) {
+    wire.classList.add("noanim");
+    wire.innerHTML = `<div class="wire-empty">Abhi koi photo nahi… scrapbook me photo add karo, yahan latkegi 🧺</div>`;
+    return;
+  }
+  const items = photoList.map((m, i) => `
+    <div class="hang" style="--d:${-((i % 4) * 0.7)}s">
+      <div class="clip"></div>
+      <div class="string"></div>
+      <div class="polaroid" data-id="${m.id}">
+        <img src="${m.src}" alt="" loading="lazy">
+        <div class="cap">${esc(m.caption)}</div>
+        <div class="meta">${esc(m.date)}</div>
+      </div>
+    </div>`).join("");
+  // Do identical groups = seamless infinite loop (right to left)
+  wire.classList.remove("noanim");
+  wire.style.setProperty("--dur", Math.max(20, photoList.length * WIRE_SEC_PER_PHOTO) + "s");
+  wire.innerHTML = `<div class="wire-group">${items}</div><div class="wire-group" aria-hidden="true">${items}</div>`;
+}
+
 function startListeners() {
   if (listening) return;
   listening = true;
@@ -892,16 +941,7 @@ function startListeners() {
         <div class="meta">${esc(m.date)}</div></div>`;
     }).join("") : `<p class="empty">Abhi koi photo nahi… pehli yaad add karo 📸</p>`;
 
-    $("wire").innerHTML = photoList.length ? photoList.map((m, i) => `
-      <div class="hang" style="--d:${-((i % 4) * 0.7)}s">
-        <div class="clip"></div>
-        <div class="string"></div>
-        <div class="polaroid" data-id="${m.id}">
-          <img src="${m.src}" alt="" loading="lazy">
-          <div class="cap">${esc(m.caption)}</div>
-          <div class="meta">${esc(m.date)}</div>
-        </div>
-      </div>`).join("") : `<div class="wire-empty">Abhi koi photo nahi… scrapbook me photo add karo, yahan latkegi 🧺</div>`;
+    renderWire();
 
     if (!$("ss").classList.contains("hidden")) {
       if (ss.i >= photoList.length) ss.i = 0;
@@ -1174,7 +1214,7 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Slideshow ---------- */
+/* ---------- Slideshow (unlimited, auto) ---------- */
 function ssRender(anim = true) {
   const p = photoList[ss.i];
   if (!p) return;
@@ -1192,7 +1232,7 @@ function ssRender(anim = true) {
 function ssStep(d) {
   const n = photoList.length;
   if (!n) return;
-  ss.i = (ss.i + d + n) % n;
+  ss.i = (ss.i + d + n) % n;   // unlimited loop
   ssRender();
 }
 function ssPlay(on) {
@@ -1217,6 +1257,10 @@ $("ssClose").onclick = () => dismissLayer("ss");
 $("ssPrev").onclick = () => { ssStep(-1); if (ss.timer) ssPlay(true); };
 $("ssNext").onclick = () => { ssStep(1); if (ss.timer) ssPlay(true); };
 $("ssPlay").onclick = () => ssPlay(!ss.timer);
+
+/* Wire: touch/pointer pe ruk jaye, chhodne par chal jaye */
+["pointerdown"].forEach(ev => $("wire").addEventListener(ev, () => $("wire").classList.add("paused")));
+["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("wire").addEventListener(ev, () => $("wire").classList.remove("paused")));
 
 /* ---------- Zoom (photo) ---------- */
 function closeZoomVis(anim = true) {
@@ -1527,4 +1571,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-                                                                                                                                             </html>
+  </html>
