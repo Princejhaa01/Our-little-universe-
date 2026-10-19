@@ -739,7 +739,7 @@ $("vSave").onclick = async () => {
 
     uploading = true;
     $("vSave").disabled = true;
-    $("vStatus").textContent = "";
+    $("vStatus").textContent = "Connect ho raha hai… ⏳";
     $("vProgWrap").classList.remove("hidden");
     setProg(0);
 
@@ -748,11 +748,23 @@ $("vSave").onclick = async () => {
     const r = ref(storage, path);
     const task = uploadBytesResumable(r, videoFile, { contentType: videoFile.type || "video/mp4" });
 
+    // 20 sec tak progress na badhe to upload cancel
+    let timedOut = false, stuck = null;
+    const watch = () => {
+      clearTimeout(stuck);
+      stuck = setTimeout(() => { timedOut = true; task.cancel(); }, 20000);
+    };
+    watch();
+
     await new Promise((resolve, reject) => {
       task.on("state_changed",
-        s => setProg(s.bytesTransferred / s.totalBytes * 100),
-        reject,
-        resolve
+        s => {
+          watch();
+          $("vStatus").textContent = "";
+          setProg(s.bytesTransferred / s.totalBytes * 100);
+        },
+        err => { clearTimeout(stuck); reject(err); },
+        () => { clearTimeout(stuck); resolve(); }
       );
     });
 
@@ -761,13 +773,20 @@ $("vSave").onclick = async () => {
     closeVideo();
     toast("Video save ho gayi 🎬");
   } catch (err) {
-    $("vStatus").textContent = "Error: " + (err.code || err.message);
+    console.error("Video upload", err);
+    const msg = timedOutMsg(err);
+    $("vStatus").textContent = msg;
   } finally {
     uploading = false;
     $("vSave").disabled = false;
     $("vProgWrap").classList.add("hidden");
   }
 };
+
+function timedOutMsg(err) {
+  if (err?.code === "storage/canceled") return "Upload 20 sec se atka tha. Storage enable/billing/rules check karo, ya dusre network par try karo.";
+  return "Error: " + (err?.code || err?.message || "unknown");
+  }
 
 /* ---------- Chat ---------- */
 $("chatBtn").onclick = () => $("chat").classList.toggle("open");
