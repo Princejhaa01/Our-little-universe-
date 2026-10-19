@@ -4,16 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>our little universe ✨️</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffd6e8">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--pink:#ffd6e8;--blue:#d6ecff;--cream:#fff8ec;--ink:#5b4a6b;--sh:rgba(120,90,140,.25)}
+:root{--pink:#ffd6e8;--blue:#d6ecff;--mint:#d8f5e8;--lav:#e9dcff;--cream:#fff8ec;--ink:#5b4a6b;--sh:rgba(120,90,140,.25)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
   background:linear-gradient(135deg,#ffe3ef,#e3f0ff 60%,#fff3d9);background-attachment:fixed}
 .hidden{display:none!important}
 
-/* Clay */
+/* Clay base */
 .clay{background:var(--cream);border-radius:32px;
   box-shadow:12px 12px 24px var(--sh),-10px -10px 20px #fff,inset 6px 6px 12px rgba(255,255,255,.8),inset -6px -6px 12px rgba(160,120,180,.12)}
 .btn{font-family:inherit;font-weight:600;font-size:16px;border:none;border-radius:22px;padding:12px 22px;cursor:pointer;color:var(--ink);
@@ -26,43 +28,75 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
   box-shadow:inset 4px 4px 8px rgba(0,0,0,.06),inset -4px -4px 8px #fff}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{max-width:380px;width:100%;padding:36px;text-align:center}
-.card h1,.hero h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
+.card h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
 .err{color:#d6336c;min-height:22px;margin-top:10px;font-size:15px}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
-/* Scroll progress + reveal */
-#progress{position:fixed;top:0;left:0;height:5px;width:0;z-index:200;
-  background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:0 4px 4px 0}
+/* Progress + reveal */
+#progress{position:fixed;top:0;left:0;height:5px;width:0;z-index:200;background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:0 4px 4px 0}
 .reveal{opacity:0;translate:0 50px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;translate:0 0}
 
 /* Layout */
 #app{padding:90px 18px 40px;max-width:1100px;margin:auto}
 .fab{position:fixed;top:16px;right:16px;z-index:60}
-.logout{position:absolute;top:18px;left:18px}
-.hero{text-align:center;padding:40px 20px;margin-bottom:34px;position:relative}
-.hero .names{font-family:Caveat,cursive;font-size:30px;color:#c2578f}
-.hero p.count{margin-top:8px;font-size:18px}
 h2{font-family:Caveat,cursive;font-size:38px;margin:10px 0 12px}
 section{margin-bottom:60px}
 .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .swipe-hint{font-size:13px;opacity:.6;margin:6px 0 10px}
 .empty{grid-column:1/-1;text-align:center;padding:20px}
 
-/* Horizontal strip (videos) */
-.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 12px 24px;border-radius:28px;
-  -webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.strip>*{flex:0 0 calc((100% - (var(--n) - 1) * 14px - 24px) / var(--n));min-width:0;scroll-snap-align:start}
-.strip>.empty{flex:0 0 100%;text-align:center;padding:20px 0}
+/* Hero with characters */
+.hero{position:relative;padding:58px 14px 22px;margin-bottom:34px;cursor:pointer;transition:transform .2s}
+.hero:active{transform:scale(.99)}
+.logout{position:absolute;top:14px;left:14px;z-index:2}
+.hrow{display:grid;grid-template-columns:86px 1fr 86px;align-items:center;gap:6px}
+.char{width:86px;height:116px;animation:float 3.2s ease-in-out infinite}
+.char.girl{animation-delay:-1.6s}
+.char svg{width:100%;height:100%;filter:drop-shadow(4px 6px 6px rgba(120,90,140,.25))}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.htext{text-align:center}
+.htext h1{font-family:Caveat,cursive;font-size:40px;line-height:1.05}
+.names{font-family:Caveat,cursive;font-size:28px;color:#c2578f;margin-top:4px}
+.count{margin-top:6px;font-size:16px}
+.tapmore{margin-top:8px;font-size:13px;opacity:.6}
+
+/* Hero expanded overlay */
+.zoom{position:fixed;inset:0;background:rgba(60,40,80,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:150;padding:14px}
+.zbox{position:relative;background:var(--cream);border-radius:28px;padding:18px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:12px 12px 30px rgba(60,40,80,.35)}
+.zin{animation:zin .45s cubic-bezier(.2,.8,.2,1) both}
+.zout{animation:zout .4s ease-in both}
+@keyframes zin{from{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}to{transform:none;opacity:1}}
+@keyframes zout{from{transform:none;opacity:1}to{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}}
+.zx{position:absolute;top:10px;right:10px;z-index:2}
+.zimg,.zvid{width:100%;max-height:66vh;object-fit:contain;border-radius:18px;background:#000;display:block}
+.zcap{font-family:Caveat,cursive;font-size:30px;text-align:center;margin-top:10px;line-height:1.1}
+.zmeta{font-size:14px;text-align:center;opacity:.65;margin-top:2px}
+.zacts{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+
+.dbox h2{text-align:center;margin-top:6px}
+.ditem{border-radius:24px;padding:16px 18px;margin-bottom:14px;cursor:pointer;transition:transform .2s;
+  background:linear-gradient(135deg,#fff,#fdf3ff);box-shadow:6px 6px 14px var(--sh),-4px -4px 10px #fff,inset 3px 3px 6px rgba(255,255,255,.7)}
+.ditem:active{transform:scale(.98)}
+.ditem.c1{background:linear-gradient(135deg,#ffe6f1,#fff)}
+.ditem.c2{background:linear-gradient(135deg,#e2f1ff,#fff)}
+.ditem.c3{background:linear-gradient(135deg,#dff8ea,#fff)}
+.dit-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:Caveat,cursive;font-size:26px;font-weight:700}
+.dit-head small{font-family:Fredoka,sans-serif;font-size:13px;font-weight:400;opacity:.7}
+.cdwrap{position:relative;margin-top:12px;padding-top:10px;border-top:2px dashed rgba(91,74,107,.2)}
+.xbtn{position:absolute;top:8px;right:0;width:30px;height:30px;border:none;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink);
+  background:var(--pink);box-shadow:3px 3px 8px var(--sh),-2px -2px 6px #fff}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.cbox{background:#fff;border-radius:16px;padding:8px 2px;text-align:center;box-shadow:inset 3px 3px 6px rgba(0,0,0,.05),2px 2px 6px rgba(120,90,140,.15)}
+.cbox b{display:block;font-size:24px;font-family:Fredoka,sans-serif;color:#b5487a}
+.cbox small{font-size:11px;opacity:.7}
+.cdmsg{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;padding:6px 0}
+
+/* Scrapbook grid */
 .paper{background-color:#f6ecd9;background-image:radial-gradient(#d9c7a5 1.2px,transparent 1.3px);background-size:22px 22px;
   box-shadow:inset 6px 6px 14px rgba(120,90,40,.15),8px 8px 18px var(--sh)}
-.vault{background:linear-gradient(135deg,#f3e6ff,#e6f2ff);box-shadow:inset 6px 6px 14px rgba(120,90,160,.12),8px 8px 18px var(--sh)}
-
-/* Scrapbook grid: 3 photos per row, wraps downwards */
 .board-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px 12px 24px;border-radius:28px}
-
-/* Scrapbook polaroids */
 .polaroid{background:#fff;padding:7px 7px 10px;border-radius:6px;position:relative;cursor:pointer;min-width:0;
   box-shadow:0 8px 16px rgba(0,0,0,.15);transform:rotate(var(--r));transition:transform .2s}
 .polaroid:active{transform:rotate(0) scale(.96)}
@@ -71,7 +105,7 @@ section{margin-bottom:60px}
 .cap{font-family:Caveat,cursive;font-size:18px;text-align:center;margin-top:6px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .meta{font-size:12px;text-align:center;opacity:.65;margin-top:2px}
 
-/* Retro diary BOOK (flip) */
+/* Diary book */
 .diary-wrap{max-width:560px;margin:0 auto}
 .book{position:relative;height:620px;perspective:2000px;cursor:pointer;touch-action:manipulation}
 .page{position:absolute;inset:0;transform-origin:left center;transition:transform .8s cubic-bezier(.45,.05,.25,1);
@@ -98,29 +132,16 @@ section{margin-bottom:60px}
 .pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .tap-hint{text-align:center;font-size:13px;opacity:.6;margin-top:8px}
 
-/* Video cards */
-.vcard{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#2b2236;cursor:pointer;
-  box-shadow:0 8px 18px rgba(80,60,110,.25);transition:transform .2s}
+/* Videos */
+.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:18px 12px 24px;border-radius:28px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.strip>*{flex:0 0 calc((100% - (var(--n) - 1) * 14px - 24px) / var(--n));min-width:0;scroll-snap-align:start}
+.strip>.empty{flex:0 0 100%;text-align:center;padding:20px 0}
+.vault{background:linear-gradient(135deg,#f3e6ff,#e6f2ff);box-shadow:inset 6px 6px 14px rgba(120,90,160,.12),8px 8px 18px var(--sh)}
+.vcard{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#2b2236;cursor:pointer;box-shadow:0 8px 18px rgba(80,60,110,.25);transition:transform .2s}
 .vcard:active{transform:scale(.96)}
 .vcard video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.play{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;
-  background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:16px;color:#5b4a6b;padding-left:3px}
-.vcap{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));
-  color:#fff;font-family:Caveat,cursive;font-size:19px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-
-/* Zoom (tap to enlarge, close returns to place) */
-.zoom{position:fixed;inset:0;background:rgba(60,40,80,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:150;padding:14px}
-.zbox{position:relative;background:var(--cream);border-radius:28px;padding:18px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;
-  box-shadow:12px 12px 30px rgba(60,40,80,.35)}
-.zin{animation:zin .45s cubic-bezier(.2,.8,.2,1) both}
-.zout{animation:zout .4s ease-in both}
-@keyframes zin{from{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}to{transform:none;opacity:1}}
-@keyframes zout{from{transform:none;opacity:1}to{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}}
-.zx{position:absolute;top:10px;right:10px;z-index:2}
-.zimg,.zvid{width:100%;max-height:66vh;object-fit:contain;border-radius:18px;background:#000;display:block}
-.zcap{font-family:Caveat,cursive;font-size:30px;text-align:center;margin-top:10px;line-height:1.1}
-.zmeta{font-size:14px;text-align:center;opacity:.65;margin-top:2px}
-.zacts{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.play{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font-size:16px;color:#5b4a6b;padding-left:3px}
+.vcap{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-family:Caveat,cursive;font-size:19px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 /* Modals */
 .modal{position:fixed;inset:0;background:rgba(60,40,80,.35);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
@@ -134,14 +155,11 @@ section{margin-bottom:60px}
 .dtext{background:#fff1a0;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:30px;min-height:120px}
 .dlabel{font-size:14px;opacity:.7;margin:4px 0 6px;text-align:left}
 input[type=date]{max-width:100%}
-
-/* Upload progress */
 .pbar{height:18px;border-radius:12px;background:#fff;box-shadow:inset 3px 3px 6px rgba(0,0,0,.08);overflow:hidden}
 #vBar{height:100%;width:0;background:linear-gradient(90deg,#ff8fb8,#9cc9ff,#ffd86b);border-radius:12px;transition:width .2s}
 
 /* Chat */
-.chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;
-  display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
+.chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
 .chat.open{transform:translateX(0)}
 .chat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .chat-head h3{font-family:Caveat,cursive;font-size:30px}
@@ -153,18 +171,20 @@ input[type=date]{max-width:100%}
 #chatForm input{margin:0}
 
 /* Toast */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 18px;border-radius:18px;
-  box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 18px;border-radius:18px;box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center}
 
 @media (max-width:600px){
   #app{padding:84px 12px 40px}
-  .hero{padding:30px 14px}
-  .hero h1{font-size:38px}
   h2{font-size:32px}
   .book{height:580px}
   .board-grid{gap:12px;padding:14px 8px 18px}
+  .hrow{grid-template-columns:70px 1fr 70px}
+  .char{width:70px;height:94px}
+  .htext h1{font-size:34px}
+  .cd{gap:5px}
+  .cbox b{font-size:20px}
 }
-@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout{animation:none}.page{transition:none}}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;translate:0 0}.zin,.zout,.char{animation:none}.page{transition:none}}
 </style>
 </head>
 <body>
@@ -195,11 +215,51 @@ input[type=date]{max-width:100%}
 <div id="app" class="hidden">
   <button class="btn blue fab" id="chatBtn">💬 Chat</button>
 
-  <header class="clay hero reveal">
+  <header class="clay hero reveal" id="heroCard">
     <button class="btn small logout" id="logoutBtn">Logout</button>
-    <h1>our little universe ✨️</h1>
-    <p class="names">Antra 💖 Prince</p>
-    <p class="count">Together for <b id="days">0</b> days 🎂 · since 4 March 2026</p>
+    <div class="hrow">
+      <div class="char boy">
+        <svg viewBox="0 0 120 150">
+          <defs>
+            <radialGradient id="sk" cx=".4" cy=".35"><stop offset="0" stop-color="#ffe3c8"/><stop offset="1" stop-color="#f3b28a"/></radialGradient>
+            <linearGradient id="bsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b5e0ff"/><stop offset="1" stop-color="#6fb4f0"/></linearGradient>
+          </defs>
+          <rect x="26" y="98" width="68" height="50" rx="28" fill="url(#bsh)"/>
+          <rect x="46" y="86" width="28" height="18" rx="9" fill="#f3b28a"/>
+          <circle cx="60" cy="58" r="38" fill="url(#sk)"/>
+          <path d="M20 54 Q20 14 60 14 Q100 14 100 54 Q90 34 60 34 Q34 36 20 54Z" fill="#3b2f4a"/>
+          <circle cx="46" cy="62" r="5" fill="#3b2f4a"/><circle cx="74" cy="62" r="5" fill="#3b2f4a"/>
+          <circle cx="40" cy="74" r="6" fill="#ff9fc0" opacity=".7"/><circle cx="80" cy="74" r="6" fill="#ff9fc0" opacity=".7"/>
+          <path d="M50 76 Q60 86 70 76" stroke="#3b2f4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="htext">
+        <h1>our little universe ✨️</h1>
+        <p class="names">Antra 💖 Prince</p>
+        <p class="count">Together for <b id="days">0</b> days 🎂</p>
+        <p class="tapmore">👆 tap karke dates dekho</p>
+      </div>
+      <div class="char girl">
+        <svg viewBox="0 0 120 150">
+          <defs>
+            <radialGradient id="gsk" cx=".4" cy=".35"><stop offset="0" stop-color="#ffe6d0"/><stop offset="1" stop-color="#f5b596"/></radialGradient>
+            <linearGradient id="gsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc2dc"/><stop offset="1" stop-color="#ff8fbd"/></linearGradient>
+          </defs>
+          <path d="M16 70 Q12 10 60 10 Q108 10 104 70 L110 124 Q60 142 10 124 Z" fill="#4a2f2a"/>
+          <rect x="30" y="98" width="60" height="52" rx="24" fill="url(#gsh)"/>
+          <circle cx="60" cy="60" r="36" fill="url(#gsk)"/>
+          <path d="M22 60 Q24 26 60 26 Q96 26 98 60 Q82 42 60 44 Q38 42 22 60Z" fill="#4a2f2a"/>
+          <circle cx="46" cy="66" r="10" fill="none" stroke="#5b4a6b" stroke-width="2.5"/>
+          <circle cx="74" cy="66" r="10" fill="none" stroke="#5b4a6b" stroke-width="2.5"/>
+          <line x1="56" y1="66" x2="64" y2="66" stroke="#5b4a6b" stroke-width="2.5"/>
+          <circle cx="46" cy="66" r="3" fill="#3b2f4a"/><circle cx="74" cy="66" r="3" fill="#3b2f4a"/>
+          <circle cx="38" cy="78" r="6" fill="#ff9fc0" opacity=".7"/><circle cx="82" cy="78" r="6" fill="#ff9fc0" opacity=".7"/>
+          <path d="M51 82 Q60 91 69 82" stroke="#b5487a" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M92 30 l8 -6 l0 12z M92 30 l-8 -6 l0 12z" fill="#ff5c99"/>
+          <circle cx="92" cy="30" r="3" fill="#ff5c99"/>
+        </svg>
+      </div>
+    </div>
   </header>
 
   <section>
@@ -253,7 +313,16 @@ input[type=date]{max-width:100%}
   </aside>
 </div>
 
-<!-- ZOOM OVERLAY -->
+<!-- DATES OVERLAY (hero expanded) -->
+<div class="zoom hidden" id="hbig">
+  <div class="zbox dbox clay" id="hbox">
+    <button class="btn small zx" id="hbClose">✖</button>
+    <h2>Our Dates 💖</h2>
+    <div id="hbItems"></div>
+  </div>
+</div>
+
+<!-- ZOOM OVERLAY (photo/video) -->
 <div class="zoom hidden" id="zoom">
   <div class="zbox" id="zoomBox">
     <button class="btn small zx" id="zClose">✖</button>
@@ -276,7 +345,7 @@ input[type=date]{max-width:100%}
   </div>
 </div>
 
-<!-- DIARY MODAL (2 photos + text) -->
+<!-- DIARY MODAL -->
 <div class="modal hidden" id="diaryModal">
   <div class="clay">
     <h2 id="dmTitle">Naya page 📖</h2>
@@ -404,10 +473,104 @@ $("googleBtn").onclick = async () => {
     }
   } catch (e) { $("loginErr").textContent = e.message; }
 };
-$("logoutBtn").onclick = async () => { await signOut(auth); gatePassed = false; listening = false; showScreen(); };
+$("logoutBtn").onclick = async e => {
+  e.stopPropagation();
+  await signOut(auth); gatePassed = false; listening = false; showScreen();
+};
 onAuthStateChanged(auth, () => showScreen());
 
 $("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
+
+/* ---------- Dates + countdowns ---------- */
+const EVENTS = [
+  { k: "ann",    title: "💞 Anniversary",       sub: "04-03-26", m: 3,  d: 4,  cls: "c1" },
+  { k: "antra",  title: "🎂 Antra ka Birthday", sub: "17 Oct",   m: 10, d: 17, cls: "c2" },
+  { k: "prince", title: "🎁 Prince ka Birthday", sub: "30 Jan",  m: 1,  d: 30, cls: "c3" }
+];
+function nextOccur(m, d) {
+  const now = new Date();
+  let t = new Date(now.getFullYear(), m - 1, d);
+  if (t <= now) t = new Date(now.getFullYear() + 1, m - 1, d);
+  return t;
+}
+function isToday(m, d) {
+  const n = new Date();
+  return n.getMonth() + 1 === m && n.getDate() === d;
+}
+const openSet = new Set();
+
+function renderDates() {
+  $("hbItems").innerHTML = EVENTS.map(ev => `
+    <div class="ditem ${ev.cls}" data-k="${ev.k}">
+      <div class="dit-head"><span>${ev.title}</span><small>${ev.sub}</small></div>
+      <div class="cdwrap ${openSet.has(ev.k) ? "" : "hidden"}">
+        <button class="xbtn" data-x="${ev.k}" title="Band karo">×</button>
+        <div class="cd" data-cd="${ev.k}"></div>
+      </div>
+    </div>`).join("");
+  tickCd();
+}
+
+function tickCd() {
+  EVENTS.forEach(ev => {
+    const el = document.querySelector(`[data-cd="${ev.k}"]`);
+    if (!el) return;
+    if (isToday(ev.m, ev.d)) {
+      el.outerHTML = `<div class="cdmsg" data-cd="${ev.k}">Aaj hai! 🎉 Happy ${ev.k === "ann" ? "Anniversary" : "Birthday"} 💖</div>`;
+      return;
+    }
+    const diff = nextOccur(ev.m, ev.d) - Date.now();
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff % 86400000 / 3600000);
+    const mi = Math.floor(diff % 3600000 / 60000);
+    const s = Math.floor(diff % 60000 / 1000);
+    const parts = [[d, "din"], [h, "ghante"], [mi, "min"], [s, "sec"]];
+    if (el.classList.contains("cdmsg")) {
+      el.outerHTML = `<div class="cd" data-cd="${ev.k}"></div>`;
+    }
+    const cur = document.querySelector(`[data-cd="${ev.k}"]`);
+    cur.innerHTML = parts.map(([v, l]) => `<div class="cbox"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></div>`).join("");
+  });
+}
+setInterval(() => { if (!$("hbig").classList.contains("hidden")) tickCd(); }, 1000);
+
+$("hbItems").onclick = e => {
+  const x = e.target.closest(".xbtn");
+  const it = e.target.closest(".ditem");
+  if (!it) return;
+  const k = it.dataset.k;
+  if (x) openSet.delete(k);
+  else openSet.has(k) ? openSet.delete(k) : openSet.add(k);
+  it.querySelector(".cdwrap").classList.toggle("hidden", !openSet.has(k));
+  tickCd();
+};
+
+function openHero() {
+  const r = $("heroCard").getBoundingClientRect();
+  const box = $("hbox");
+  box.style.setProperty("--fx", (r.left + r.width / 2 - innerWidth / 2) + "px");
+  box.style.setProperty("--fy", (r.top + r.height / 2 - innerHeight / 2) + "px");
+  renderDates();
+  $("hbig").classList.remove("hidden");
+  box.classList.remove("zout", "zin");
+  void box.offsetWidth;
+  box.classList.add("zin");
+}
+function closeHero() {
+  const box = $("hbox");
+  box.classList.remove("zin");
+  box.classList.add("zout");
+  setTimeout(() => {
+    $("hbig").classList.add("hidden");
+    box.classList.remove("zout");
+  }, 400);
+}
+$("heroCard").onclick = e => {
+  if (e.target.closest("button")) return;
+  openHero();
+};
+$("hbClose").onclick = closeHero;
+$("hbig").onclick = e => { if (e.target.id === "hbig") closeHero(); };
 
 /* ---------- Live listeners ---------- */
 function startListeners() {
@@ -415,7 +578,6 @@ function startListeners() {
   listening = true;
   const onErr = where => e => { console.error(where, e); toast(`${where} error: ${e.code || e.message}`); };
 
-  // Scrapbook
   onSnapshot(query(collection(db, "photos"), orderBy("createdAt", "desc")), snap => {
     photoMap.clear();
     snap.docs.forEach(d => photoMap.set(d.id, d.data()));
@@ -429,14 +591,12 @@ function startListeners() {
     }).join("") : `<p class="empty">Abhi koi photo nahi… pehli yaad add karo 📸</p>`;
   }, onErr("Photos"));
 
-  // Diary (oldest page first)
   onSnapshot(query(collection(db, "diary"), orderBy("createdAt", "asc")), snap => {
     entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (pendingGoLast) { cur = Math.max(0, entries.length - 1); pendingGoLast = false; }
     renderBook();
   }, onErr("Diary"));
 
-  // Videos
   onSnapshot(query(collection(db, "videos"), orderBy("createdAt", "desc")), snap => {
     videoMap.clear();
     snap.docs.forEach(d => videoMap.set(d.id, d.data()));
@@ -449,7 +609,6 @@ function startListeners() {
     }).join("") : `<p class="empty">Abhi koi video nahi… pehli video add karo 🎬</p>`;
   }, onErr("Videos"));
 
-  // Chat
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
     $("msgs").innerHTML = snap.docs.map(d => {
@@ -460,7 +619,7 @@ function startListeners() {
   }, onErr("Chat"));
 }
 
-/* ---------- Retro diary book (flip) ---------- */
+/* ---------- Retro diary book ---------- */
 function renderBook() {
   const book = $("book");
   if (!entries.length) {
@@ -482,7 +641,6 @@ function renderBook() {
   updateFlips(-1);
   updateNav();
 }
-
 function updateFlips(keep) {
   const pages = [...$("book").children], n = pages.length;
   pages.forEach((p, i) => {
@@ -516,7 +674,7 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Zoom (tap to enlarge, close returns to place) ---------- */
+/* ---------- Zoom (photo/video) ---------- */
 function openZoom(el, html, type, id) {
   zoomRect = el.getBoundingClientRect();
   const box = $("zoomBox");
@@ -556,7 +714,6 @@ $("zoomBody").onclick = async e => {
     await removeItem(type, id);
   }
 };
-
 $("board").onclick = e => {
   const c = e.target.closest(".polaroid"); if (!c) return;
   const m = photoMap.get(c.dataset.id); if (!m) return;
@@ -569,7 +726,6 @@ $("videos").onclick = e => {
   openZoom(c, `<video class="zvid" src="${esc(m.url)}" controls playsinline autoplay></video>
     <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "video", c.dataset.id);
 };
-
 function editItem(type, id) {
   if (type === "photo") openPhotoModal(id, photoMap.get(id));
   else if (type === "video") openVideoModal(id);
@@ -636,7 +792,7 @@ $("pSave").onclick = async () => {
   } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
 
-/* ---------- Diary modal (2 photos + text) ---------- */
+/* ---------- Diary modal ---------- */
 function setDiaryPhoto(i, src) {
   diaryPhotos[i] = src || null;
   $("dmP" + i).src = diaryPhotos[i] || "";
@@ -655,7 +811,6 @@ function openDiaryModal(id = null) {
   $("diaryModal").classList.remove("hidden");
 }
 const closeDiary = () => $("diaryModal").classList.add("hidden");
-
 $("newPageBtn").onclick = () => openDiaryModal();
 $("editPageBtn").onclick = () => { if (entries[cur]) openDiaryModal(entries[cur].id); };
 $("delPageBtn").onclick = async () => {
@@ -696,7 +851,6 @@ function setProg(p) {
   $("vBar").style.width = v + "%";
   $("vPct").textContent = v + "% upload ho gaya";
 }
-
 function openVideoModal(id = null) {
   const m = id ? videoMap.get(id) : null;
   videoEditId = id; videoFile = null;
@@ -712,7 +866,6 @@ function openVideoModal(id = null) {
   $("videoModal").classList.remove("hidden");
 }
 const closeVideo = () => { $("videoModal").classList.add("hidden"); $("vStatus").textContent = ""; };
-
 $("addVideo").onclick = () => openVideoModal();
 $("vCancel").onclick = closeVideo;
 $("vFile").onchange = e => {
@@ -725,7 +878,6 @@ $("vFile").onchange = e => {
   videoFile = f;
   $("vInfo").textContent = `${f.name} · ${(f.size / 1048576).toFixed(1)} MB`;
 };
-
 $("vSave").onclick = async () => {
   if (uploading) return;
   const caption = $("vCaption").value.trim(), date = $("vDate").value;
@@ -748,11 +900,10 @@ $("vSave").onclick = async () => {
     const r = ref(storage, path);
     const task = uploadBytesResumable(r, videoFile, { contentType: videoFile.type || "video/mp4" });
 
-    // 20 sec tak progress na badhe to upload cancel
-    let timedOut = false, stuck = null;
+    let stuck = null;
     const watch = () => {
       clearTimeout(stuck);
-      stuck = setTimeout(() => { timedOut = true; task.cancel(); }, 20000);
+      stuck = setTimeout(() => task.cancel(), 20000);
     };
     watch();
 
@@ -774,19 +925,15 @@ $("vSave").onclick = async () => {
     toast("Video save ho gayi 🎬");
   } catch (err) {
     console.error("Video upload", err);
-    const msg = timedOutMsg(err);
-    $("vStatus").textContent = msg;
+    $("vStatus").textContent = err?.code === "storage/canceled"
+      ? "Upload 20 sec se atka tha. Storage enable/billing/rules check karo."
+      : "Error: " + (err?.code || err?.message || "unknown");
   } finally {
     uploading = false;
     $("vSave").disabled = false;
     $("vProgWrap").classList.add("hidden");
   }
 };
-
-function timedOutMsg(err) {
-  if (err?.code === "storage/canceled") return "Upload 20 sec se atka tha. Storage enable/billing/rules check karo, ya dusre network par try karo.";
-  return "Error: " + (err?.code || err?.message || "unknown");
-  }
 
 /* ---------- Chat ---------- */
 $("chatBtn").onclick = () => $("chat").classList.toggle("open");
@@ -804,4 +951,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-          </html>
+                                                                                                          </html>
