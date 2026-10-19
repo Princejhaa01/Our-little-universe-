@@ -55,7 +55,6 @@ section{margin-bottom:60px}
 .char{width:86px;height:116px;animation:float 3.2s ease-in-out infinite}
 .char.girl{animation-delay:-1.6s}
 .char svg{width:100%;height:100%;filter:drop-shadow(4px 6px 6px rgba(120,90,140,.25))}
-.char img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(4px 6px 6px rgba(120,90,140,.25))}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
 .htext{text-align:center}
 .htext h1{font-family:Caveat,cursive;font-size:40px;line-height:1.05}
@@ -63,7 +62,7 @@ section{margin-bottom:60px}
 .count{margin-top:6px;font-size:16px}
 .tapmore{margin-top:8px;font-size:13px;opacity:.6}
 
-/* Hero expanded overlay */
+/* Overlays */
 .zoom{position:fixed;inset:0;background:rgba(60,40,80,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:150;padding:14px}
 .zbox{position:relative;background:var(--cream);border-radius:28px;padding:18px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:12px 12px 30px rgba(60,40,80,.35)}
 .zin{animation:zin .45s cubic-bezier(.2,.8,.2,1) both}
@@ -162,12 +161,17 @@ input[type=date]{max-width:100%}
 /* Chat */
 .chat{position:fixed;top:0;right:0;bottom:0;width:min(370px,100%);z-index:90;border-radius:32px 0 0 32px;display:flex;flex-direction:column;padding:20px;transform:translateX(110%);transition:transform .35s ease}
 .chat.open{transform:translateX(0)}
-.chat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.chat-head h3{font-family:Caveat,cursive;font-size:30px}
+.chat-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.chat-head h3{font-family:Caveat,cursive;font-size:30px;line-height:1}
+.pstat{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.85;margin-top:4px}
+.dot{width:9px;height:9px;border-radius:50%;background:#bbb;flex:0 0 auto}
+.dot.on{background:#38c172;box-shadow:0 0 0 3px rgba(56,193,114,.25)}
 #msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
-.msg{max-width:80%;background:#fff;padding:10px 14px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh)}
+.msg{max-width:80%;background:#fff;padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh)}
 .msg small{font-size:11px;opacity:.6}
 .msg.me{align-self:flex-end;background:var(--pink);border-radius:18px 18px 4px 18px}
+.mt{font-size:11px;text-align:right;opacity:.7;margin-top:4px}
+.mt.seen{color:#2f9e63;opacity:1;font-weight:600}
 #chatForm{display:flex;gap:8px;margin-top:12px}
 #chatForm input{margin:0}
 
@@ -220,44 +224,82 @@ input[type=date]{max-width:100%}
     <button class="btn small logout" id="logoutBtn">Logout</button>
     <div class="hrow">
       <div class="char boy">
-        <svg viewBox="0 0 120 150">
-          <defs>
-            <radialGradient id="bsk" cx=".4" cy=".35"><stop offset="0" stop-color="#ffd9a8"/><stop offset="1" stop-color="#e9a86a"/></radialGradient>
-            <linearGradient id="bshirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset="1" stop-color="#f0b21a"/></linearGradient>
-            <radialGradient id="bhair" cx=".4" cy=".3"><stop offset="0" stop-color="#c8643a"/><stop offset="1" stop-color="#8c3a1c"/></radialGradient>
-          </defs>
-          <!-- body + yellow t-shirt -->
-          <path d="M14 150 Q14 100 60 96 Q106 100 106 150 Z" fill="url(#bshirt)"/>
-          <!-- neck -->
-          <rect x="50" y="84" width="20" height="16" rx="8" fill="#e9a86a"/>
-          <!-- ears -->
-          <circle cx="22" cy="58" r="8" fill="#e9a86a"/>
-          <circle cx="98" cy="58" r="8" fill="#e9a86a"/>
-          <!-- head -->
-          <circle cx="60" cy="56" r="36" fill="url(#bsk)"/>
-          <!-- hair (clay tufts) -->
-          <path d="M24 56 Q18 18 60 16 Q102 18 96 56 Q92 34 74 30 Q60 36 46 30 Q28 34 24 56Z" fill="url(#bhair)"/>
-          <path d="M38 34 Q50 22 66 26 Q56 30 46 40Z" fill="#a14a26"/>
-          <!-- eyebrows -->
-          <path d="M40 44 Q46 40 52 44" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M68 44 Q74 40 80 44" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <!-- eyes -->
-          <circle cx="46" cy="54" r="4.5" fill="#3b2a1e"/>
-          <circle cx="74" cy="54" r="4.5" fill="#3b2a1e"/>
-          <!-- nose -->
-          <circle cx="60" cy="64" r="3.5" fill="#d98a55"/>
-          <!-- smile -->
-          <path d="M50 74 Q60 82 70 74" stroke="#8c3a1c" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <!-- cheeks -->
-          <circle cx="40" cy="68" r="5" fill="#ff9fc0" opacity=".5"/>
-          <circle cx="80" cy="68" r="5" fill="#ff9fc0" opacity=".5"/>
-          <!-- thumbs-up arm -->
-          <rect x="88" y="104" width="16" height="34" rx="8" fill="#e9a86a" transform="rotate(-18 96 104)"/>
-          <circle cx="98" cy="96" r="9" fill="#e9a86a"/>
-          <rect x="94" y="84" width="8" height="14" rx="4" fill="#e9a86a"/>
-          <!-- red heart -->
-          <path d="M96 22 C96 16 104 14 106 20 C108 14 116 16 116 22 C116 30 106 36 106 36 C106 36 96 30 96 22Z" fill="#e8483f"/>
-        </svg>
+<svg viewBox="0 0 160 180">
+  <defs>
+    <radialGradient id="cskin" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#ffe0b8"/><stop offset=".6" stop-color="#f2b07f"/><stop offset="1" stop-color="#d88f5c"/></radialGradient>
+    <radialGradient id="chair" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#e07a50"/><stop offset=".6" stop-color="#b04d2b"/><stop offset="1" stop-color="#7a2e18"/></radialGradient>
+    <linearGradient id="cshirt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdc55"/><stop offset=".6" stop-color="#f7b82a"/><stop offset="1" stop-color="#d98f12"/></linearGradient>
+    <radialGradient id="cheart" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff8a7c"/><stop offset=".6" stop-color="#e5443a"/><stop offset="1" stop-color="#b52218"/></radialGradient>
+  </defs>
+
+  <!-- resting arm (left) -->
+  <path d="M20 180 Q14 130 44 116 Q56 122 62 140 L58 180 Z" fill="url(#cshirt)"/>
+  <ellipse cx="72" cy="166" rx="18" ry="11" fill="url(#cskin)"/>
+  <path d="M62 162 Q70 158 80 162" stroke="#c97a4a" stroke-width="1.5" fill="none" opacity=".5"/>
+
+  <!-- body / t-shirt -->
+  <path d="M18 180 Q14 120 50 106 Q80 96 110 106 Q146 120 142 180 Z" fill="url(#cshirt)"/>
+  <path d="M40 128 Q56 118 66 124" stroke="#fff3a0" stroke-width="5" fill="none" stroke-linecap="round" opacity=".5"/>
+  <path d="M62 104 Q80 120 98 104 Q80 112 62 104Z" fill="#d98f12" opacity=".7"/>
+
+  <!-- neck -->
+  <rect x="68" y="86" width="24" height="24" rx="10" fill="#e3a06c"/>
+
+  <!-- raised arm with thumbs-up (right) -->
+  <path d="M108 110 Q130 112 134 140 L124 158 Q108 140 104 124Z" fill="url(#cshirt)"/>
+  <path d="M126 150 Q134 130 132 104" stroke="url(#cskin)" stroke-width="17" fill="none" stroke-linecap="round"/>
+  <ellipse cx="134" cy="92" rx="15" ry="15" fill="url(#cskin)"/>
+  <rect x="128" y="58" width="13" height="30" rx="6.5" fill="url(#cskin)"/>
+  <path d="M124 102 Q134 106 144 102" stroke="#c97a4a" stroke-width="1.5" fill="none" opacity=".5"/>
+  <path d="M126 96 Q134 99 142 96" stroke="#c97a4a" stroke-width="1.2" fill="none" opacity=".4"/>
+
+  <!-- ears -->
+  <circle cx="38" cy="62" r="10" fill="url(#cskin)"/>
+  <circle cx="122" cy="62" r="10" fill="url(#cskin)"/>
+  <circle cx="38" cy="62" r="4" fill="#d88f5c" opacity=".5"/>
+  <circle cx="122" cy="62" r="4" fill="#d88f5c" opacity=".5"/>
+
+  <!-- head -->
+  <ellipse cx="80" cy="60" rx="44" ry="42" fill="url(#cskin)"/>
+  <ellipse cx="62" cy="36" rx="16" ry="8" fill="#fff3d6" opacity=".15"/>
+
+  <!-- hair (clay volume) -->
+  <path d="M34 58 Q28 18 62 16 Q82 8 100 16 Q132 20 126 58 Q120 42 106 38 Q92 46 78 36 Q60 42 50 38 Q38 44 34 58Z" fill="url(#chair)"/>
+  <circle cx="50" cy="28" r="9" fill="url(#chair)"/>
+  <circle cx="72" cy="20" r="8" fill="url(#chair)"/>
+  <circle cx="106" cy="24" r="9" fill="url(#chair)"/>
+  <ellipse cx="66" cy="22" rx="9" ry="4" fill="#f09a70" opacity=".5"/>
+  <ellipse cx="104" cy="20" rx="6" ry="3" fill="#f09a70" opacity=".5"/>
+  <path d="M36 50 Q32 66 40 74 Q40 60 46 52Z" fill="url(#chair)"/>
+  <path d="M124 50 Q128 66 120 74 Q120 60 114 52Z" fill="url(#chair)"/>
+
+  <!-- eyebrows -->
+  <path d="M56 46 Q64 40 72 46" stroke="#7a2e18" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M88 46 Q96 40 104 46" stroke="#7a2e18" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- eyes -->
+  <circle cx="64" cy="60" r="5.5" fill="#2a1d14"/>
+  <circle cx="96" cy="60" r="5.5" fill="#2a1d14"/>
+  <circle cx="66" cy="58" r="1.8" fill="#fff"/>
+  <circle cx="98" cy="58" r="1.8" fill="#fff"/>
+
+  <!-- nose -->
+  <ellipse cx="80" cy="72" rx="5" ry="4" fill="#e09464"/>
+  <ellipse cx="78.5" cy="70.5" rx="1.5" ry="1" fill="#fff2dc" opacity=".7"/>
+
+  <!-- smile -->
+  <path d="M68 84 Q80 94 92 84" stroke="#8a3c20" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+  <!-- cheeks -->
+  <circle cx="54" cy="78" r="6" fill="#ff9a9a" opacity=".45"/>
+  <circle cx="106" cy="78" r="6" fill="#ff9a9a" opacity=".45"/>
+
+  <!-- red clay heart -->
+  <g transform="translate(134 26) scale(1.3)">
+    <path d="M0 6 C-8 0 -14 -4 -14 -9 C-14 -15 -6 -16 0 -9 C6 -16 14 -15 14 -9 C14 -4 8 0 0 6Z" fill="url(#cheart)"/>
+    <ellipse cx="-7" cy="-10" rx="2.5" ry="1.5" fill="#fff" opacity=".6"/>
+  </g>
+</svg>
       </div>
       <div class="htext">
         <h1>our little universe ✨️</h1>
@@ -328,7 +370,10 @@ input[type=date]{max-width:100%}
 
   <aside class="clay chat" id="chat">
     <div class="chat-head">
-      <h3>our chat 💌</h3>
+      <div>
+        <h3>our chat 💌</h3>
+        <div class="pstat"><span class="dot" id="pDot"></span><span id="pStat">Partner ka status…</span></div>
+      </div>
       <button class="btn small" id="chatClose">✖</button>
     </div>
     <div id="msgs"></div>
@@ -413,7 +458,7 @@ input[type=date]{max-width:100%}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
@@ -430,6 +475,7 @@ const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const MAX_VIDEO = 40 * 1024 * 1024;
+const ONLINE_WINDOW = 75000; // is time se purana heartbeat = offline
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -442,6 +488,9 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today = () => new Date().toISOString().slice(0, 10);
 const photosOf = m => Array.isArray(m?.srcs) ? m.srcs : (m?.src ? [m.src] : []);
+const emailKey = e => String(e).replace(/[^a-z0-9]/gi, "_");
+const fmtTime = t => new Date(t).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+const firstName = u => (u?.displayName || "Me").split(" ")[0];
 
 function toast(msg) {
   const t = document.createElement("div");
@@ -457,6 +506,7 @@ let diaryEditId = null, diaryPhotos = [null, null], pendingGoLast = false;
 let videoEditId = null, videoFile = null, uploading = false;
 let zoomRect = null, zoomState = {};
 let entries = [], cur = 0;
+let lastChatDocs = [], lastPartner = null, presenceTimer = null;
 const photoMap = new Map(), videoMap = new Map();
 
 /* ---------- Scroll reveal + progress ---------- */
@@ -478,7 +528,7 @@ function showScreen() {
   $("gate").classList.toggle("hidden", gatePassed);
   $("login").classList.toggle("hidden", !gatePassed || ok);
   $("app").classList.toggle("hidden", !(gatePassed && ok));
-  if (gatePassed && ok) { startListeners(); requestAnimationFrame(observeReveals); }
+  if (gatePassed && ok) { startListeners(); startPresence(); requestAnimationFrame(observeReveals); }
 }
 
 $("gateBtn").onclick = () => {
@@ -501,11 +551,48 @@ $("googleBtn").onclick = async () => {
 };
 $("logoutBtn").onclick = async e => {
   e.stopPropagation();
+  await setPresence(false);
   await signOut(auth); gatePassed = false; listening = false; showScreen();
 };
 onAuthStateChanged(auth, () => showScreen());
 
 $("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
+
+/* ---------- Presence (active / last seen) ---------- */
+async function setPresence(online) {
+  const u = auth.currentUser;
+  if (!u) return;
+  try {
+    await setDoc(doc(db, "presence", emailKey(u.email)),
+      { email: u.email, name: firstName(u), online, updatedAt: Date.now() }, { merge: true });
+  } catch (e) { console.error("presence", e); }
+}
+
+function startPresence() {
+  if (presenceTimer) return;
+  setPresence(!document.hidden);
+  presenceTimer = setInterval(() => { if (!document.hidden) setPresence(true); }, 30000);
+  document.addEventListener("visibilitychange", () => setPresence(!document.hidden));
+  addEventListener("pagehide", () => setPresence(false));
+
+  const me = auth.currentUser.email;
+  const partnerEmail = ALLOWED_EMAILS.find(e => e !== me);
+  onSnapshot(doc(db, "presence", emailKey(partnerEmail)), snap => {
+    lastPartner = snap.data() || null;
+    renderPresence();
+  }, e => console.error("partner presence", e));
+  setInterval(renderPresence, 20000);
+}
+
+function renderPresence() {
+  const p = lastPartner;
+  const name = p?.name || "Partner";
+  const active = !!p?.online && Date.now() - (p.updatedAt || 0) < ONLINE_WINDOW;
+  $("pDot").classList.toggle("on", active);
+  $("pStat").textContent = !p ? `${name} · abhi tak online nahi hue`
+    : active ? `${name} · Active now 🟢`
+    : `${name} · Last seen ${fmtTime(p.updatedAt)}`;
+}
 
 /* ---------- Dates + countdowns ---------- */
 const EVENTS = [
@@ -637,12 +724,33 @@ function startListeners() {
 
   onSnapshot(query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(100)), snap => {
     const uid = auth.currentUser?.uid;
+    lastChatDocs = snap.docs;
     $("msgs").innerHTML = snap.docs.map(d => {
-      const m = d.data();
-      return `<div class="msg ${m.uid === uid ? "me" : ""}"><small>${esc(m.name)}</small><div>${esc(m.text)}</div></div>`;
+      const m = d.data(), mine = m.uid === uid;
+      let tick = "";
+      if (mine) {
+        tick = m.seen
+          ? `<div class="mt seen">✓✓ Seen${m.seenAt ? " " + fmtTime(m.seenAt) : ""}</div>`
+          : `<div class="mt">✓ Sent</div>`;
+      }
+      return `<div class="msg ${mine ? "me" : ""}"><small>${esc(m.name)}</small><div>${esc(m.text)}</div>${tick}</div>`;
     }).join("");
     $("msgs").scrollTop = $("msgs").scrollHeight;
+    markSeen();
   }, onErr("Chat"));
+}
+
+/* ---------- Seen (read receipts) ---------- */
+function markSeen() {
+  if (!$("chat").classList.contains("open")) return;
+  const uid = auth.currentUser?.uid;
+  lastChatDocs.forEach(d => {
+    const m = d.data();
+    if (m.uid !== uid && !m.seen) {
+      updateDoc(doc(db, "messages", d.id), { seen: true, seenAt: Date.now() })
+        .catch(e => console.error("seen", e));
+    }
+  });
 }
 
 /* ---------- Retro diary book ---------- */
@@ -962,7 +1070,10 @@ $("vSave").onclick = async () => {
 };
 
 /* ---------- Chat ---------- */
-$("chatBtn").onclick = () => $("chat").classList.toggle("open");
+$("chatBtn").onclick = () => {
+  const open = $("chat").classList.toggle("open");
+  if (open) markSeen();
+};
 $("chatClose").onclick = () => $("chat").classList.remove("open");
 $("chatForm").onsubmit = async e => {
   e.preventDefault();
@@ -971,10 +1082,10 @@ $("chatForm").onsubmit = async e => {
   $("chatIn").value = "";
   try {
     await addDoc(collection(db, "messages"), {
-      text, uid: u.uid, name: (u.displayName || "Me").split(" ")[0], createdAt: serverTimestamp()
+      text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false
     });
   } catch (err) { toast("Chat error: " + (err.code || err.message)); }
 };
 </script>
 </body>
-            </html>
+      </html>
