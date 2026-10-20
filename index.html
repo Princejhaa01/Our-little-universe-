@@ -8,12 +8,21 @@
 <meta name="theme-color" content="#ffd6e8">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--pink:#ffd6e8;--blue:#d6ecff;--mint:#d8f5e8;--lav:#e9dcff;--cream:#fff8ec;--ink:#5b4a6b;--sh:rgba(120,90,140,.25);
-  --cbg:linear-gradient(135deg,#ffe3ef,#fff8ec);--cme:#ffd6e8;--cother:#fff;--cink:#5b4a6b;--cinput:#fff;--caccent:#b5487a}
+:root{
+  --bg:linear-gradient(135deg,#ffe3ef,#e3f0ff 60%,#fff3d9);
+  --card:#fff;--cream:#fff8ec;--ink:#5b4a6b;--pink:#ffd6e8;--blue:#d6ecff;--sh:rgba(120,90,140,.25);
+  --cbg:linear-gradient(135deg,#ffe3ef,#fff8ec);--cme:#ffd6e8;--cother:#fff;--cink:#5b4a6b;--cinput:#fff;--caccent:#b5487a
+}
+/* App themes (home page) */
+html[data-app="blue"]{--bg:linear-gradient(135deg,#d6ecff,#f4f9ff);--card:#fff;--cream:#f4f9ff;--ink:#2e4a6b;--pink:#d6ecff;--blue:#e3f0ff}
+html[data-app="mint"]{--bg:linear-gradient(135deg,#d8f5e8,#f5fdf9);--card:#fff;--cream:#f5fdf9;--ink:#2f5a48;--pink:#c4f0da;--blue:#d8f5e8}
+html[data-app="lavender"]{--bg:linear-gradient(135deg,#e9dcff,#fbf8ff);--card:#fff;--cream:#fbf8ff;--ink:#4a3a6b;--pink:#dccaff;--blue:#e9dcff}
+html[data-app="dark"]{--bg:linear-gradient(135deg,#1d1828,#2b2236);--card:#3a3050;--cream:#2b2236;--ink:#f3ecff;--pink:#4a3d63;--blue:#3a3050;--sh:rgba(0,0,0,.45)}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
-  background:linear-gradient(135deg,#ffe3ef,#e3f0ff 60%,#fff3d9);background-attachment:fixed}
+html.lock,html.lock body{overflow:hidden}
+body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;background:var(--bg);background-attachment:fixed}
 .hidden{display:none!important}
 
 /* Chat themes (device-wise, chat box only) */
@@ -24,15 +33,15 @@ body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow
 
 /* Clay base */
 .clay{background:var(--cream);border-radius:32px;
-  box-shadow:12px 12px 24px var(--sh),-10px -10px 20px #fff,inset 6px 6px 12px rgba(255,255,255,.8),inset -6px -6px 12px rgba(160,120,180,.12)}
+  box-shadow:12px 12px 24px var(--sh),-10px -10px 20px rgba(255,255,255,.6),inset 6px 6px 12px rgba(255,255,255,.5),inset -6px -6px 12px rgba(160,120,180,.12)}
 .btn{font-family:inherit;font-weight:600;font-size:16px;border:none;border-radius:22px;padding:12px 22px;cursor:pointer;color:var(--ink);
-  background:var(--pink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff,inset 3px 3px 6px rgba(255,255,255,.7);transition:transform .15s;text-decoration:none;display:inline-block}
+  background:var(--pink);box-shadow:6px 6px 14px var(--sh),-5px -5px 12px rgba(255,255,255,.6),inset 3px 3px 6px rgba(255,255,255,.4);transition:transform .15s;text-decoration:none;display:inline-block}
 .btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(2px) scale(.98)}
 .btn.blue{background:var(--blue)}
 .btn.small{padding:6px 12px;font-size:14px;border-radius:14px}
 .btn:disabled{opacity:.4;cursor:default;transform:none}
-input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;border-radius:18px;background:#fff;color:var(--ink);font-size:16px;outline:none;margin-bottom:12px;
-  box-shadow:inset 4px 4px 8px rgba(0,0,0,.06),inset -4px -4px 8px #fff}
+input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;border-radius:18px;background:var(--card);color:var(--ink);font-size:16px;outline:none;margin-bottom:12px;
+  box-shadow:inset 4px 4px 8px rgba(0,0,0,.06),inset -4px -4px 8px rgba(255,255,255,.4)}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{max-width:380px;width:100%;padding:36px;text-align:center}
 .card h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
@@ -58,27 +67,27 @@ section{margin-bottom:60px}
 
 /* Menu button (3 lines, left side) */
 .menu-btn{position:fixed;top:16px;left:16px;z-index:60;width:50px;height:50px;border:none;border-radius:18px;cursor:pointer;background:var(--cream);
-  box-shadow:6px 6px 14px var(--sh),-5px -5px 12px #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+  box-shadow:6px 6px 14px var(--sh),-5px -5px 12px rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
 .menu-btn span{display:block;width:22px;height:3px;border-radius:3px;background:var(--ink)}
 .menu-btn span:nth-child(2){width:14px;align-self:flex-start;margin-left:14px}
 
 /* Left drawer */
-.dimmer{position:fixed;inset:0;background:rgba(60,40,80,.35);z-index:115}
+.dimmer{position:fixed;inset:0;background:rgba(60,40,80,.35);z-index:115;overscroll-behavior:contain}
 .drawer{position:fixed;top:0;left:0;bottom:0;width:min(300px,84vw);z-index:120;background:var(--cream);border-radius:0 32px 32px 0;
   padding:70px 18px 24px;transform:translateX(-110%);transition:transform .3s ease;display:flex;flex-direction:column;gap:12px;overflow-y:auto;
-  box-shadow:12px 0 30px rgba(60,40,80,.25)}
+  overscroll-behavior:contain;box-shadow:12px 0 30px rgba(60,40,80,.25)}
 .drawer.open{transform:none}
 .dr-title{font-family:Caveat,cursive;font-size:34px;line-height:1}
 .dr-user{font-size:15px;opacity:.8}
 .dr-item{width:100%;text-align:left}
 .dr-sec{font-size:14px;opacity:.7;margin-top:6px}
 .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.th{font-family:inherit;font-size:13px;border:none;border-radius:14px;padding:12px 4px 8px;cursor:pointer;color:var(--ink);background:#fff;
+.th{font-family:inherit;font-size:13px;border:none;border-radius:14px;padding:12px 4px 8px;cursor:pointer;color:var(--ink);background:var(--card);
   box-shadow:3px 3px 8px var(--sh);display:flex;flex-direction:column;align-items:center;gap:5px}
 .th i{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:inset 2px 2px 4px rgba(255,255,255,.6),2px 2px 5px var(--sh)}
 .th.on{outline:2px solid #ff8fb8}
 .dr-spacer{flex:1;min-height:20px}
-.dr-logout{width:100%;background:#e5443a;color:#fff;box-shadow:6px 6px 14px rgba(229,68,58,.35),-4px -4px 10px #fff;font-size:17px}
+.dr-logout{width:100%;background:#e5443a;color:#fff;box-shadow:6px 6px 14px rgba(229,68,58,.35),-4px -4px 10px rgba(255,255,255,.4);font-size:17px}
 
 /* Hero */
 .hero{position:relative;padding:58px 14px 22px;margin-bottom:34px;cursor:pointer;transition:transform .2s}
@@ -95,8 +104,8 @@ section{margin-bottom:60px}
 .tapmore{margin-top:8px;font-size:13px;opacity:.6}
 
 /* Overlays */
-.zoom{position:fixed;inset:0;background:rgba(60,40,80,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:150;padding:14px}
-.zbox{position:relative;background:var(--cream);border-radius:28px;padding:18px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:12px 12px 30px rgba(60,40,80,.35)}
+.zoom{position:fixed;inset:0;background:rgba(60,40,80,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:150;padding:14px;overscroll-behavior:contain}
+.zbox{position:relative;background:var(--cream);border-radius:28px;padding:18px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;overscroll-behavior:contain;box-shadow:12px 12px 30px rgba(60,40,80,.35)}
 .zin{animation:zin .45s cubic-bezier(.2,.8,.2,1) both}
 .zout{animation:zout .4s ease-in both}
 @keyframes zin{from{transform:translate(var(--fx),var(--fy)) scale(.15);opacity:0}to{transform:none;opacity:1}}
@@ -120,21 +129,34 @@ section{margin-bottom:60px}
 .locCard.big .loc-hint{height:auto}
 .locOv{align-items:center;justify-content:center}
 
+/* Tic Tac Toe */
+.game-box{width:100%;max-width:400px;padding:24px}
+.game-box h2{text-align:center;margin-top:0}
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px auto;width:min(300px,80vw)}
+.cell{aspect-ratio:1;border:none;border-radius:18px;background:var(--card);box-shadow:inset 3px 3px 6px rgba(0,0,0,.06),3px 3px 8px var(--sh);
+  font-family:Caveat,cursive;font-size:48px;font-weight:700;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.cell.x{color:#e5443a}
+.cell.o{color:#3a74b5}
+.cell.win{background:#fff1a0}
+.cell:disabled{cursor:default}
+.seats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.gstatus{text-align:center;font-size:15px;min-height:22px;margin-top:4px}
+
 /* Dates */
 .dbox h2{text-align:center;margin-top:6px}
 .ditem{border-radius:24px;padding:16px 18px;margin-bottom:14px;cursor:pointer;transition:transform .2s;
-  background:linear-gradient(135deg,#fff,#fdf3ff);box-shadow:6px 6px 14px var(--sh),-4px -4px 10px #fff,inset 3px 3px 6px rgba(255,255,255,.7)}
+  background:var(--card);box-shadow:6px 6px 14px var(--sh),-4px -4px 10px rgba(255,255,255,.5),inset 3px 3px 6px rgba(255,255,255,.4)}
 .ditem:active{transform:scale(.98)}
-.ditem.c1{background:linear-gradient(135deg,#ffe6f1,#fff)}
-.ditem.c2{background:linear-gradient(135deg,#e2f1ff,#fff)}
-.ditem.c3{background:linear-gradient(135deg,#dff8ea,#fff)}
+.ditem.c1{background:linear-gradient(135deg,#ffe6f1,var(--card))}
+.ditem.c2{background:linear-gradient(135deg,#e2f1ff,var(--card))}
+.ditem.c3{background:linear-gradient(135deg,#dff8ea,var(--card))}
 .dit-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:Caveat,cursive;font-size:26px;font-weight:700}
 .dit-head small{font-family:Fredoka,sans-serif;font-size:13px;font-weight:400;opacity:.7}
 .cdwrap{position:relative;margin-top:12px;padding-top:10px;border-top:2px dashed rgba(91,74,107,.2)}
 .xbtn{position:absolute;top:8px;right:0;width:30px;height:30px;border:none;border-radius:50%;cursor:pointer;font-size:16px;color:var(--ink);
-  background:var(--pink);box-shadow:3px 3px 8px var(--sh),-2px -2px 6px #fff}
+  background:var(--pink);box-shadow:3px 3px 8px var(--sh),-2px -2px 6px rgba(255,255,255,.5)}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
-.cbox{background:#fff;border-radius:16px;padding:8px 2px;text-align:center;box-shadow:inset 3px 3px 6px rgba(0,0,0,.05),2px 2px 6px rgba(120,90,140,.15)}
+.cbox{background:var(--card);border-radius:16px;padding:8px 2px;text-align:center;box-shadow:inset 3px 3px 6px rgba(0,0,0,.05),2px 2px 6px rgba(120,90,140,.15)}
 .cbox b{display:block;font-size:24px;font-family:Fredoka,sans-serif;color:#b5487a}
 .cbox small{font-size:11px;opacity:.7}
 .cdmsg{text-align:center;font-family:Caveat,cursive;font-size:26px;color:#b5487a;padding:6px 0;grid-column:1/-1}
@@ -151,7 +173,7 @@ section{margin-bottom:60px}
 .polaroid:active{transform:rotate(0) scale(.96)}
 .polaroid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;display:block}
 .tape{position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);width:50px;height:16px;background:rgba(255,226,140,.75);box-shadow:0 2px 4px rgba(0,0,0,.08)}
-.cap{font-family:Caveat,cursive;font-size:18px;text-align:center;margin-top:6px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cap{font-family:Caveat,cursive;font-size:18px;text-align:center;margin-top:6px;line-height:1.05;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#5b4a6b}
 .meta{font-size:12px;text-align:center;opacity:.65;margin-top:2px}
 
 /* Diary book */
@@ -160,7 +182,7 @@ section{margin-bottom:60px}
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   background-color:#fff1a0;background-image:repeating-linear-gradient(transparent 0 31px,#e8c35e 31px 32px);background-position:0 70px;
   border-radius:6px 22px 22px 6px;box-shadow:10px 10px 22px var(--sh);
-  padding:22px 18px 16px 50px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+  padding:22px 18px 16px 50px;display:flex;flex-direction:column;gap:10px;overflow:hidden;color:#5b4a6b}
 .page::before{content:"";position:absolute;left:38px;top:0;bottom:0;width:2px;background:#e88aa0;opacity:.7}
 .page::after{content:"";position:absolute;left:8px;top:0;bottom:0;width:22px;
   background:radial-gradient(circle,#fff8e0 0 3px,#7d6d45 4px 6px,transparent 7px) 0 6px/22px 30px repeat-y}
@@ -174,7 +196,7 @@ section{margin-bottom:60px}
 .pphotos img:only-child{flex:0 1 75%;max-width:75%;height:230px;transform:rotate(-1.5deg)}
 .ptext{font-family:Caveat,cursive;font-size:23px;line-height:32px;white-space:pre-wrap;word-break:break-word;overflow-y:auto;flex:1;min-height:0}
 .emptybook{height:100%;display:flex;align-items:center;justify-content:center;font-family:Caveat,cursive;font-size:28px;text-align:center;padding:20px;
-  background:#fff1a0;border-radius:6px 22px 22px 6px;box-shadow:10px 10px 22px var(--sh)}
+  background:#fff1a0;border-radius:6px 22px 22px 6px;box-shadow:10px 10px 22px var(--sh);color:#5b4a6b}
 .pnav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px}
 .pnav .info{font-family:Caveat,cursive;font-size:22px}
 .pactions{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
@@ -225,9 +247,9 @@ section{margin-bottom:60px}
 .ss-count{position:absolute;top:18px;left:18px;color:#fff;font-family:Caveat,cursive;font-size:24px}
 .ss-hint{position:absolute;bottom:100px;left:0;right:0;text-align:center;color:#ffffffaa;font-size:13px}
 
-/* Chat: full-screen dashboard (opaque, no home page behind) */
+/* Chat: full-screen dashboard */
 .chat{position:fixed;inset:0;width:100%;height:100%;z-index:90;background:var(--cbg);color:var(--cink);border-radius:0;
-  display:none;flex-direction:column;padding:16px 16px 14px}
+  display:none;flex-direction:column;padding:16px 16px 14px;overscroll-behavior:contain}
 .chat.open{display:flex;animation:chatIn .22s ease both}
 @keyframes chatIn{from{opacity:0}to{opacity:1}}
 .chat-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
@@ -240,7 +262,7 @@ section{margin-bottom:60px}
 .moods button{border:none;border-radius:14px;padding:4px 9px;font-size:12px;font-family:inherit;cursor:pointer;background:var(--cother);color:var(--cink);box-shadow:2px 2px 6px var(--sh)}
 .moods button.on{background:var(--pink);color:var(--ink);font-weight:600}
 .tiny-note{font-size:11px;opacity:.6;margin:0 0 6px}
-#msgs{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px}
+#msgs{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;padding:6px}
 .msg{position:relative;max-width:80%;background:var(--cother);padding:10px 14px 6px;border-radius:18px 18px 18px 4px;align-self:flex-start;box-shadow:4px 4px 10px var(--sh);
   touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:pointer}
 .msg small{font-size:11px;opacity:.6}
@@ -282,26 +304,27 @@ section{margin-bottom:60px}
 .rxpick button:active{transform:scale(1.2)}
 
 /* Collage */
-.colpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;max-height:50vh;overflow-y:auto}
+.colpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;max-height:50vh;overflow-y:auto;overscroll-behavior:contain}
 .colpick div{aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;opacity:.55;border:3px solid transparent}
 .colpick div.sel{opacity:1;border-color:#ff8fb8}
 .colpick img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* Modals */
-.modal{position:fixed;inset:0;background:rgba(60,40,80,.35);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.modal .clay{width:100%;max-width:400px;padding:28px;max-height:90vh;overflow-y:auto}
+.modal{position:fixed;inset:0;background:rgba(60,40,80,.35);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;overscroll-behavior:contain}
+.modal.top{z-index:140}
+.modal .clay{width:100%;max-width:400px;padding:28px;max-height:90vh;overflow-y:auto;overscroll-behavior:contain}
 .modal h2{margin-top:0}
 .pv{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;margin-bottom:12px;display:block}
 .dpv-wrap{position:relative;margin-bottom:12px}
 .dpv-wrap img{width:100%;max-height:200px;object-fit:cover;border-radius:14px;display:block}
 .dpv-wrap .btn{position:absolute;top:8px;right:8px;padding:4px 10px}
 .mbtns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
-.dtext{background:#fff1a0;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:30px;min-height:120px}
+.dtext{background:#fff1a0;border:2px dashed #e8c35e;font-family:Caveat,cursive;font-size:22px;line-height:30px;min-height:120px;color:#5b4a6b}
 .dlabel{font-size:14px;opacity:.7;margin:4px 0 6px;text-align:left}
 input[type=date]{max-width:100%}
 
 /* Toast */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 18px;border-radius:18px;box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center;color:#5b4a6b}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);padding:12px 18px;border-radius:18px;box-shadow:0 8px 20px var(--sh);z-index:300;max-width:90vw;text-align:center;color:var(--ink)}
 
 @media (max-width:600px){
   #app{padding:84px 12px 40px}
@@ -524,7 +547,9 @@ input[type=date]{max-width:100%}
   <button class="btn dr-item" id="nickBtn">👤 Nickname badlo</button>
   <button class="btn dr-item" id="locOpen">📍 Partner ki location</button>
   <button class="btn dr-item" id="locShareBtn">📡 Meri location share: OFF</button>
-  <div class="dr-sec">🎨 Chat ka theme</div>
+  <button class="btn dr-item" id="gameOpen">🎮 Tic Tac Toe khelo</button>
+
+  <div class="dr-sec">💬 Chat ka theme</div>
   <div class="themes" id="themes">
     <button class="th" data-th="pink" style="--sw:linear-gradient(135deg,#ffd6e8,#fff8ec)"><i></i>Pink</button>
     <button class="th" data-th="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f5faff)"><i></i>Blue</button>
@@ -532,12 +557,22 @@ input[type=date]{max-width:100%}
     <button class="th" data-th="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
     <button class="th" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
   </div>
+
+  <div class="dr-sec">🏠 App ka theme</div>
+  <div class="themes" id="appThemes">
+    <button class="th" data-ath="pink" style="--sw:linear-gradient(135deg,#ffd6e8,#fff8ec)"><i></i>Pink</button>
+    <button class="th" data-ath="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f4f9ff)"><i></i>Blue</button>
+    <button class="th" data-ath="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f5fdf9)"><i></i>Mint</button>
+    <button class="th" data-ath="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
+    <button class="th" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
+  </div>
+
   <div class="dr-spacer"></div>
   <button class="btn dr-logout" id="dLogout">🚪 Logout</button>
 </aside>
 
 <!-- NICKNAME MODAL -->
-<div class="modal hidden" id="nickModal">
+<div class="modal top hidden" id="nickModal">
   <div class="clay">
     <h2>Nickname 👤</h2>
     <p class="meta" style="margin-bottom:10px;text-align:left">Ye nickname partner ko dikhega (chat aur status me)</p>
@@ -545,6 +580,23 @@ input[type=date]{max-width:100%}
     <div class="mbtns">
       <button class="btn small" id="nickCancel">Cancel</button>
       <button class="btn small blue" id="nickSave">Save 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIC TAC TOE -->
+<div class="modal top hidden" id="gameModal">
+  <div class="clay game-box">
+    <h2>Tic Tac Toe 🎮</h2>
+    <div class="seats hidden" id="gSeats">
+      <button class="btn small" id="gSeatX">❌ Main X hoon</button>
+      <button class="btn small blue" id="gSeatO">⭕ Main O hoon</button>
+    </div>
+    <div class="gstatus" id="gStatus">…</div>
+    <div class="ttt" id="ttt"></div>
+    <div class="mbtns">
+      <button class="btn small" id="gClose">Band karo</button>
+      <button class="btn small blue" id="gReset">🔄 Naya game</button>
     </div>
   </div>
 </div>
@@ -678,7 +730,7 @@ input[type=date]{max-width:100%}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
@@ -703,6 +755,7 @@ const CHAT_MS = 14 * 3600e3;
 const VOICE_MAX_MS = 25000;
 const LAST_KEY = "ou_lastRead";
 const THEME_KEY = "ou_chatTheme";
+const APP_THEME_KEY = "ou_appTheme";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 const LOC_PUSH_MS = 60000;
@@ -745,30 +798,36 @@ const ss = { i: 0, timer: null };
 const photoMap = new Map();
 let nickOf = {};
 let partnerLoc = null, myLocShare = false, locWatchId = null, locLastPush = 0;
+let gameData = null;
 let lastRead = Number(localStorage.getItem(LAST_KEY));
 if (!lastRead) { lastRead = Date.now(); localStorage.setItem(LAST_KEY, String(lastRead)); }
 
 const partnerEmail = () => ALLOWED_EMAILS.find(e => e !== auth.currentUser?.email);
 const myEmail = () => auth.currentUser?.email;
 
-/* ---------- Back button = ek layer back ---------- */
+/* ---------- Back button = ek layer back + scroll lock ---------- */
 const layers = [];
 const hasLayer = n => layers.some(l => l.name === n);
+function syncLock() {
+  document.documentElement.classList.toggle("lock", layers.length > 0);
+}
 function openLayer(name, close, replace = false) {
-  if (replace && layers.length) { layers[layers.length - 1] = { name, close }; return; }
+  if (replace && layers.length) { layers[layers.length - 1] = { name, close }; syncLock(); return; }
   if (hasLayer(name)) return;
   layers.push({ name, close });
   history.pushState({ layer: name }, "");
+  syncLock();
 }
 function dismissLayer(name) {
   const i = layers.findIndex(l => l.name === name);
   if (i < 0) return;
   if (i === layers.length - 1) history.back();
-  else { layers[i].close(); layers.splice(i, 1); }
+  else { layers[i].close(); layers.splice(i, 1); syncLock(); }
 }
 addEventListener("popstate", () => {
   const top = layers.pop();
   if (top) top.close();
+  syncLock();
 });
 
 /* ---------- Scroll reveal + progress ---------- */
@@ -784,16 +843,31 @@ addEventListener("scroll", () => {
 }, { passive: true });
 
 /* ---------- Chat theme (device-wise) ---------- */
+const THEMES = ["pink", "blue", "mint", "lavender", "dark"];
 function applyTheme(k) {
-  const t = ["pink", "blue", "mint", "lavender", "dark"].includes(k) ? k : "pink";
+  const t = THEMES.includes(k) ? k : "pink";
   $("chat").dataset.ct = t;
   localStorage.setItem(THEME_KEY, t);
-  document.querySelectorAll(".th").forEach(b => b.classList.toggle("on", b.dataset.th === t));
+  document.querySelectorAll("[data-th]").forEach(b => b.classList.toggle("on", b.dataset.th === t));
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "pink");
 $("themes").onclick = e => {
   const b = e.target.closest("[data-th]");
   if (b) applyTheme(b.dataset.th);
+};
+
+/* ---------- App theme (home page, separate from chat theme) ---------- */
+function applyAppTheme(k) {
+  const t = THEMES.includes(k) ? k : "pink";
+  if (t === "pink") document.documentElement.removeAttribute("data-app");
+  else document.documentElement.dataset.app = t;
+  localStorage.setItem(APP_THEME_KEY, t);
+  document.querySelectorAll("[data-ath]").forEach(b => b.classList.toggle("on", b.dataset.ath === t));
+}
+applyAppTheme(localStorage.getItem(APP_THEME_KEY) || "pink");
+$("appThemes").onclick = e => {
+  const b = e.target.closest("[data-ath]");
+  if (b) applyAppTheme(b.dataset.ath);
 };
 
 /* ---------- Screens ---------- */
@@ -836,6 +910,7 @@ async function doLogout() {
   stopLocWatch();
   await signOut(auth);
   layers.length = 0;
+  syncLock();
   gatePassed = false; listening = false; showScreen();
 }
 $("dLogout").onclick = doLogout;
@@ -958,6 +1033,116 @@ $("locCard").onclick = () => {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}&travelmode=driving`, "_blank");
 };
 
+/* ---------- Tic Tac Toe (live, shared) ---------- */
+const gameRef = () => doc(db, "games", "ttt");
+const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const emptyGame = () => ({ board: Array(9).fill(""), turn: "X", players: {}, winner: null, line: [] });
+const gameOrEmpty = g => g || emptyGame();
+
+function winnerOf(b) {
+  for (const [a, c, d] of WINS) if (b[a] && b[a] === b[c] && b[a] === b[d]) return { sym: b[a], line: [a, c, d] };
+  if (b.every(Boolean)) return { sym: "draw", line: [] };
+  return null;
+}
+function mySym(g) {
+  const e = myEmail();
+  if (g.players?.X === e) return "X";
+  if (g.players?.O === e) return "O";
+  return null;
+}
+async function gameAction(fn) {
+  let err = null;
+  try {
+    await runTransaction(db, async tx => {
+      const ref = gameRef();
+      const s = await tx.get(ref);
+      const g = gameOrEmpty(s.exists() ? s.data() : null);
+      err = fn(g) || null;
+      if (!err) tx.set(ref, g);
+    });
+    if (err) toast(err);
+  } catch (e) { toast("Game error: " + (e.code || e.message)); }
+}
+function claimSeat(sym) {
+  return gameAction(g => {
+    const e = myEmail();
+    if (mySym(g)) return "Tum pehle se khel rahe ho 🎮";
+    if (g.players[sym]) return "Ye seat le li gayi 🙈";
+    g.players[sym] = e;
+  });
+}
+function playMove(i) {
+  return gameAction(g => {
+    const s = mySym(g);
+    if (!s) return "Pehle seat lo (❌ ya ⭕)";
+    if (g.winner) return "Game khatam ho gaya";
+    if (g.turn !== s) return "Partner ki baari hai ⏳";
+    if (g.board[i]) return "Ye box bhara hai";
+    g.board[i] = s;
+    const w = winnerOf(g.board);
+    if (w) { g.winner = w.sym; g.line = w.line; }
+    else g.turn = s === "X" ? "O" : "X";
+  });
+}
+function resetGame() {
+  return gameAction(g => {
+    if (!g.winner && g.board.some(Boolean)) return "Game abhi chal raha hai";
+    g.board = Array(9).fill("");
+    g.turn = "X";
+    g.winner = null;
+    g.line = [];
+  });
+}
+function nameOfEmail(e) {
+  if (!e) return "";
+  return nickOf[e] || (e === myEmail() ? firstName(auth.currentUser) : "Partner");
+}
+
+function openGame() {
+  $("gameModal").classList.remove("hidden");
+  renderGame();
+  openLayer("game", closeGameVis);
+}
+function closeGameVis() { $("gameModal").classList.add("hidden"); }
+$("gameOpen").onclick = openGame;
+$("gClose").onclick = () => dismissLayer("game");
+$("gameModal").onclick = e => { if (e.target.id === "gameModal") dismissLayer("game"); };
+$("gSeatX").onclick = () => claimSeat("X");
+$("gSeatO").onclick = () => claimSeat("O");
+$("gReset").onclick = resetGame;
+$("ttt").onclick = e => {
+  const b = e.target.closest("[data-i]");
+  if (b) playMove(Number(b.dataset.i));
+};
+
+function renderGame() {
+  const g = gameOrEmpty(gameData);
+  const s = mySym(g);
+  const winLine = new Set(g.line || []);
+  $("ttt").innerHTML = g.board.map((v, i) => {
+    const disabled = !!v || !!g.winner || !s || g.turn !== s;
+    return `<button class="cell ${v === "X" ? "x" : v === "O" ? "o" : ""} ${winLine.has(i) ? "win" : ""}" data-i="${i}" ${disabled ? "disabled" : ""}>${v === "X" ? "X" : v === "O" ? "O" : ""}</button>`;
+  }).join("");
+
+  const seatsFree = !g.players.X || !g.players.O;
+  $("gSeats").classList.toggle("hidden", !(!s && seatsFree));
+  $("gSeatX").classList.toggle("hidden", !!g.players.X);
+  $("gSeatO").classList.toggle("hidden", !!g.players.O);
+
+  const xName = g.players.X ? nameOfEmail(g.players.X) : "—";
+  const oName = g.players.O ? nameOfEmail(g.players.O) : "—";
+  const who = `❌ ${xName}  vs  ⭕ ${oName}`;
+
+  let msg;
+  if (g.winner === "draw") msg = "Draw! 🤝";
+  else if (g.winner) msg = g.winner === s ? "Tum jeet gaye 🎉" : (s ? "Partner jeet gaya 💔" : `${g.winner} jeet gaya`);
+  else if (!g.players.X || !g.players.O) msg = s ? "Partner ka wait karo… 💌" : "Seat lo aur khelo 🎮";
+  else if (!s) msg = "Tum spectator ho 👀";
+  else msg = g.turn === s ? "Tumhari baari ✨" : "Partner ki baari ⏳";
+  $("gStatus").innerHTML = `${esc(msg)}<br><small>${esc(who)}</small>`;
+  $("gReset").disabled = !g.winner && g.board.some(Boolean);
+}
+
 /* ---------- Push notification (FCM) ---------- */
 let pushSetupDone = false;
 async function setupPush() {
@@ -1043,6 +1228,11 @@ function startPresence() {
     partnerLoc = snap.data() || null;
     if (!$("locOv").classList.contains("hidden")) renderLocCard();
   }, e => console.error("partner loc", e));
+
+  onSnapshot(gameRef(), snap => {
+    gameData = snap.exists() ? snap.data() : null;
+    if (!$("gameModal").classList.contains("hidden")) renderGame();
+  }, e => console.error("game", e));
 
   setInterval(renderPresence, 2000);
 }
@@ -2054,4 +2244,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-  </html>
+      </html>
