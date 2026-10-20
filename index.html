@@ -50,7 +50,7 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
 .card{max-width:380px;width:100%;padding:36px;text-align:center}
 .card h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
 .card #bioBtn{margin-top:6px}
-.err{color:#d6336c;min-height:22px;margin-top:10px;font-size:15px}
+.err{color:#d6336c;min-height:22px;margin-top:10px;font-size:15px;word-break:break-word}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
@@ -349,12 +349,12 @@ input[type=date]{max-width:100%}
 <body>
 <div id="progress"></div>
 
-<!-- LOCK GATE: fingerprint 3 baar, phir password -->
+<!-- LOCK GATE: fingerprint auto scan, 3 fail par password -->
 <div id="gate" class="center">
   <div class="clay card" id="gateCard">
     <h1>our little universe ✨️</h1>
-    <p id="gateMsg">Fingerprint se khole 👆</p>
-    <button class="btn blue" id="bioBtn">👆 Fingerprint lagao</button>
+    <p id="gateMsg">Fingerprint scan ho raha hai… 👆</p>
+    <button class="btn blue hidden" id="bioBtn">👆 Fingerprint se khole</button>
     <div id="passWrap" class="hidden">
       <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
       <button class="btn blue" id="gateBtn">Enter 💖</button>
@@ -894,11 +894,12 @@ function handleThemeClick(e, kind) {
 applyChatTheme(chatTheme);
 applyAppTheme(appTheme);
 
-/* ---------- Fingerprint gate (3 try, phir password) ---------- */
-const bioSupported = !!(window.PublicKeyCredential && navigator.credentials);
+/* ---------- Fingerprint gate (page khulte hi scan, 3 fail -> password) ---------- */
+const bioSupported = !!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext);
 const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const rnd = () => crypto.getRandomValues(new Uint8Array(32));
+let scanning = false;
 
 async function ensureCred() {
   const saved = localStorage.getItem(CRED_KEY);
@@ -917,7 +918,41 @@ async function ensureCred() {
   localStorage.setItem(CRED_KEY, id);
   return id;
 }
-async function tryFingerprint() {
+
+function showPassStep(msg) {
+  $("bioBtn").classList.add("hidden");
+  $("passWrap").classList.remove("hidden");
+  $("gateMsg").textContent = msg;
+  setTimeout(() => $("gatePass").focus(), 50);
+}
+
+function resetGate() {
+  bioFails = 0;
+  gatePassed = false;
+  scanning = false;
+  $("gatePass").value = "";
+  $("gateErr").textContent = "";
+  $("passWrap").classList.add("hidden");
+  $("bioBtn").classList.add("hidden");
+  $("gateMsg").textContent = "Fingerprint scan ho raha hai… 👆";
+}
+
+function unlockApp() {
+  gatePassed = true;
+  scanning = false;
+  $("gateErr").textContent = "";
+  showScreen();
+}
+
+async function autoScan() {
+  if (gatePassed || scanning) return;
+  if (!bioSupported) return showPassStep("Is browser me fingerprint nahi, password daalo 🔒");
+
+  scanning = true;
+  $("bioBtn").classList.add("hidden");
+  $("gateErr").textContent = "";
+  $("gateMsg").textContent = "Fingerprint scan ho raha hai… 👆";
+
   try {
     const id = await ensureCred();
     await navigator.credentials.get({
@@ -928,42 +963,19 @@ async function tryFingerprint() {
         timeout: 60000
       }
     });
-    return true;
+    return unlockApp();
   } catch (e) {
-    return false;
+    scanning = false;
+    bioFails++;
+    console.error("fingerprint", e);
+    if (bioFails >= BIO_MAX) return showPassStep("3 baar fingerprint fail hua, ab password daalo 🔒");
+    $("bioBtn").classList.remove("hidden");
+    $("gateMsg").textContent = "Fingerprint nahi mila, dobara try karo 👆";
+    $("gateErr").textContent = `(${bioFails}/${BIO_MAX}) ${e.name || "error"}: ${e.message || ""}`;
   }
 }
-function showPassStep(msg) {
-  $("bioBtn").classList.add("hidden");
-  $("passWrap").classList.remove("hidden");
-  $("gateMsg").textContent = msg;
-  setTimeout(() => $("gatePass").focus(), 50);
-}
-function resetGate() {
-  bioFails = 0;
-  gatePassed = false;
-  $("gatePass").value = "";
-  $("gateErr").textContent = "";
-  $("gateMsg").textContent = "Fingerprint se khole 👆";
-  $("passWrap").classList.add("hidden");
-  $("bioBtn").classList.remove("hidden");
-}
-async function bioAttempt() {
-  if (!bioSupported) return showPassStep("Is phone me fingerprint nahi, password daalo 🔒");
-  $("bioBtn").disabled = true;
-  const ok = await tryFingerprint();
-  $("bioBtn").disabled = false;
-  if (ok) return unlockApp();
-  bioFails++;
-  if (bioFails >= BIO_MAX) return showPassStep("3 baar fingerprint fail hua, ab password daalo 🔒");
-  $("gateErr").textContent = `Fingerprint match nahi hua (${bioFails}/${BIO_MAX}) 👆`;
-}
-function unlockApp() {
-  gatePassed = true;
-  $("gateErr").textContent = "";
-  showScreen();
-}
-$("bioBtn").onclick = bioAttempt;
+
+$("bioBtn").onclick = autoScan;
 $("gateBtn").onclick = () => {
   if ($("gatePass").value === PASSWORD) unlockApp();
   else {
@@ -1008,7 +1020,7 @@ async function doLogout() {
   listening = false;
   resetGate();
   showScreen();
-  bioAttempt();
+  autoScan();
 }
 $("dLogout").onclick = doLogout;
 onAuthStateChanged(auth, () => showScreen());
@@ -2262,12 +2274,4 @@ $("micBtn").onclick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recChunks = [];
     rec = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "" });
-    rec.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
-    rec.onstop = async () => {
-      stream.getTracks().forEach(t => t.stop());
-      clearTimeout(recTimer);
-      $("micBtn").classList.remove("rec");
-      $("micBtn").textContent = "🎤";
-      const blob = new Blob(recChunks, { type: rec.mimeType || "audio/webm" });
-      if (blob.size < 2000) return toast("Voice note bahut chhota tha");
-      if (blob.siz
+    rec.ondataavailable = e => { if (e.data.size) recChunks.
