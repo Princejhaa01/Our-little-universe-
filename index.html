@@ -589,6 +589,7 @@ input[type=date]{max-width:100%}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiKgwAqCptCiWh3xG2DgIRdnOy9dlt3Ww",
@@ -600,15 +601,16 @@ const firebaseConfig = {
   measurementId: "G-QCNJYS0QS5"
 };
 
+const VAPID_KEY = "BFT8si9h2hqaQC0OYV_8p0AmIb0sLPBtG4CnG2cjA6u9X15UUEfTjqacuxC-l-aX6bS51edEJf6iRovqPGCbKhU";
 const PASSWORD = "Antra@4545";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
-const SLIDE_MS = 5000;          // fullscreen slideshow: auto-advance (ms)
-const WIRE_SEC_PER_PHOTO = 6;   // wire ek photo ko kitne second me paar kare
+const SLIDE_MS = 5000;
+const WIRE_SEC_PER_PHOTO = 6;
 const NOTIF_MS = 1000;
-const CHAT_MS = 14 * 3600e3;    // chat 14 ghante baad gayab
-const VOICE_MAX_MS = 25000;     // voice note max 25 sec
+const CHAT_MS = 14 * 3600e3;
+const VOICE_MAX_MS = 25000;
 const LAST_KEY = "ou_lastRead";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
@@ -691,7 +693,12 @@ function showScreen() {
   $("gate").classList.toggle("hidden", gatePassed);
   $("login").classList.toggle("hidden", !gatePassed || ok);
   $("app").classList.toggle("hidden", !(gatePassed && ok));
-  if (gatePassed && ok) { startListeners(); startPresence(); requestAnimationFrame(observeReveals); }
+  if (gatePassed && ok) {
+    startListeners();
+    startPresence();
+    setupPush();
+    requestAnimationFrame(observeReveals);
+  }
 }
 
 $("gateBtn").onclick = () => {
@@ -721,6 +728,30 @@ $("logoutBtn").onclick = async e => {
 onAuthStateChanged(auth, () => showScreen());
 
 $("days").textContent = Math.max(0, Math.floor((Date.now() - START) / 86400000));
+
+/* ---------- Push notification (FCM) ---------- */
+let pushSetupDone = false;
+async function setupPush() {
+  if (pushSetupDone) return;
+  try {
+    if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
+    if (Notification.permission === "denied") return;
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") return;
+    const reg = await navigator.serviceWorker.register("firebase-messaging-sw.js");
+    const messaging = getMessaging(app);
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (token && auth.currentUser) {
+      await setDoc(doc(db, "pushTokens", emailKey(auth.currentUser.email)),
+        { token, email: auth.currentUser.email, updatedAt: Date.now() }, { merge: true });
+      pushSetupDone = true;
+    }
+    onMessage(messaging, p => {
+      const n = p.notification || {};
+      if (!chatOpen) showBanner({ name: n.title || "", text: n.body || "" });
+    });
+  } catch (e) { console.error("push", e); }
+}
 
 /* ---------- Presence, typing, mood ---------- */
 async function setPresence(online) {
@@ -1060,7 +1091,6 @@ function renderMessages() {
   $("msgs").scrollTop = $("msgs").scrollHeight;
 }
 
-// 14 ghante purane messages Firestore se delete karo
 function purgeOldMessages() {
   if (!auth.currentUser) return;
   const cutoff = Date.now() - CHAT_MS;
@@ -1123,7 +1153,7 @@ function markRead() {
 }
 let notifT = null;
 function showBanner(m) {
-  $("ntName").textContent = m.name + ":";
+  $("ntName").textContent = m.name ? m.name + ":" : "";
   $("ntText").textContent = m.text || (m.audio ? "🎤 voice note" : "");
   const n = $("notif");
   n.classList.remove("hidden");
@@ -1306,7 +1336,7 @@ $("book").onclick = e => {
   go(e.clientX > r.left + r.width / 2 ? 1 : -1);
 };
 
-/* ---------- Fullscreen slideshow (auto + swipe + tap) ---------- */
+/* ---------- Fullscreen slideshow ---------- */
 function ssRender(anim = true) {
   const p = photoList[ss.i];
   if (!p) return;
@@ -1696,7 +1726,7 @@ $("micBtn").onclick = async () => {
         const u = auth.currentUser;
         const audio = await blobToDataURL(blob);
         await addDoc(collection(db, "messages"), {
-          text: "", audio, uid: u.uid, name: firstName(u),
+          text: "", audio, uid: u.uid, name: firstName(u), senderEmail: u.email,
           createdAt: serverTimestamp(), seen: false, reactions: {},
           expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
         });
@@ -1762,7 +1792,8 @@ $("chatForm").onsubmit = async e => {
   clearReply();
   try {
     await addDoc(collection(db, "messages"), {
-      text, uid: u.uid, name: firstName(u), createdAt: serverTimestamp(), seen: false,
+      text, uid: u.uid, name: firstName(u), senderEmail: u.email,
+      createdAt: serverTimestamp(), seen: false,
       replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {},
       expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
     });
@@ -1770,4 +1801,4 @@ $("chatForm").onsubmit = async e => {
 };
 </script>
 </body>
-  </html>
+      </html>
