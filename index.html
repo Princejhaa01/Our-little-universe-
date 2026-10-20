@@ -14,10 +14,12 @@
   --cbg:linear-gradient(135deg,#ffe3ef,#fff8ec);--cme:#ffd6e8;--cother:#fff;--cink:#5b4a6b;--cinput:#fff;--caccent:#b5487a
 }
 /* App themes (home page) */
-html[data-app="blue"]{--bg:linear-gradient(135deg,#d6ecff,#f4f9ff);--card:#fff;--cream:#f4f9ff;--ink:#2e4a6b;--pink:#d6ecff;--blue:#e3f0ff}
-html[data-app="mint"]{--bg:linear-gradient(135deg,#d8f5e8,#f5fdf9);--card:#fff;--cream:#f5fdf9;--ink:#2f5a48;--pink:#c4f0da;--blue:#d8f5e8}
-html[data-app="lavender"]{--bg:linear-gradient(135deg,#e9dcff,#fbf8ff);--card:#fff;--cream:#fbf8ff;--ink:#4a3a6b;--pink:#dccaff;--blue:#e9dcff}
+html[data-app="blue"]{--bg:linear-gradient(135deg,#d6ecff,#f4f9ff);--cream:#f4f9ff;--ink:#2e4a6b;--pink:#d6ecff;--blue:#e3f0ff}
+html[data-app="mint"]{--bg:linear-gradient(135deg,#d8f5e8,#f5fdf9);--cream:#f5fdf9;--ink:#2f5a48;--pink:#c4f0da;--blue:#d8f5e8}
+html[data-app="lavender"]{--bg:linear-gradient(135deg,#e9dcff,#fbf8ff);--cream:#fbf8ff;--ink:#4a3a6b;--pink:#dccaff;--blue:#e9dcff}
 html[data-app="dark"]{--bg:linear-gradient(135deg,#1d1828,#2b2236);--card:#3a3050;--cream:#2b2236;--ink:#f3ecff;--pink:#4a3d63;--blue:#3a3050;--sh:rgba(0,0,0,.45)}
+html[data-app="peach"]{--bg:linear-gradient(135deg,#ffe2d2,#fff6ef);--cream:#fff6ef;--ink:#6b4030;--pink:#ffd1b8;--blue:#ffe6d6}
+html[data-app="butter"]{--bg:linear-gradient(135deg,#fff3c4,#fffdf0);--cream:#fffdf0;--ink:#5e5020;--pink:#fff1a0;--blue:#fff8d6}
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -30,6 +32,8 @@ body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow
 [data-ct="mint"]{--cbg:linear-gradient(135deg,#d8f5e8,#f6fffa);--cme:#c4f0da;--cink:#2f5a48;--caccent:#2f9e63}
 [data-ct="lavender"]{--cbg:linear-gradient(135deg,#e9dcff,#fbf8ff);--cme:#dccaff;--cink:#4a3a6b;--caccent:#7d4fb5}
 [data-ct="dark"]{--cbg:linear-gradient(135deg,#2b2236,#1d1828);--cme:#4a3d63;--cother:#342b45;--cink:#f3ecff;--cinput:#3a3050;--caccent:#ff8fb8}
+[data-ct="peach"]{--cbg:linear-gradient(135deg,#ffe2d2,#fff6ef);--cme:#ffd1b8;--cink:#6b4030;--caccent:#c0643c}
+[data-ct="butter"]{--cbg:linear-gradient(135deg,#fff3c4,#fffdf0);--cme:#fff1a0;--cink:#5e5020;--caccent:#a88a10}
 
 /* Clay base */
 .clay{background:var(--cream);border-radius:32px;
@@ -45,6 +49,7 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{max-width:380px;width:100%;padding:36px;text-align:center}
 .card h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
+.card #bioBtn{margin-top:6px}
 .err{color:#d6336c;min-height:22px;margin-top:10px;font-size:15px}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
@@ -84,7 +89,7 @@ section{margin-bottom:60px}
 .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .th{font-family:inherit;font-size:13px;border:none;border-radius:14px;padding:12px 4px 8px;cursor:pointer;color:var(--ink);background:var(--card);
   box-shadow:3px 3px 8px var(--sh);display:flex;flex-direction:column;align-items:center;gap:5px}
-.th i{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:inset 2px 2px 4px rgba(255,255,255,.6),2px 2px 5px var(--sh)}
+.th i{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:inset 2px 2px 4px rgba(255,255,255,.6),2px 2px 5px var(--sh);font-style:normal;display:flex;align-items:center;justify-content:center;font-size:14px}
 .th.on{outline:2px solid #ff8fb8}
 .dr-spacer{flex:1;min-height:20px}
 .dr-logout{width:100%;background:#e5443a;color:#fff;box-shadow:6px 6px 14px rgba(229,68,58,.35),-4px -4px 10px rgba(255,255,255,.4);font-size:17px}
@@ -344,13 +349,16 @@ input[type=date]{max-width:100%}
 <body>
 <div id="progress"></div>
 
-<!-- PASSWORD GATE -->
+<!-- LOCK GATE: fingerprint 3 baar, phir password -->
 <div id="gate" class="center">
   <div class="clay card" id="gateCard">
     <h1>our little universe ✨️</h1>
-    <p>Pehle secret password daalo 🔒</p>
-    <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
-    <button class="btn blue" id="gateBtn">Enter 💖</button>
+    <p id="gateMsg">Fingerprint se khole 👆</p>
+    <button class="btn blue" id="bioBtn">👆 Fingerprint lagao</button>
+    <div id="passWrap" class="hidden">
+      <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
+      <button class="btn blue" id="gateBtn">Enter 💖</button>
+    </div>
     <div class="err" id="gateErr"></div>
   </div>
 </div>
@@ -546,26 +554,13 @@ input[type=date]{max-width:100%}
   <div class="dr-user">Hi, <b id="drName">…</b> 💖</div>
   <button class="btn dr-item" id="nickBtn">👤 Nickname badlo</button>
   <button class="btn dr-item" id="locOpen">📍 Partner ki location</button>
-  <button class="btn dr-item" id="locShareBtn">📡 Meri location share: OFF</button>
   <button class="btn dr-item" id="gameOpen">🎮 Tic Tac Toe khelo</button>
 
   <div class="dr-sec">💬 Chat ka theme</div>
-  <div class="themes" id="themes">
-    <button class="th" data-th="pink" style="--sw:linear-gradient(135deg,#ffd6e8,#fff8ec)"><i></i>Pink</button>
-    <button class="th" data-th="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f5faff)"><i></i>Blue</button>
-    <button class="th" data-th="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f6fffa)"><i></i>Mint</button>
-    <button class="th" data-th="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
-  </div>
+  <div class="themes" id="chatThemes"></div>
 
   <div class="dr-sec">🏠 App ka theme</div>
-  <div class="themes" id="appThemes">
-    <button class="th" data-ath="pink" style="--sw:linear-gradient(135deg,#ffd6e8,#fff8ec)"><i></i>Pink</button>
-    <button class="th" data-ath="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f4f9ff)"><i></i>Blue</button>
-    <button class="th" data-ath="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f5fdf9)"><i></i>Mint</button>
-    <button class="th" data-ath="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
-  </div>
+  <div class="themes" id="appThemes"></div>
 
   <div class="dr-spacer"></div>
   <button class="btn dr-logout" id="dLogout">🚪 Logout</button>
@@ -745,6 +740,7 @@ const firebaseConfig = {
 
 const VAPID_KEY = "BFT8si9h2hqaQC0OYV_8p0AmIb0sLPBtG4CnG2cjA6u9X15UUEfTjqacuxC-l-aX6bS51edEJf6iRovqPGCbKhU";
 const PASSWORD = "173004";
+const BIO_MAX = 3;
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
@@ -754,11 +750,22 @@ const NOTIF_MS = 1000;
 const CHAT_MS = 14 * 3600e3;
 const VOICE_MAX_MS = 25000;
 const LAST_KEY = "ou_lastRead";
-const THEME_KEY = "ou_chatTheme";
+const CHAT_THEME_KEY = "ou_chatTheme";
 const APP_THEME_KEY = "ou_appTheme";
+const CRED_KEY = "ou_cred";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 const LOC_PUSH_MS = 60000;
+const THEME_LIST = [
+  { k: "pink",     n: "Pink",     a: "#ffd6e8", b: "#fff8ec" },
+  { k: "blue",     n: "Blue",     a: "#d6ecff", b: "#f5faff" },
+  { k: "mint",     n: "Mint",     a: "#c4f0da", b: "#f6fffa" },
+  { k: "lavender", n: "Lavender", a: "#dccaff", b: "#fbf8ff" },
+  { k: "dark",     n: "Dark",     a: "#4a3d63", b: "#1d1828" },
+  { k: "peach",    n: "Peach",    a: "#ffd1b8", b: "#fff6ef" },
+  { k: "butter",   n: "Butter",   a: "#fff1a0", b: "#fffdf0" }
+];
+const THEME_KEYS = THEME_LIST.map(t => t.k);
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -797,8 +804,9 @@ let photoList = [];
 const ss = { i: 0, timer: null };
 const photoMap = new Map();
 let nickOf = {};
-let partnerLoc = null, myLocShare = false, locWatchId = null, locLastPush = 0;
+let partnerLoc = null, locWatchId = null, locLastPush = 0, locErrShown = false;
 let gameData = null;
+let bioFails = 0;
 let lastRead = Number(localStorage.getItem(LAST_KEY));
 if (!lastRead) { lastRead = Date.now(); localStorage.setItem(LAST_KEY, String(lastRead)); }
 
@@ -842,33 +850,128 @@ addEventListener("scroll", () => {
   $("progress").style.width = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight) * 100) + "%";
 }, { passive: true });
 
-/* ---------- Chat theme (device-wise) ---------- */
-const THEMES = ["pink", "blue", "mint", "lavender", "dark"];
-function applyTheme(k) {
-  const t = THEMES.includes(k) ? k : "pink";
-  $("chat").dataset.ct = t;
-  localStorage.setItem(THEME_KEY, t);
-  document.querySelectorAll("[data-th]").forEach(b => b.classList.toggle("on", b.dataset.th === t));
-}
-applyTheme(localStorage.getItem(THEME_KEY) || "pink");
-$("themes").onclick = e => {
-  const b = e.target.closest("[data-th]");
-  if (b) applyTheme(b.dataset.th);
-};
+/* ---------- Themes: chat + app (alag-alag), 4 dikhte hain, More se saare ---------- */
+let chatTheme = THEME_KEYS.includes(localStorage.getItem(CHAT_THEME_KEY)) ? localStorage.getItem(CHAT_THEME_KEY) : "pink";
+let appTheme = THEME_KEYS.includes(localStorage.getItem(APP_THEME_KEY)) ? localStorage.getItem(APP_THEME_KEY) : "pink";
+const themeOpen = { chat: false, app: false };
 
-/* ---------- App theme (home page, separate from chat theme) ---------- */
-function applyAppTheme(k) {
-  const t = THEMES.includes(k) ? k : "pink";
-  if (t === "pink") document.documentElement.removeAttribute("data-app");
-  else document.documentElement.dataset.app = t;
-  localStorage.setItem(APP_THEME_KEY, t);
-  document.querySelectorAll("[data-ath]").forEach(b => b.classList.toggle("on", b.dataset.ath === t));
+function applyChatTheme(k) {
+  chatTheme = THEME_KEYS.includes(k) ? k : "pink";
+  $("chat").dataset.ct = chatTheme;
+  localStorage.setItem(CHAT_THEME_KEY, chatTheme);
+  renderThemeGrids();
 }
-applyAppTheme(localStorage.getItem(APP_THEME_KEY) || "pink");
-$("appThemes").onclick = e => {
-  const b = e.target.closest("[data-ath]");
-  if (b) applyAppTheme(b.dataset.ath);
+function applyAppTheme(k) {
+  appTheme = THEME_KEYS.includes(k) ? k : "pink";
+  if (appTheme === "pink") document.documentElement.removeAttribute("data-app");
+  else document.documentElement.dataset.app = appTheme;
+  localStorage.setItem(APP_THEME_KEY, appTheme);
+  renderThemeGrids();
+}
+function renderThemeGrids() {
+  renderGrid("chatThemes", "chat", chatTheme);
+  renderGrid("appThemes", "app", appTheme);
+}
+function renderGrid(elId, kind, cur) {
+  const open = themeOpen[kind];
+  const list = open ? THEME_LIST : THEME_LIST.slice(0, 4);
+  const tiles = list.map(t => `
+    <button class="th ${t.k === cur ? "on" : ""}" data-kind="${kind}" data-k="${t.k}" style="--sw:linear-gradient(135deg,${t.a},${t.b})"><i></i>${t.n}</button>`).join("");
+  const more = open
+    ? `<button class="th" data-kind="${kind}" data-toggle="1"><i>▲</i>Kam</button>`
+    : `<button class="th" data-kind="${kind}" data-toggle="1"><i>⋯</i>More</button>`;
+  $(elId).innerHTML = tiles + more;
+}
+$("chatThemes").onclick = e => handleThemeClick(e, "chat");
+$("appThemes").onclick = e => handleThemeClick(e, "app");
+function handleThemeClick(e, kind) {
+  const b = e.target.closest("[data-kind]");
+  if (!b) return;
+  if (b.dataset.toggle) { themeOpen[kind] = !themeOpen[kind]; renderThemeGrids(); return; }
+  if (kind === "chat") applyChatTheme(b.dataset.k);
+  else applyAppTheme(b.dataset.k);
+}
+applyChatTheme(chatTheme);
+applyAppTheme(appTheme);
+
+/* ---------- Fingerprint gate (3 try, phir password) ---------- */
+const bioSupported = !!(window.PublicKeyCredential && navigator.credentials);
+const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const rnd = () => crypto.getRandomValues(new Uint8Array(32));
+
+async function ensureCred() {
+  const saved = localStorage.getItem(CRED_KEY);
+  if (saved) return saved;
+  const c = await navigator.credentials.create({
+    publicKey: {
+      challenge: rnd(),
+      rp: { name: "our little universe" },
+      user: { id: crypto.getRandomValues(new Uint8Array(16)), name: "our-little-universe", displayName: "our little universe" },
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+      authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+      timeout: 60000
+    }
+  });
+  const id = b64(c.rawId);
+  localStorage.setItem(CRED_KEY, id);
+  return id;
+}
+async function tryFingerprint() {
+  try {
+    const id = await ensureCred();
+    await navigator.credentials.get({
+      publicKey: {
+        challenge: rnd(),
+        allowCredentials: [{ type: "public-key", id: unb64(id) }],
+        userVerification: "required",
+        timeout: 60000
+      }
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+function showPassStep(msg) {
+  $("bioBtn").classList.add("hidden");
+  $("passWrap").classList.remove("hidden");
+  $("gateMsg").textContent = msg;
+  setTimeout(() => $("gatePass").focus(), 50);
+}
+function resetGate() {
+  bioFails = 0;
+  gatePassed = false;
+  $("gatePass").value = "";
+  $("gateErr").textContent = "";
+  $("gateMsg").textContent = "Fingerprint se khole 👆";
+  $("passWrap").classList.add("hidden");
+  $("bioBtn").classList.remove("hidden");
+}
+async function bioAttempt() {
+  if (!bioSupported) return showPassStep("Is phone me fingerprint nahi, password daalo 🔒");
+  $("bioBtn").disabled = true;
+  const ok = await tryFingerprint();
+  $("bioBtn").disabled = false;
+  if (ok) return unlockApp();
+  bioFails++;
+  if (bioFails >= BIO_MAX) return showPassStep("3 baar fingerprint fail hua, ab password daalo 🔒");
+  $("gateErr").textContent = `Fingerprint match nahi hua (${bioFails}/${BIO_MAX}) 👆`;
+}
+function unlockApp() {
+  gatePassed = true;
+  $("gateErr").textContent = "";
+  showScreen();
+}
+$("bioBtn").onclick = bioAttempt;
+$("gateBtn").onclick = () => {
+  if ($("gatePass").value === PASSWORD) unlockApp();
+  else {
+    $("gateErr").textContent = "Galat password 💔";
+    $("gateCard").classList.remove("shake"); void $("gateCard").offsetWidth; $("gateCard").classList.add("shake");
+  }
 };
+$("gatePass").onkeydown = e => { if (e.key === "Enter") $("gateBtn").click(); };
 
 /* ---------- Screens ---------- */
 function showScreen() {
@@ -884,15 +987,6 @@ function showScreen() {
     requestAnimationFrame(observeReveals);
   }
 }
-
-$("gateBtn").onclick = () => {
-  if ($("gatePass").value === PASSWORD) { gatePassed = true; $("gateErr").textContent = ""; showScreen(); }
-  else {
-    $("gateErr").textContent = "Galat password 💔";
-    $("gateCard").classList.remove("shake"); void $("gateCard").offsetWidth; $("gateCard").classList.add("shake");
-  }
-};
-$("gatePass").onkeydown = e => { if (e.key === "Enter") $("gateBtn").click(); };
 
 $("googleBtn").onclick = async () => {
   try {
@@ -911,7 +1005,10 @@ async function doLogout() {
   await signOut(auth);
   layers.length = 0;
   syncLock();
-  gatePassed = false; listening = false; showScreen();
+  listening = false;
+  resetGate();
+  showScreen();
+  bioAttempt();
 }
 $("dLogout").onclick = doLogout;
 onAuthStateChanged(auth, () => showScreen());
@@ -934,7 +1031,6 @@ $("dimmer").onclick = () => dismissLayer("drawer");
 function renderDrawer() {
   const me = myEmail();
   $("drName").textContent = (me && nickOf[me]) || firstName(auth.currentUser);
-  $("locShareBtn").textContent = `📡 Meri location share: ${myLocShare ? "ON 🟢" : "OFF"}`;
 }
 
 /* ---------- Nickname ---------- */
@@ -957,7 +1053,7 @@ $("nickSave").onclick = async () => {
   } catch (e) { toast("Error: " + (e.code || e.message)); }
 };
 
-/* ---------- Location sharing ---------- */
+/* ---------- Location (hamesha ON) ---------- */
 function locRef(email) { return doc(db, "locations", emailKey(email)); }
 
 function pushLocation(pos) {
@@ -973,7 +1069,7 @@ function startLocWatch() {
   if (locWatchId != null || !navigator.geolocation) return;
   locWatchId = navigator.geolocation.watchPosition(
     pushLocation,
-    err => toast("Location error: " + err.message),
+    err => { if (!locErrShown) { locErrShown = true; toast("Location permission do 📍"); } console.error(err); },
     { enableHighAccuracy: true, maximumAge: 30000, timeout: 20000 }
   );
 }
@@ -981,17 +1077,6 @@ function stopLocWatch() {
   if (locWatchId != null && navigator.geolocation) navigator.geolocation.clearWatch(locWatchId);
   locWatchId = null;
 }
-async function toggleLocShare() {
-  if (!navigator.geolocation) return toast("Is phone me location support nahi hai");
-  const on = !myLocShare;
-  try {
-    await setDoc(locRef(myEmail()), { email: myEmail(), sharing: on, updatedAt: Date.now() }, { merge: true });
-    if (on) { locLastPush = 0; startLocWatch(); }
-    else { stopLocWatch(); }
-    toast(on ? "Location share ON 📍" : "Location share OFF");
-  } catch (e) { toast("Error: " + (e.code || e.message)); }
-}
-$("locShareBtn").onclick = toggleLocShare;
 
 function openLoc() {
   $("locCard").classList.remove("big");
@@ -1012,8 +1097,9 @@ function renderLocCard() {
   $("locName").textContent = name;
   const ok = !!p?.sharing && typeof p.lat === "number";
   if (!ok) {
-    $("locSub").textContent = `${name} ne abhi location share nahi ki 🙈`;
+    $("locSub").textContent = `${name} ki location abhi aayi nahi 🙈`;
     $("locFrame").src = "about:blank";
+    $("locFrame").dataset.src = "";
     $("locCard").style.cursor = "default";
     $("locCard").classList.remove("big");
     return;
@@ -1197,11 +1283,12 @@ $("moods").onclick = e => {
   setMood(myPresence?.mood === k ? null : k);
 };
 
+let presenceStarted = false;
 function startPresence() {
-  if (presenceTimer) return;
+  if (presenceStarted) return;
+  presenceStarted = true;
   setPresence(!document.hidden);
   presenceTimer = setInterval(() => { if (!document.hidden) setPresence(true); }, 30000);
-  document.addEventListener("visibilitychange", () => setPresence(!document.hidden));
   addEventListener("pagehide", () => { setTyping(false); setPresence(false); });
 
   const me = myEmail();
@@ -1218,12 +1305,6 @@ function startPresence() {
     renderMessages();
   }, e => console.error("my presence", e));
 
-  onSnapshot(locRef(me), snap => {
-    const d = snap.data() || {};
-    myLocShare = !!d.sharing;
-    if (myLocShare) startLocWatch(); else stopLocWatch();
-    renderDrawer();
-  }, e => console.error("my loc", e));
   onSnapshot(locRef(partnerEmail()), snap => {
     partnerLoc = snap.data() || null;
     if (!$("locOv").classList.contains("hidden")) renderLocCard();
@@ -1234,8 +1315,33 @@ function startPresence() {
     if (!$("gameModal").classList.contains("hidden")) renderGame();
   }, e => console.error("game", e));
 
+  startLocWatch();
   setInterval(renderPresence, 2000);
 }
+
+/* ---------- Chat pause -> resume (wapas aane par refresh) ---------- */
+function resumeChat() {
+  if (!auth.currentUser || !gatePassed) return;
+  setPresence(true);
+  renderPresence();
+  renderMessages();
+  if (chatOpen) {
+    markRead();
+    markSeen();
+    fitChat();
+  }
+  startLocWatch();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopTyping();
+    setPresence(false);
+  } else {
+    resumeChat();
+  }
+});
+addEventListener("pageshow", e => { if (e.persisted) resumeChat(); });
+addEventListener("online", resumeChat);
 
 function syncNicks() {
   const m = {};
@@ -1532,7 +1638,7 @@ function renderMessages() {
       : `<div>${esc(m.text)}${ed}</div>`;
     return `<div class="msg ${mine ? "me" : ""}" data-id="${d.id}"><small>${esc(nameFor(m))}</small>${quote}${body}${rxHTML(m.reactions, uid)}${tick}</div>`;
   }).join("");
-  $("msgs").scrollTop = $("msgs").scrollHeight;
+  if (chatOpen) $("msgs").scrollTop = $("msgs").scrollHeight;
 }
 
 function purgeOldMessages() {
@@ -2164,84 +2270,4 @@ $("micBtn").onclick = async () => {
       $("micBtn").textContent = "🎤";
       const blob = new Blob(recChunks, { type: rec.mimeType || "audio/webm" });
       if (blob.size < 2000) return toast("Voice note bahut chhota tha");
-      if (blob.size > 700 * 1024) return toast("Voice note bahut badi hai, thoda chhota bolo");
-      try {
-        const u = auth.currentUser;
-        const audio = await blobToDataURL(blob);
-        await addDoc(collection(db, "messages"), {
-          text: "", audio, uid: u.uid, name: firstName(u), senderEmail: u.email,
-          createdAt: serverTimestamp(), seen: false, reactions: {},
-          expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
-        });
-      } catch (err) { toast("Voice error: " + (err.code || err.message)); }
-    };
-    rec.start();
-    $("micBtn").classList.add("rec");
-    $("micBtn").textContent = "⏹";
-    recTimer = setTimeout(() => { if (rec.state === "recording") rec.stop(); }, VOICE_MAX_MS);
-  } catch (err) {
-    toast("Mic permission do: " + err.message);
-  }
-};
-
-/* ---------- Chat (full-screen) ---------- */
-function closeChatVis() {
-  chatOpen = false;
-  $("chat").classList.remove("open");
-}
-function openChat() {
-  if (chatOpen) return;
-  chatOpen = true;
-  $("chat").classList.add("open");
-  fitChat();
-  openLayer("chat", closeChatVis);
-  markRead();
-  markSeen();
-}
-$("chatBtn").onclick = () => {
-  if (chatOpen) dismissLayer("chat");
-  else openChat();
-};
-$("chatBack").onclick = () => dismissLayer("chat");
-
-function stopTyping() {
-  clearTimeout(typingTimer);
-  if (typingOn) { typingOn = false; setTyping(false); }
-}
-$("chatIn").addEventListener("input", () => {
-  if (!typingOn) { typingOn = true; setTyping(true); }
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(stopTyping, 2500);
-});
-
-$("chatForm").onsubmit = async e => {
-  e.preventDefault();
-  const text = $("chatIn").value.trim(); if (!text) return;
-  const u = auth.currentUser;
-
-  if (editingId) {
-    const id = editingId;
-    $("chatIn").value = "";
-    stopTyping();
-    clearReply();
-    try { await updateDoc(doc(db, "messages", id), { text, edited: true }); }
-    catch (err) { toast("Edit error: " + (err.code || err.message)); }
-    return;
-  }
-
-  const rt = replyTarget;
-  $("chatIn").value = "";
-  stopTyping();
-  clearReply();
-  try {
-    await addDoc(collection(db, "messages"), {
-      text, uid: u.uid, name: nickOf[u.email] || firstName(u), senderEmail: u.email,
-      createdAt: serverTimestamp(), seen: false,
-      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {},
-      expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
-    });
-  } catch (err) { toast("Chat error: " + (err.code || err.message)); }
-};
-</script>
-</body>
-      </html>
+      if (blob.siz
