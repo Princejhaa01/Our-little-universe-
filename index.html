@@ -33,7 +33,6 @@ input,textarea{font-family:inherit;width:100%;padding:12px 16px;border:none;bord
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{max-width:380px;width:100%;padding:36px;text-align:center}
 .card h1{font-family:Caveat,cursive;font-size:44px;line-height:1.1;margin-bottom:10px}
-.card #bioBtn{margin-top:6px}
 .err{color:#d6336c;min-height:22px;margin-top:10px;font-size:15px;word-break:break-word}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
@@ -343,16 +342,13 @@ input[type=date]{max-width:100%}
 <body>
 <div id="progress"></div>
 
-<!-- LOCK GATE: fingerprint auto scan, 3 fail par password -->
+<!-- PASSWORD GATE (numeric keyboard) -->
 <div id="gate" class="center">
   <div class="clay card" id="gateCard">
     <h1>our little universe ✨️</h1>
-    <p id="gateMsg">Fingerprint scan ho raha hai… 👆</p>
-    <button class="btn blue hidden" id="bioBtn">👆 Fingerprint se khole</button>
-    <div id="passWrap" class="hidden">
-      <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
-      <button class="btn blue" id="gateBtn">Enter 💖</button>
-    </div>
+    <p>Pehle secret password daalo 🔒</p>
+    <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
+    <button class="btn blue" id="gateBtn">Enter 💖</button>
     <div class="err" id="gateErr"></div>
   </div>
 </div>
@@ -754,7 +750,6 @@ const firebaseConfig = {
 
 const VAPID_KEY = "BFT8si9h2hqaQC0OYV_8p0AmIb0sLPBtG4CnG2cjA6u9X15UUEfTjqacuxC-l-aX6bS51edEJf6iRovqPGCbKhU";
 const PASSWORD = "173004";
-const BIO_MAX = 3;
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
@@ -766,7 +761,6 @@ const VOICE_MAX_MS = 25000;
 const LAST_KEY = "ou_lastRead";
 const CHAT_THEME_KEY = "ou_chatTheme";
 const APP_THEME_KEY = "ou_appTheme";
-const CRED_KEY = "ou_cred";
 const SNAKE_HI_KEY = "ou_snakeHi";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
@@ -847,7 +841,6 @@ const photoMap = new Map();
 let nickOf = {};
 let partnerLoc = null, locWatchId = null, locLastPush = 0, locErrShown = false;
 let gameData = null;
-let bioFails = 0;
 let lastRead = Number(localStorage.getItem(LAST_KEY));
 if (!lastRead) { lastRead = Date.now(); localStorage.setItem(LAST_KEY, String(lastRead)); }
 
@@ -945,88 +938,7 @@ function handleThemeClick(e, kind) {
 applyChatTheme(chatTheme);
 applyAppTheme(appTheme);
 
-/* ---------- Fingerprint gate (page khulte hi scan, 3 fail -> password) ---------- */
-const bioSupported = !!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext);
-const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
-const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
-const rnd = () => crypto.getRandomValues(new Uint8Array(32));
-let scanning = false;
-
-async function ensureCred() {
-  const saved = localStorage.getItem(CRED_KEY);
-  if (saved) return saved;
-  const c = await navigator.credentials.create({
-    publicKey: {
-      challenge: rnd(),
-      rp: { name: "our little universe" },
-      user: { id: crypto.getRandomValues(new Uint8Array(16)), name: "our-little-universe", displayName: "our little universe" },
-      pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-      authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-      timeout: 60000
-    }
-  });
-  const id = b64(c.rawId);
-  localStorage.setItem(CRED_KEY, id);
-  return id;
-}
-
-function showPassStep(msg) {
-  $("bioBtn").classList.add("hidden");
-  $("passWrap").classList.remove("hidden");
-  $("gateMsg").textContent = msg;
-  setTimeout(() => $("gatePass").focus(), 50);
-}
-
-function resetGate() {
-  bioFails = 0;
-  gatePassed = false;
-  scanning = false;
-  $("gatePass").value = "";
-  $("gateErr").textContent = "";
-  $("passWrap").classList.add("hidden");
-  $("bioBtn").classList.add("hidden");
-  $("gateMsg").textContent = "Fingerprint scan ho raha hai… 👆";
-}
-
-function unlockApp() {
-  gatePassed = true;
-  scanning = false;
-  $("gateErr").textContent = "";
-  showScreen();
-}
-
-async function autoScan() {
-  if (gatePassed || scanning) return;
-  if (!bioSupported) return showPassStep("Is browser me fingerprint nahi, password daalo 🔒");
-
-  scanning = true;
-  $("bioBtn").classList.add("hidden");
-  $("gateErr").textContent = "";
-  $("gateMsg").textContent = "Fingerprint scan ho raha hai… 👆";
-
-  try {
-    const id = await ensureCred();
-    await navigator.credentials.get({
-      publicKey: {
-        challenge: rnd(),
-        allowCredentials: [{ type: "public-key", id: unb64(id) }],
-        userVerification: "required",
-        timeout: 60000
-      }
-    });
-    return unlockApp();
-  } catch (e) {
-    scanning = false;
-    bioFails++;
-    console.error("fingerprint", e);
-    if (bioFails >= BIO_MAX) return showPassStep("3 baar fingerprint fail hua, ab password daalo 🔒");
-    $("bioBtn").classList.remove("hidden");
-    $("gateMsg").textContent = "Fingerprint nahi mila, dobara try karo 👆";
-    $("gateErr").textContent = `(${bioFails}/${BIO_MAX}) ${e.name || "error"}: ${e.message || ""}`;
-  }
-}
-
-$("bioBtn").onclick = autoScan;
+/* ---------- Password gate (numeric keyboard, 173004) ---------- */
 $("gateBtn").onclick = () => {
   if ($("gatePass").value === PASSWORD) unlockApp();
   else {
@@ -1035,6 +947,12 @@ $("gateBtn").onclick = () => {
   }
 };
 $("gatePass").onkeydown = e => { if (e.key === "Enter") $("gateBtn").click(); };
+function unlockApp() {
+  gatePassed = true;
+  $("gateErr").textContent = "";
+  $("gatePass").value = "";
+  showScreen();
+}
 
 /* ---------- Screens ---------- */
 function showScreen() {
@@ -1069,9 +987,9 @@ async function doLogout() {
   layers.length = 0;
   syncLock();
   listening = false;
-  resetGate();
+  gatePassed = false;
+  $("gatePass").value = "";
   showScreen();
-  autoScan();
 }
 $("dLogout").onclick = doLogout;
 onAuthStateChanged(auth, () => showScreen());
@@ -1324,7 +1242,7 @@ function snDraw() {
     snCtx.font = "bold 20px monospace";
     snCtx.fillText(snOver ? "GAME OVER" : "NOKIA SNAKE", snCanvas.width / 2, snCanvas.height / 2 - 6);
     snCtx.font = "13px monospace";
-    snCtx.fillText(snOver ? "Start dabao" : "Start dabao", snCanvas.width / 2, snCanvas.height / 2 + 18);
+    snCtx.fillText("Start dabao", snCanvas.width / 2, snCanvas.height / 2 + 18);
   }
   $("snScore").textContent = snScore;
 }
@@ -2225,4 +2143,85 @@ function openPhotoZoom(e) {
   const c = e.target.closest(".polaroid"); if (!c) return;
   const m = photoMap.get(c.dataset.id); if (!m) return;
   openZoom(c, `<img class="zimg" src="${m.src}" alt="">
-    <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc
+    <div class="zcap">${esc(m.caption)}</div><div class="zmeta">${esc(m.date)}</div>`, "photo", c.dataset.id);
+}
+$("board").onclick = openPhotoZoom;
+wire.addEventListener("click", e => {
+  if (wMoved) { wMoved = false; return; }
+  openPhotoZoom(e);
+});
+
+/* ---------- Image helpers ---------- */
+function compress(file, max = 800, quality = 0.7) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width * s; c.height = img.height * s;
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      res(c.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = rej;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+/* ---------- Collage ---------- */
+const colSel = [];
+function openCollage() {
+  if (photoList.length < 2) return toast("Collage ke liye kam se kam 2 photos chahiye 🧩");
+  colSel.length = 0;
+  $("colPick").innerHTML = photoList.map(p => `<div data-pick="${p.id}"><img src="${p.src}" alt=""></div>`).join("");
+  $("colOut").classList.add("hidden");
+  $("colDl").classList.add("hidden");
+  $("colMake").classList.remove("hidden");
+  $("collageModal").classList.remove("hidden");
+  openLayer("collage", closeCollageVis);
+}
+function closeCollageVis() { $("collageModal").classList.add("hidden"); }
+$("collageBtn").onclick = openCollage;
+$("colCancel").onclick = () => dismissLayer("collage");
+$("colPick").onclick = e => {
+  const d = e.target.closest("[data-pick]");
+  if (!d) return;
+  const id = d.dataset.pick;
+  const i = colSel.indexOf(id);
+  if (i >= 0) { colSel.splice(i, 1); d.classList.remove("sel"); }
+  else {
+    if (colSel.length >= 4) return toast("Max 4 photos 🧩");
+    colSel.push(id); d.classList.add("sel");
+  }
+};
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = src;
+  });
+}
+function drawCover(ctx, img, x, y, w, h) {
+  const s = Math.max(w / img.width, h / img.height);
+  const sw = w / s, sh = h / s;
+  const sx = (img.width - sw) / 2, sy = (img.height - sh) / 2;
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+function layoutCells(n, W, H, P) {
+  const w2 = (W - 3 * P) / 2, h2 = (H - 3 * P) / 2;
+  if (n === 1) return [{ x: P, y: P, w: W - 2 * P, h: H - 2 * P }];
+  if (n === 2) return [{ x: P, y: P, w: w2, h: H - 2 * P }, { x: 2 * P + w2, y: P, w: w2, h: H - 2 * P }];
+  if (n === 3) return [
+    { x: P, y: P, w: w2, h: H - 2 * P },
+    { x: 2 * P + w2, y: P, w: w2, h: h2 },
+    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
+  ];
+  return [
+    { x: P, y: P, w: w2, h: h2 },
+    { x: 2 * P + w2, y: P, w: w2, h: h2 },
+    { x: P, y: 2 * P + h2, w: w2, h: h2 },
+    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
+  ];
+}
+async function makeCollage() {
+  if (!colS
