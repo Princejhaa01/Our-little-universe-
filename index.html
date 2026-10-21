@@ -18,6 +18,8 @@ html[data-app="blue"]{--bg:linear-gradient(135deg,#d6ecff,#f4f9ff);--card:#fff;-
 html[data-app="mint"]{--bg:linear-gradient(135deg,#d8f5e8,#f5fdf9);--card:#fff;--cream:#f5fdf9;--ink:#2f5a48;--pink:#c4f0da;--blue:#d8f5e8}
 html[data-app="lavender"]{--bg:linear-gradient(135deg,#e9dcff,#fbf8ff);--card:#fff;--cream:#fbf8ff;--ink:#4a3a6b;--pink:#dccaff;--blue:#e9dcff}
 html[data-app="dark"]{--bg:linear-gradient(135deg,#1d1828,#2b2236);--card:#3a3050;--cream:#2b2236;--ink:#f3ecff;--pink:#4a3d63;--blue:#3a3050;--sh:rgba(0,0,0,.45)}
+html[data-app="peach"]{--bg:linear-gradient(135deg,#ffe0cc,#fff8f2);--card:#fff;--cream:#fff8f2;--ink:#6b3f2e;--pink:#ffd0b5;--blue:#ffe6d9}
+html[data-app="sunny"]{--bg:linear-gradient(135deg,#fff3b8,#fffdf2);--card:#fff;--cream:#fffdf2;--ink:#5c4a1a;--pink:#ffe98a;--blue:#fff3b8}
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -30,6 +32,8 @@ body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow
 [data-ct="mint"]{--cbg:linear-gradient(135deg,#d8f5e8,#f6fffa);--cme:#c4f0da;--cink:#2f5a48;--caccent:#2f9e63}
 [data-ct="lavender"]{--cbg:linear-gradient(135deg,#e9dcff,#fbf8ff);--cme:#dccaff;--cink:#4a3a6b;--caccent:#7d4fb5}
 [data-ct="dark"]{--cbg:linear-gradient(135deg,#2b2236,#1d1828);--cme:#4a3d63;--cother:#342b45;--cink:#f3ecff;--cinput:#3a3050;--caccent:#ff8fb8}
+[data-ct="peach"]{--cbg:linear-gradient(135deg,#ffe0cc,#fff8f2);--cme:#ffd0b5;--cink:#6b3f2e;--caccent:#d9643a}
+[data-ct="sunny"]{--cbg:linear-gradient(135deg,#fff3b8,#fffdf2);--cme:#ffe98a;--cink:#5c4a1a;--caccent:#c99a00}
 
 /* Clay base */
 .clay{background:var(--cream);border-radius:32px;
@@ -86,6 +90,9 @@ section{margin-bottom:60px}
   box-shadow:3px 3px 8px var(--sh);display:flex;flex-direction:column;align-items:center;gap:5px}
 .th i{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:inset 2px 2px 4px rgba(255,255,255,.6),2px 2px 5px var(--sh)}
 .th.on{outline:2px solid #ff8fb8}
+.themes .th.extra{display:none}
+.themes.open .th.extra{display:flex}
+.th.more-btn i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px;font-weight:600;background:var(--card)}
 .dr-spacer{flex:1;min-height:20px}
 .dr-logout{width:100%;background:#e5443a;color:#fff;box-shadow:6px 6px 14px rgba(229,68,58,.35),-4px -4px 10px rgba(255,255,255,.4);font-size:17px}
 
@@ -141,6 +148,15 @@ section{margin-bottom:60px}
 .cell:disabled{cursor:default}
 .seats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
 .gstatus{text-align:center;font-size:15px;min-height:22px;margin-top:4px}
+
+/* Snake (Nokia style) */
+.snake-box{max-width:340px;width:100%;padding:24px}
+.snake-box h2{text-align:center;margin-top:0}
+.snk-top{display:flex;justify-content:space-between;font-size:15px;margin-bottom:8px}
+.snk-canvas{width:100%;max-width:260px;aspect-ratio:1;display:block;margin:0 auto;border-radius:12px;border:4px solid #5a6b4a;background:#c5d6a0;touch-action:none}
+.snk-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:200px;margin:12px auto 4px}
+.snk-pad .btn{padding:8px 0;width:100%}
+.snk-status{text-align:center;font-size:14px;min-height:20px;margin-top:6px}
 
 /* Dates */
 .dbox h2{text-align:center;margin-top:6px}
@@ -548,6 +564,7 @@ input[type=date]{max-width:100%}
   <button class="btn dr-item" id="locOpen">📍 Partner ki location</button>
   <button class="btn dr-item" id="locShareBtn">📡 Meri location share: OFF</button>
   <button class="btn dr-item" id="gameOpen">🎮 Tic Tac Toe khelo</button>
+  <button class="btn dr-item" id="snakeOpen">🐍 Snake khelo (offline)</button>
 
   <div class="dr-sec">💬 Chat ka theme</div>
   <div class="themes" id="themes">
@@ -555,7 +572,10 @@ input[type=date]{max-width:100%}
     <button class="th" data-th="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f5faff)"><i></i>Blue</button>
     <button class="th" data-th="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f6fffa)"><i></i>Mint</button>
     <button class="th" data-th="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
+    <button class="th more-btn" data-more="themes" style="--sw:var(--card)"><i>＋</i><span>More</span></button>
+    <button class="th extra" data-th="peach" style="--sw:linear-gradient(135deg,#ffd0b5,#fff8f2)"><i></i>Peach</button>
+    <button class="th extra" data-th="sunny" style="--sw:linear-gradient(135deg,#ffe98a,#fffdf2)"><i></i>Sunny</button>
+    <button class="th extra" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
   </div>
 
   <div class="dr-sec">🏠 App ka theme</div>
@@ -564,7 +584,10 @@ input[type=date]{max-width:100%}
     <button class="th" data-ath="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f4f9ff)"><i></i>Blue</button>
     <button class="th" data-ath="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f5fdf9)"><i></i>Mint</button>
     <button class="th" data-ath="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
+    <button class="th more-btn" data-more="appThemes" style="--sw:var(--card)"><i>＋</i><span>More</span></button>
+    <button class="th extra" data-ath="peach" style="--sw:linear-gradient(135deg,#ffd0b5,#fff8f2)"><i></i>Peach</button>
+    <button class="th extra" data-ath="sunny" style="--sw:linear-gradient(135deg,#ffe98a,#fffdf2)"><i></i>Sunny</button>
+    <button class="th extra" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
   </div>
 
   <div class="dr-spacer"></div>
@@ -580,6 +603,26 @@ input[type=date]{max-width:100%}
     <div class="mbtns">
       <button class="btn small" id="nickCancel">Cancel</button>
       <button class="btn small blue" id="nickSave">Save 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- SNAKE GAME -->
+<div class="modal top hidden" id="snakeModal">
+  <div class="clay snake-box">
+    <h2>Snake 🐍</h2>
+    <div class="snk-top"><span>Score: <b id="snkScore">0</b></span><span>Best: <b id="snkBest">0</b></span></div>
+    <canvas id="snkCanvas" class="snk-canvas" width="200" height="200"></canvas>
+    <div class="snk-pad" id="snkPad">
+      <span></span><button class="btn small" data-dir="up">▲</button><span></span>
+      <button class="btn small" data-dir="left">◀</button>
+      <button class="btn small" data-dir="down">▼</button>
+      <button class="btn small" data-dir="right">▶</button>
+    </div>
+    <div class="snk-status" id="snkMsg">Start dabao ya swipe karo</div>
+    <div class="mbtns">
+      <button class="btn small" id="snkClose">Band karo</button>
+      <button class="btn small blue" id="snkStart">▶ Start / ⏸</button>
     </div>
   </div>
 </div>
@@ -759,6 +802,7 @@ const APP_THEME_KEY = "ou_appTheme";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 const LOC_PUSH_MS = 60000;
+const THEMES = ["pink", "blue", "mint", "lavender", "peach", "sunny", "dark"];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -843,7 +887,6 @@ addEventListener("scroll", () => {
 }, { passive: true });
 
 /* ---------- Chat theme (device-wise) ---------- */
-const THEMES = ["pink", "blue", "mint", "lavender", "dark"];
 function applyTheme(k) {
   const t = THEMES.includes(k) ? k : "pink";
   $("chat").dataset.ct = t;
@@ -851,10 +894,6 @@ function applyTheme(k) {
   document.querySelectorAll("[data-th]").forEach(b => b.classList.toggle("on", b.dataset.th === t));
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "pink");
-$("themes").onclick = e => {
-  const b = e.target.closest("[data-th]");
-  if (b) applyTheme(b.dataset.th);
-};
 
 /* ---------- App theme (home page, separate from chat theme) ---------- */
 function applyAppTheme(k) {
@@ -865,7 +904,22 @@ function applyAppTheme(k) {
   document.querySelectorAll("[data-ath]").forEach(b => b.classList.toggle("on", b.dataset.ath === t));
 }
 applyAppTheme(localStorage.getItem(APP_THEME_KEY) || "pink");
+
+/* ---------- More themes toggle ---------- */
+function toggleMore(boxId, btn) {
+  const open = $(boxId).classList.toggle("open");
+  btn.querySelector("span").textContent = open ? "Kam" : "More";
+  btn.querySelector("i").textContent = open ? "−" : "＋";
+}
+$("themes").onclick = e => {
+  const m = e.target.closest(".more-btn");
+  if (m) return toggleMore("themes", m);
+  const b = e.target.closest("[data-th]");
+  if (b) applyTheme(b.dataset.th);
+};
 $("appThemes").onclick = e => {
+  const m = e.target.closest(".more-btn");
+  if (m) return toggleMore("appThemes", m);
   const b = e.target.closest("[data-ath]");
   if (b) applyAppTheme(b.dataset.ath);
 };
@@ -1142,6 +1196,122 @@ function renderGame() {
   $("gStatus").innerHTML = `${esc(msg)}<br><small>${esc(who)}</small>`;
   $("gReset").disabled = !g.winner && g.board.some(Boolean);
 }
+
+/* ---------- Snake (Nokia style, offline) ---------- */
+const SNK_N = 20, SNK_TICK = 160, SNK_HI = "ou_snakeHi";
+const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+let snk = null, snkTouch = null;
+
+function snkFood() {
+  let f;
+  do { f = { x: Math.floor(Math.random() * SNK_N), y: Math.floor(Math.random() * SNK_N) }; }
+  while (snk.snake.some(s => s.x === f.x && s.y === f.y));
+  return f;
+}
+function snkInit() {
+  if (snk && snk.timer) clearInterval(snk.timer);
+  snk = {
+    ctx: $("snkCanvas").getContext("2d"),
+    snake: [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }],
+    dir: { x: 1, y: 0 }, next: { x: 1, y: 0 },
+    food: null, score: 0, timer: null, over: false
+  };
+  snk.food = snkFood();
+  $("snkScore").textContent = "0";
+  $("snkBest").textContent = localStorage.getItem(SNK_HI) || "0";
+  $("snkMsg").textContent = "Start dabao ya swipe karo";
+  snkDraw();
+}
+function snkDraw() {
+  const c = snk.ctx, size = $("snkCanvas").width, cell = size / SNK_N;
+  c.fillStyle = "#c5d6a0";
+  c.fillRect(0, 0, size, size);
+  c.fillStyle = "#2a3a1c";
+  snk.snake.forEach(s => c.fillRect(s.x * cell + 1, s.y * cell + 1, cell - 2, cell - 2));
+  c.fillRect(snk.food.x * cell + 3, snk.food.y * cell + 3, cell - 6, cell - 6);
+}
+function snkStep() {
+  const d = snk.next;
+  snk.dir = d;
+  const head = { x: snk.snake[0].x + d.x, y: snk.snake[0].y + d.y };
+  const hitWall = head.x < 0 || head.y < 0 || head.x >= SNK_N || head.y >= SNK_N;
+  const hitSelf = snk.snake.some(s => s.x === head.x && s.y === head.y);
+  if (hitWall || hitSelf) return snkOver();
+  snk.snake.unshift(head);
+  if (head.x === snk.food.x && head.y === snk.food.y) {
+    snk.score++;
+    $("snkScore").textContent = snk.score;
+    snk.food = snkFood();
+  } else {
+    snk.snake.pop();
+  }
+  snkDraw();
+}
+function snkOver() {
+  clearInterval(snk.timer);
+  snk.timer = null;
+  snk.over = true;
+  const hi = Math.max(snk.score, Number(localStorage.getItem(SNK_HI) || 0));
+  localStorage.setItem(SNK_HI, String(hi));
+  $("snkBest").textContent = hi;
+  $("snkMsg").textContent = `Game over 💔 Score ${snk.score} · dobara Start dabao`;
+}
+function snkStart() {
+  if (snk && snk.timer) return;
+  if (!snk || snk.over) snkInit();
+  snk.timer = setInterval(snkStep, SNK_TICK);
+  $("snkMsg").textContent = "Khel chalu 🐍";
+}
+function snkPause() {
+  if (snk && snk.timer) {
+    clearInterval(snk.timer);
+    snk.timer = null;
+    $("snkMsg").textContent = "Paused ⏸ · Start dabao";
+  }
+}
+function snkTurn(x, y) {
+  if (!snk || snk.over) return;
+  if (x === -snk.dir.x && y === -snk.dir.y) return;
+  snk.next = { x, y };
+  if (!snk.timer) snkStart();
+}
+function openSnake() {
+  $("snakeModal").classList.remove("hidden");
+  if (!snk || snk.over) snkInit();
+  openLayer("snake", closeSnakeVis);
+}
+function closeSnakeVis() {
+  snkPause();
+  $("snakeModal").classList.add("hidden");
+}
+$("snakeOpen").onclick = openSnake;
+$("snkClose").onclick = () => dismissLayer("snake");
+$("snakeModal").onclick = e => { if (e.target.id === "snakeModal") dismissLayer("snake"); };
+$("snkStart").onclick = () => (snk && snk.timer ? snkPause() : snkStart());
+$("snkPad").onclick = e => {
+  const b = e.target.closest("[data-dir]");
+  if (!b) return;
+  const [x, y] = DIRS[b.dataset.dir];
+  snkTurn(x, y);
+};
+$("snkCanvas").addEventListener("pointerdown", e => { snkTouch = { x: e.clientX, y: e.clientY }; });
+$("snkCanvas").addEventListener("pointerup", e => {
+  if (!snkTouch) return;
+  const dx = e.clientX - snkTouch.x, dy = e.clientY - snkTouch.y;
+  snkTouch = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+  if (Math.abs(dx) > Math.abs(dy)) snkTurn(dx > 0 ? 1 : -1, 0);
+  else snkTurn(0, dy > 0 ? 1 : -1);
+});
+addEventListener("keydown", e => {
+  if ($("snakeModal").classList.contains("hidden")) return;
+  const map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+  const k = map[e.key];
+  if (!k) return;
+  e.preventDefault();
+  const [x, y] = DIRS[k];
+  snkTurn(x, y);
+});
 
 /* ---------- Push notification (FCM) ---------- */
 let pushSetupDone = false;
@@ -2062,186 +2232,4 @@ function openPhotoModal(id = null, d = {}, replace = false) {
   $("pFile").value = "";
   $("pPreview").src = d.src || "";
   $("pPreview").classList.toggle("hidden", !d.src);
-  $("photoModal").classList.remove("hidden");
-  openLayer("photo", closePhotoVis, replace);
-}
-$("addPhoto").onclick = () => openPhotoModal();
-$("pCancel").onclick = () => dismissLayer("photo");
-$("pFile").onchange = async e => {
-  const f = e.target.files[0]; if (!f) return;
-  photoSrc = await compress(f, 900, 0.75);
-  $("pPreview").src = photoSrc; $("pPreview").classList.remove("hidden");
-};
-$("pSave").onclick = async () => {
-  const data = { caption: $("pCaption").value.trim(), date: $("pDate").value };
-  if (photoSrc) data.src = photoSrc;
-  try {
-    if (photoEditId) await updateDoc(doc(db, "photos", photoEditId), data);
-    else {
-      if (!photoSrc) return toast("Pehle photo select karo 📸");
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, "photos"), data);
-    }
-    dismissLayer("photo");
-    toast("Photo save ho gayi 📸");
-  } catch (e) { toast("Error: " + (e.code || e.message)); }
-};
-
-/* ---------- Diary modal ---------- */
-function closeDiaryVis() { $("diaryModal").classList.add("hidden"); }
-function setDiaryPhoto(i, src) {
-  diaryPhotos[i] = src || null;
-  $("dmP" + i).src = diaryPhotos[i] || "";
-  $("dmW" + i).classList.toggle("hidden", !diaryPhotos[i]);
-}
-function openDiaryModal(id = null) {
-  const m = id ? entries.find(x => x.id === id) : null;
-  const ps = Array.isArray(m?.srcs) ? m.srcs : (m?.src ? [m.src] : []);
-  diaryEditId = id;
-  $("dmTitle").textContent = id ? "Page edit karo ✏️" : "Naya page 📖";
-  $("dmDate").value = m?.date || today();
-  $("dmText").value = m?.text || "";
-  $("dmF0").value = ""; $("dmF1").value = "";
-  setDiaryPhoto(0, ps[0] || null);
-  setDiaryPhoto(1, ps[1] || null);
-  $("diaryModal").classList.remove("hidden");
-  openLayer("diary", closeDiaryVis);
-}
-$("newPageBtn").onclick = () => openDiaryModal();
-$("editPageBtn").onclick = () => { if (entries[cur]) openDiaryModal(entries[cur].id); };
-$("delPageBtn").onclick = async () => {
-  const m = entries[cur];
-  if (!m || !confirm("Ye page delete karein? 🥺")) return;
-  try { await deleteDoc(doc(db, "diary", m.id)); toast("Page delete ho gaya"); }
-  catch (err) { toast("Error: " + (err.code || err.message)); }
-};
-$("dmCancel").onclick = () => dismissLayer("diary");
-[0, 1].forEach(i => {
-  $("dmF" + i).onchange = async e => {
-    const f = e.target.files[0]; if (!f) return;
-    setDiaryPhoto(i, await compress(f, 700, 0.7));
-  };
-});
-document.querySelectorAll("[data-rm]").forEach(b => {
-  b.onclick = () => { const i = +b.dataset.rm; setDiaryPhoto(i, null); $("dmF" + i).value = ""; };
-});
-$("dmSave").onclick = async () => {
-  const srcs = diaryPhotos.filter(Boolean);
-  const data = { date: $("dmDate").value, text: $("dmText").value.trim(), srcs };
-  if (!data.text && !srcs.length) return toast("Kuch likho ya photo daalo 💛");
-  try {
-    if (diaryEditId) await updateDoc(doc(db, "diary", diaryEditId), data);
-    else {
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, "diary"), data);
-      pendingGoLast = true;
-    }
-    dismissLayer("diary");
-    toast("Page save ho gaya 💛");
-  } catch (e) { toast("Error: " + (e.code || e.message)); }
-};
-
-/* ---------- Voice note ---------- */
-let rec = null, recChunks = [], recTimer = null;
-const blobToDataURL = b => new Promise((res, rej) => {
-  const r = new FileReader();
-  r.onload = () => res(r.result);
-  r.onerror = rej;
-  r.readAsDataURL(b);
-});
-$("micBtn").onclick = async () => {
-  if (rec && rec.state === "recording") { rec.stop(); return; }
-  if (!navigator.mediaDevices?.getUserMedia) return toast("Is phone me mic support nahi hai");
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    recChunks = [];
-    rec = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "" });
-    rec.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); };
-    rec.onstop = async () => {
-      stream.getTracks().forEach(t => t.stop());
-      clearTimeout(recTimer);
-      $("micBtn").classList.remove("rec");
-      $("micBtn").textContent = "🎤";
-      const blob = new Blob(recChunks, { type: rec.mimeType || "audio/webm" });
-      if (blob.size < 2000) return toast("Voice note bahut chhota tha");
-      if (blob.size > 700 * 1024) return toast("Voice note bahut badi hai, thoda chhota bolo");
-      try {
-        const u = auth.currentUser;
-        const audio = await blobToDataURL(blob);
-        await addDoc(collection(db, "messages"), {
-          text: "", audio, uid: u.uid, name: firstName(u), senderEmail: u.email,
-          createdAt: serverTimestamp(), seen: false, reactions: {},
-          expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
-        });
-      } catch (err) { toast("Voice error: " + (err.code || err.message)); }
-    };
-    rec.start();
-    $("micBtn").classList.add("rec");
-    $("micBtn").textContent = "⏹";
-    recTimer = setTimeout(() => { if (rec.state === "recording") rec.stop(); }, VOICE_MAX_MS);
-  } catch (err) {
-    toast("Mic permission do: " + err.message);
-  }
-};
-
-/* ---------- Chat (full-screen) ---------- */
-function closeChatVis() {
-  chatOpen = false;
-  $("chat").classList.remove("open");
-}
-function openChat() {
-  if (chatOpen) return;
-  chatOpen = true;
-  $("chat").classList.add("open");
-  fitChat();
-  openLayer("chat", closeChatVis);
-  markRead();
-  markSeen();
-}
-$("chatBtn").onclick = () => {
-  if (chatOpen) dismissLayer("chat");
-  else openChat();
-};
-$("chatBack").onclick = () => dismissLayer("chat");
-
-function stopTyping() {
-  clearTimeout(typingTimer);
-  if (typingOn) { typingOn = false; setTyping(false); }
-}
-$("chatIn").addEventListener("input", () => {
-  if (!typingOn) { typingOn = true; setTyping(true); }
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(stopTyping, 2500);
-});
-
-$("chatForm").onsubmit = async e => {
-  e.preventDefault();
-  const text = $("chatIn").value.trim(); if (!text) return;
-  const u = auth.currentUser;
-
-  if (editingId) {
-    const id = editingId;
-    $("chatIn").value = "";
-    stopTyping();
-    clearReply();
-    try { await updateDoc(doc(db, "messages", id), { text, edited: true }); }
-    catch (err) { toast("Edit error: " + (err.code || err.message)); }
-    return;
-  }
-
-  const rt = replyTarget;
-  $("chatIn").value = "";
-  stopTyping();
-  clearReply();
-  try {
-    await addDoc(collection(db, "messages"), {
-      text, uid: u.uid, name: nickOf[u.email] || firstName(u), senderEmail: u.email,
-      createdAt: serverTimestamp(), seen: false,
-      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {},
-      expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
-    });
-  } catch (err) { toast("Chat error: " + (err.code || err.message)); }
-};
-</script>
-</body>
-  </html>
+  
