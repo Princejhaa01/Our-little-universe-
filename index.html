@@ -342,13 +342,13 @@ input[type=date]{max-width:100%}
 <body>
 <div id="progress"></div>
 
-<!-- PASSWORD GATE (numeric keyboard) -->
+<!-- PASSWORD GATE (numeric keyboard, 173004) -->
 <div id="gate" class="center">
   <div class="clay card" id="gateCard">
     <h1>our little universe ✨️</h1>
     <p>Pehle secret password daalo 🔒</p>
-    <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder="Password">
-    <button class="btn blue" id="gateBtn">Enter 💖</button>
+    <input id="gatePass" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Password">
+    <button class="btn blue" id="gateBtn" type="button">Enter 💖</button>
     <div class="err" id="gateErr"></div>
   </div>
 </div>
@@ -732,6 +732,51 @@ input[type=date]{max-width:100%}
   </div>
 </div>
 
+<!-- PASSWORD GATE LOGIC: normal script, Firebase par depend nahi karta -->
+<script>
+(function () {
+  var PASS = "173004";
+  var gate = document.getElementById("gate");
+  var inp = document.getElementById("gatePass");
+  var btn = document.getElementById("gateBtn");
+  var err = document.getElementById("gateErr");
+  var card = document.getElementById("gateCard");
+
+  function unlock() {
+    window.__gateOk = true;
+    err.textContent = "";
+    inp.value = "";
+    gate.classList.add("hidden");
+    window.dispatchEvent(new Event("gate-ok"));
+  }
+
+  function check() {
+    if (inp.value.trim() === PASS) {
+      unlock();
+    } else {
+      err.textContent = "Galat password 💔";
+      inp.value = "";
+      inp.focus();
+      card.classList.remove("shake");
+      void card.offsetWidth;
+      card.classList.add("shake");
+    }
+  }
+
+  btn.addEventListener("click", check);
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); check(); }
+  });
+
+  window.addEventListener("gate-reset", function () {
+    window.__gateOk = false;
+    inp.value = "";
+    err.textContent = "";
+    gate.classList.remove("hidden");
+  });
+})();
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -749,7 +794,6 @@ const firebaseConfig = {
 };
 
 const VAPID_KEY = "BFT8si9h2hqaQC0OYV_8p0AmIb0sLPBtG4CnG2cjA6u9X15UUEfTjqacuxC-l-aX6bS51edEJf6iRovqPGCbKhU";
-const PASSWORD = "173004";
 const ALLOWED_EMAILS = ["antragond40@gmail.com", "jhap20046@gmail.com"];
 const START = new Date(2026, 2, 4);
 const ONLINE_WINDOW = 75000;
@@ -812,7 +856,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const today = () => new Date().toISOString().slice(0, 10);
 const emailKey = e => String(e).replace(/[^a-z0-9]/gi, "_");
-const fmtTime = t => new Date(t).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+const fmtTime = t => new Date(t || Date.now()).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 const fmtClock = t => new Date(t).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
 const fmtDay = d => new Date(d + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 const firstName = u => (u?.displayName || "Me").split(" ")[0];
@@ -826,7 +870,9 @@ function toast(msg) {
   setTimeout(() => t.remove(), 3500);
 }
 
-let gatePassed = false, listening = false;
+/* Gate ka status: plain script se aata hai */
+let gatePassed = !!window.__gateOk;
+let listening = false, presenceStarted = false;
 let photoEditId = null, photoSrc = null;
 let diaryEditId = null, diaryPhotos = [null, null], pendingGoLast = false;
 let zoomRect = null, zoomState = {};
@@ -938,27 +984,13 @@ function handleThemeClick(e, kind) {
 applyChatTheme(chatTheme);
 applyAppTheme(appTheme);
 
-/* ---------- Password gate (numeric keyboard, 173004) ---------- */
-$("gateBtn").onclick = () => {
-  if ($("gatePass").value === PASSWORD) unlockApp();
-  else {
-    $("gateErr").textContent = "Galat password 💔";
-    $("gateCard").classList.remove("shake"); void $("gateCard").offsetWidth; $("gateCard").classList.add("shake");
-  }
-};
-$("gatePass").onkeydown = e => { if (e.key === "Enter") $("gateBtn").click(); };
-function unlockApp() {
-  gatePassed = true;
-  $("gateErr").textContent = "";
-  $("gatePass").value = "";
-  showScreen();
-}
+/* ---------- Gate events (plain script se) ---------- */
+window.addEventListener("gate-ok", () => { gatePassed = true; showScreen(); });
 
 /* ---------- Screens ---------- */
 function showScreen() {
   const u = auth.currentUser;
   const ok = !!u && ALLOWED_EMAILS.includes(u.email);
-  $("gate").classList.toggle("hidden", gatePassed);
   $("login").classList.toggle("hidden", !gatePassed || ok);
   $("app").classList.toggle("hidden", !(gatePassed && ok));
   if (gatePassed && ok) {
@@ -980,16 +1012,19 @@ $("googleBtn").onclick = async () => {
 };
 
 async function doLogout() {
-  await setTyping(false);
-  await setPresence(false);
-  stopLocWatch();
-  await signOut(auth);
+  try {
+    await setTyping(false);
+    await setPresence(false);
+    stopLocWatch();
+    await signOut(auth);
+  } catch (e) { console.error("logout", e); }
   layers.length = 0;
   syncLock();
-  listening = false;
+  closeDrawerVis();
   gatePassed = false;
-  $("gatePass").value = "";
-  showScreen();
+  $("app").classList.add("hidden");
+  $("login").classList.add("hidden");
+  window.dispatchEvent(new Event("gate-reset"));
 }
 $("dLogout").onclick = doLogout;
 onAuthStateChanged(auth, () => showScreen());
@@ -1381,7 +1416,6 @@ $("moods").onclick = e => {
   setMood(myPresence?.mood === k ? null : k);
 };
 
-let presenceStarted = false;
 function startPresence() {
   if (presenceStarted) return;
   presenceStarted = true;
@@ -2198,30 +2232,4 @@ function loadImg(src) {
     const i = new Image();
     i.onload = () => res(i);
     i.onerror = rej;
-    i.src = src;
-  });
-}
-function drawCover(ctx, img, x, y, w, h) {
-  const s = Math.max(w / img.width, h / img.height);
-  const sw = w / s, sh = h / s;
-  const sx = (img.width - sw) / 2, sy = (img.height - sh) / 2;
-  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
-}
-function layoutCells(n, W, H, P) {
-  const w2 = (W - 3 * P) / 2, h2 = (H - 3 * P) / 2;
-  if (n === 1) return [{ x: P, y: P, w: W - 2 * P, h: H - 2 * P }];
-  if (n === 2) return [{ x: P, y: P, w: w2, h: H - 2 * P }, { x: 2 * P + w2, y: P, w: w2, h: H - 2 * P }];
-  if (n === 3) return [
-    { x: P, y: P, w: w2, h: H - 2 * P },
-    { x: 2 * P + w2, y: P, w: w2, h: h2 },
-    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
-  ];
-  return [
-    { x: P, y: P, w: w2, h: h2 },
-    { x: 2 * P + w2, y: P, w: w2, h: h2 },
-    { x: P, y: 2 * P + h2, w: w2, h: h2 },
-    { x: 2 * P + w2, y: 2 * P + h2, w: w2, h: h2 }
-  ];
-}
-async function makeCollage() {
-  if (!colS
+  
