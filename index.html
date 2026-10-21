@@ -732,21 +732,38 @@ input[type=date]{max-width:100%}
   </div>
 </div>
 
-<!-- PASSWORD GATE LOGIC: normal script, Firebase par depend nahi karta -->
+<!-- PASSWORD GATE + ERROR REPORTER: normal script, Firebase par depend nahi karta -->
 <script>
 (function () {
   var PASS = "173004";
   var gate = document.getElementById("gate");
   var inp = document.getElementById("gatePass");
   var btn = document.getElementById("gateBtn");
-  var err = document.getElementById("gateErr");
+  var gateErr = document.getElementById("gateErr");
   var card = document.getElementById("gateCard");
+  var login = document.getElementById("login");
+  var loginErr = document.getElementById("loginErr");
+
+  /* Koi bhi JS error screen par dikhao, taaki blank page na rahe */
+  window.addEventListener("error", function (e) {
+    loginErr.textContent = "Error: " + (e.message || "unknown");
+    login.classList.remove("hidden");
+  });
 
   function unlock() {
     window.__gateOk = true;
-    err.textContent = "";
+    gateErr.textContent = "";
     inp.value = "";
     gate.classList.add("hidden");
+    login.classList.remove("hidden");
+
+    /* Firebase 6 second me load na ho to saaf message */
+    setTimeout(function () {
+      if (!window.__moduleOk) {
+        loginErr.textContent = "Firebase load nahi hua. Internet ya link check karo, phir page refresh karo.";
+      }
+    }, 6000);
+
     window.dispatchEvent(new Event("gate-ok"));
   }
 
@@ -754,7 +771,7 @@ input[type=date]{max-width:100%}
     if (inp.value.trim() === PASS) {
       unlock();
     } else {
-      err.textContent = "Galat password 💔";
+      gateErr.textContent = "Galat password 💔";
       inp.value = "";
       inp.focus();
       card.classList.remove("shake");
@@ -771,16 +788,18 @@ input[type=date]{max-width:100%}
   window.addEventListener("gate-reset", function () {
     window.__gateOk = false;
     inp.value = "";
-    err.textContent = "";
+    gateErr.textContent = "";
     gate.classList.remove("hidden");
   });
 })();
 </script>
 
 <script type="module">
+window.__moduleOk = true;
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, setDoc, doc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
@@ -848,9 +867,15 @@ const getTheme = k => THEMES.find(t => t.k === k) || THEMES[0];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-});
+let db;
+try {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  });
+} catch (e) {
+  console.error("firestore persistent fail, normal mode", e);
+  db = getFirestore(app);
+}
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -991,9 +1016,14 @@ window.addEventListener("gate-ok", () => { gatePassed = true; showScreen(); });
 function showScreen() {
   const u = auth.currentUser;
   const ok = !!u && ALLOWED_EMAILS.includes(u.email);
-  $("login").classList.toggle("hidden", !gatePassed || ok);
-  $("app").classList.toggle("hidden", !(gatePassed && ok));
-  if (gatePassed && ok) {
+  if (!gatePassed) {
+    $("login").classList.add("hidden");
+    $("app").classList.add("hidden");
+    return;
+  }
+  $("login").classList.toggle("hidden", ok);
+  $("app").classList.toggle("hidden", !ok);
+  if (ok) {
     startListeners();
     startPresence();
     setupPush();
@@ -2206,30 +2236,4 @@ const colSel = [];
 function openCollage() {
   if (photoList.length < 2) return toast("Collage ke liye kam se kam 2 photos chahiye 🧩");
   colSel.length = 0;
-  $("colPick").innerHTML = photoList.map(p => `<div data-pick="${p.id}"><img src="${p.src}" alt=""></div>`).join("");
-  $("colOut").classList.add("hidden");
-  $("colDl").classList.add("hidden");
-  $("colMake").classList.remove("hidden");
-  $("collageModal").classList.remove("hidden");
-  openLayer("collage", closeCollageVis);
-}
-function closeCollageVis() { $("collageModal").classList.add("hidden"); }
-$("collageBtn").onclick = openCollage;
-$("colCancel").onclick = () => dismissLayer("collage");
-$("colPick").onclick = e => {
-  const d = e.target.closest("[data-pick]");
-  if (!d) return;
-  const id = d.dataset.pick;
-  const i = colSel.indexOf(id);
-  if (i >= 0) { colSel.splice(i, 1); d.classList.remove("sel"); }
-  else {
-    if (colSel.length >= 4) return toast("Max 4 photos 🧩");
-    colSel.push(id); d.classList.add("sel");
-  }
-};
-function loadImg(src) {
-  return new Promise((res, rej) => {
-    const i = new Image();
-    i.onload = () => res(i);
-    i.onerror = rej;
-  
+  $("colPick").innerHTML = photoList.map(p => `<div data-pick="${p.id}"><img src="${p.src}" alt=""></
