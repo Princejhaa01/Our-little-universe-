@@ -19,9 +19,6 @@ html[data-app="mint"]{--bg:linear-gradient(135deg,#d8f5e8,#f5fdf9);--card:#fff;-
 html[data-app="lavender"]{--bg:linear-gradient(135deg,#e9dcff,#fbf8ff);--card:#fff;--cream:#fbf8ff;--ink:#4a3a6b;--pink:#dccaff;--blue:#e9dcff}
 html[data-app="dark"]{--bg:linear-gradient(135deg,#1d1828,#2b2236);--card:#3a3050;--cream:#2b2236;--ink:#f3ecff;--pink:#4a3d63;--blue:#3a3050;--sh:rgba(0,0,0,.45)}
 html[data-app="peach"]{--bg:linear-gradient(135deg,#ffe0cc,#fff8f2);--card:#fff;--cream:#fff8f2;--ink:#6b3f2e;--pink:#ffd0b5;--blue:#ffe6d9}
-html[data-app="sunny"]{--bg:linear-gradient(135deg,#fff3b8,#fffdf2);--card:#fff;--cream:#fffdf2;--ink:#5c4a1a;--pink:#ffe98a;--blue:#fff3b8}
-html[data-app="rose"]{--bg:linear-gradient(135deg,#ffd6e0,#fff5f8);--card:#fff;--cream:#fff5f8;--ink:#6e2f45;--pink:#ffc2d1;--blue:#ffe3ea}
-html[data-app="sage"]{--bg:linear-gradient(135deg,#dfe8d6,#f7faf3);--card:#fff;--cream:#f6f9f1;--ink:#3f4f36;--pink:#cfdcc2;--blue:#e6eedc}
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -34,10 +31,6 @@ body{font-family:'Fredoka',sans-serif;color:var(--ink);min-height:100vh;overflow
 [data-ct="mint"]{--cbg:linear-gradient(135deg,#d8f5e8,#f6fffa);--cme:#c4f0da;--cink:#2f5a48;--caccent:#2f9e63}
 [data-ct="lavender"]{--cbg:linear-gradient(135deg,#e9dcff,#fbf8ff);--cme:#dccaff;--cink:#4a3a6b;--caccent:#7d4fb5}
 [data-ct="dark"]{--cbg:linear-gradient(135deg,#2b2236,#1d1828);--cme:#4a3d63;--cother:#342b45;--cink:#f3ecff;--cinput:#3a3050;--caccent:#ff8fb8}
-[data-ct="peach"]{--cbg:linear-gradient(135deg,#ffe0cc,#fff8f2);--cme:#ffd0b5;--cink:#6b3f2e;--caccent:#d9643a}
-[data-ct="sunny"]{--cbg:linear-gradient(135deg,#fff3b8,#fffdf2);--cme:#ffe98a;--cink:#5c4a1a;--caccent:#c99a00}
-[data-ct="rose"]{--cbg:linear-gradient(135deg,#ffd6e0,#fff5f8);--cme:#ffc2d1;--cink:#6e2f45;--caccent:#c2456f}
-[data-ct="sage"]{--cbg:linear-gradient(135deg,#dfe8d6,#f7faf3);--cme:#cfdcc2;--cink:#3f4f36;--caccent:#6b8f57}
 
 /* Clay base */
 .clay{background:var(--cream);border-radius:32px;
@@ -94,9 +87,6 @@ section{margin-bottom:60px}
   box-shadow:3px 3px 8px var(--sh);display:flex;flex-direction:column;align-items:center;gap:5px}
 .th i{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:inset 2px 2px 4px rgba(255,255,255,.6),2px 2px 5px var(--sh)}
 .th.on{outline:2px solid #ff8fb8}
-.themes .th.extra{display:none}
-.themes.open .th.extra{display:flex}
-.th.more-btn i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px;font-weight:600;background:var(--card)}
 .dr-spacer{flex:1;min-height:20px}
 .dr-logout{width:100%;background:#e5443a;color:#fff;box-shadow:6px 6px 14px rgba(229,68,58,.35),-4px -4px 10px rgba(255,255,255,.4);font-size:17px}
 
@@ -566,12 +556,7 @@ input[type=date]{max-width:100%}
     <button class="th" data-th="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f5faff)"><i></i>Blue</button>
     <button class="th" data-th="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f6fffa)"><i></i>Mint</button>
     <button class="th" data-th="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th more-btn" data-more="themes" style="--sw:var(--card)"><i>＋</i><span>More</span></button>
-    <button class="th extra" data-th="peach" style="--sw:linear-gradient(135deg,#ffd0b5,#fff8f2)"><i></i>Peach</button>
-    <button class="th extra" data-th="sunny" style="--sw:linear-gradient(135deg,#ffe98a,#fffdf2)"><i></i>Sunny</button>
-    <button class="th extra" data-th="rose" style="--sw:linear-gradient(135deg,#ffc2d1,#fff5f8)"><i></i>Rose</button>
-    <button class="th extra" data-th="sage" style="--sw:linear-gradient(135deg,#cfdcc2,#f7faf3)"><i></i>Sage</button>
-    <button class="th extra" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
+    <button class="th" data-th="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
   </div>
 
   <div class="dr-sec">🏠 App ka theme</div>
@@ -580,12 +565,7 @@ input[type=date]{max-width:100%}
     <button class="th" data-ath="blue" style="--sw:linear-gradient(135deg,#d6ecff,#f4f9ff)"><i></i>Blue</button>
     <button class="th" data-ath="mint" style="--sw:linear-gradient(135deg,#c4f0da,#f5fdf9)"><i></i>Mint</button>
     <button class="th" data-ath="lavender" style="--sw:linear-gradient(135deg,#dccaff,#fbf8ff)"><i></i>Lavender</button>
-    <button class="th more-btn" data-more="appThemes" style="--sw:var(--card)"><i>＋</i><span>More</span></button>
-    <button class="th extra" data-ath="peach" style="--sw:linear-gradient(135deg,#ffd0b5,#fff8f2)"><i></i>Peach</button>
-    <button class="th extra" data-ath="sunny" style="--sw:linear-gradient(135deg,#ffe98a,#fffdf2)"><i></i>Sunny</button>
-    <button class="th extra" data-ath="rose" style="--sw:linear-gradient(135deg,#ffc2d1,#fff5f8)"><i></i>Rose</button>
-    <button class="th extra" data-ath="sage" style="--sw:linear-gradient(135deg,#cfdcc2,#f7faf3)"><i></i>Sage</button>
-    <button class="th extra" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
+    <button class="th" data-ath="dark" style="--sw:linear-gradient(135deg,#4a3d63,#1d1828)"><i></i>Dark</button>
   </div>
 
   <div class="dr-spacer"></div>
@@ -780,7 +760,6 @@ const APP_THEME_KEY = "ou_appTheme";
 const SHORT_IDS = ["GQGnCbEodfY", "PpJPByJEwk8", "8vhKlHlLQc4"];
 const MOODS = { happy: "😊 Happy", tired: "🥱 Tired", missing: "🥺 Missing you", busy: "💪 Busy" };
 const LOC_PUSH_MS = 60000;
-const THEMES = ["pink", "blue", "mint", "lavender", "peach", "sunny", "rose", "sage", "dark"];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -865,6 +844,7 @@ addEventListener("scroll", () => {
 }, { passive: true });
 
 /* ---------- Chat theme (device-wise) ---------- */
+const THEMES = ["pink", "blue", "mint", "lavender", "dark"];
 function applyTheme(k) {
   const t = THEMES.includes(k) ? k : "pink";
   $("chat").dataset.ct = t;
@@ -872,6 +852,10 @@ function applyTheme(k) {
   document.querySelectorAll("[data-th]").forEach(b => b.classList.toggle("on", b.dataset.th === t));
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "pink");
+$("themes").onclick = e => {
+  const b = e.target.closest("[data-th]");
+  if (b) applyTheme(b.dataset.th);
+};
 
 /* ---------- App theme (home page, separate from chat theme) ---------- */
 function applyAppTheme(k) {
@@ -882,22 +866,7 @@ function applyAppTheme(k) {
   document.querySelectorAll("[data-ath]").forEach(b => b.classList.toggle("on", b.dataset.ath === t));
 }
 applyAppTheme(localStorage.getItem(APP_THEME_KEY) || "pink");
-
-/* ---------- More themes toggle ---------- */
-function toggleMore(boxId, btn) {
-  const open = $(boxId).classList.toggle("open");
-  btn.querySelector("span").textContent = open ? "Kam" : "More";
-  btn.querySelector("i").textContent = open ? "−" : "＋";
-}
-$("themes").onclick = e => {
-  const m = e.target.closest(".more-btn");
-  if (m) return toggleMore("themes", m);
-  const b = e.target.closest("[data-th]");
-  if (b) applyTheme(b.dataset.th);
-};
 $("appThemes").onclick = e => {
-  const m = e.target.closest(".more-btn");
-  if (m) return toggleMore("appThemes", m);
   const b = e.target.closest("[data-ath]");
   if (b) applyAppTheme(b.dataset.ath);
 };
@@ -2202,4 +2171,78 @@ $("micBtn").onclick = async () => {
         const audio = await blobToDataURL(blob);
         await addDoc(collection(db, "messages"), {
           text: "", audio, uid: u.uid, name: firstName(u), senderEmail: u.email,
-          createdAt
+          createdAt: serverTimestamp(), seen: false, reactions: {},
+          expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
+        });
+      } catch (err) { toast("Voice error: " + (err.code || err.message)); }
+    };
+    rec.start();
+    $("micBtn").classList.add("rec");
+    $("micBtn").textContent = "⏹";
+    recTimer = setTimeout(() => { if (rec.state === "recording") rec.stop(); }, VOICE_MAX_MS);
+  } catch (err) {
+    toast("Mic permission do: " + err.message);
+  }
+};
+
+/* ---------- Chat (full-screen) ---------- */
+function closeChatVis() {
+  chatOpen = false;
+  $("chat").classList.remove("open");
+}
+function openChat() {
+  if (chatOpen) return;
+  chatOpen = true;
+  $("chat").classList.add("open");
+  fitChat();
+  openLayer("chat", closeChatVis);
+  markRead();
+  markSeen();
+}
+$("chatBtn").onclick = () => {
+  if (chatOpen) dismissLayer("chat");
+  else openChat();
+};
+$("chatBack").onclick = () => dismissLayer("chat");
+
+function stopTyping() {
+  clearTimeout(typingTimer);
+  if (typingOn) { typingOn = false; setTyping(false); }
+}
+$("chatIn").addEventListener("input", () => {
+  if (!typingOn) { typingOn = true; setTyping(true); }
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(stopTyping, 2500);
+});
+
+$("chatForm").onsubmit = async e => {
+  e.preventDefault();
+  const text = $("chatIn").value.trim(); if (!text) return;
+  const u = auth.currentUser;
+
+  if (editingId) {
+    const id = editingId;
+    $("chatIn").value = "";
+    stopTyping();
+    clearReply();
+    try { await updateDoc(doc(db, "messages", id), { text, edited: true }); }
+    catch (err) { toast("Edit error: " + (err.code || err.message)); }
+    return;
+  }
+
+  const rt = replyTarget;
+  $("chatIn").value = "";
+  stopTyping();
+  clearReply();
+  try {
+    await addDoc(collection(db, "messages"), {
+      text, uid: u.uid, name: nickOf[u.email] || firstName(u), senderEmail: u.email,
+      createdAt: serverTimestamp(), seen: false,
+      replyTo: rt ? { name: rt.name, text: rt.text } : null, reactions: {},
+      expiresAt: Timestamp.fromMillis(Date.now() + CHAT_MS)
+    });
+  } catch (err) { toast("Chat error: " + (err.code || err.message)); }
+};
+</script>
+</body>
+  </html>
